@@ -1,4 +1,4 @@
-
+/* Delete later begins */
 html,
 body {
   height: 100%;
@@ -7,7 +7,7 @@ body {
   background: url("../img/bg.png");
   background-repeat: no-repeat;
 }
-
+/* Delete later ends */
 
 .rs-widget,
 .rs-widget * {
@@ -85,12 +85,14 @@ body {
   display: none;
 }
 .rs-state-sign-in .rs-box-sign-in {
-
 }
 
 
 .rs-connected {
   display: none;
+}
+.rs-state-connected .rs-box-connected {
+  display: block;
 }
 
 
