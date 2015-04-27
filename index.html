@@ -5,23 +5,34 @@
 <!-- other classes: rs-state-initial rs-state-choose rs-state-sign-in rs-state-connected -->
 <div id="rs-widget" class="rs-widget rs-state-initial">
 
-  <img id="rs-logo" class="rs-logo" height="40" src="assets/img/remoteStorage.svg">
+  <img id="rs-logo" class="rs-logo rs-main-logo" height="40" src="assets/img/remoteStorage.svg">
 
   <!-- <div class="rs-box" id="rs-box">
   </div> -->
 
   <div class="rs-box-initial">
-    <h1 class="rs-headline">Connect Remote Storage</h1>
+    <h1 class="rs-small-headline">Connect Remote Storage</h1>
     <span class="rs-sub-headline">To own and control your data</span>
   </div>
 
   <div class="rs-box-choose">
-    <h1>Own Your Data</h1>
+    <h1 class="rs-big-headline">Own Your Data</h1>
     <p>This app allows you to own and control your data. <a class="rs-help" href="#" target="_blank">Read more</a></p>
     <strong>Please choose your storage</strong>
-    <button id="rs-choose-rs" class="rs-choose-rs">Remote Storage</button>
-    <button class="rs-choose-dropbox">Dropbox</button>
-    <button class="rs-choose-gdrive">Google Drive</button>
+    <div class="rs-button-wrap">
+      <button class="rs-button rs-big-button rs-choose-rs">
+        <img id="rs-logo" class="rs-logo" height="40" src="assets/img/remoteStorage.svg">
+        <span>Remote Storage</span>
+      </button>
+      <button class="rs-button rs-big-button rs-choose-dropbox">
+        <img id="rs-logo" class="rs-logo" height="40" src="assets/img/dropbox.svg">
+        Dropbox
+      </button>
+      <button class="rs-button rs-big-button rs-choose-gdrive">
+        <img id="rs-logo" class="rs-logo" height="40" src="assets/img/gdrive.svg">
+        Google Drive
+      </button>
+    </div>
   </div>
 
   <div class="rs-box-sign-in">

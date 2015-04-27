@@ -1,6 +1,6 @@
 var rsWidget = document.getElementById("rs-widget");
 var rsInitial = document.getElementsByClassName("rs-box-initial");
-var rsChooseButton = document.getElementById("rs-choose-rs");
+var rsChooseButton = document.getElementsByClassName("rs-big-button");
 var rsDisconnectButton = document.getElementsByClassName("rs-disconnect");
 
 
@@ -11,12 +11,27 @@ rsInitial[0].addEventListener("click", function(e) {
   rsWidget.classList.add("rs-state-choose");
 });
 
-// Choose provider button
-rsChooseButton.addEventListener("click", function(e) {
-  console.log("clicked choose rs");
+// Choose RS button
+rsChooseButton[0].addEventListener("click", function(e) {
+  console.log("clicked RS button");
   rsWidget.classList.remove("rs-state-choose");
   rsWidget.classList.add("rs-state-connected");
 });
+
+// Choose Dropbox button
+rsChooseButton[1].addEventListener("click", function(e) {
+  console.log("clicked Dropbox button");
+  rsWidget.classList.remove("rs-state-choose");
+  rsWidget.classList.add("rs-state-connected");
+});
+
+// Choose Google drive button
+rsChooseButton[2].addEventListener("click", function(e) {
+  console.log("clicked Google drive Button");
+  rsWidget.classList.remove("rs-state-choose");
+  rsWidget.classList.add("rs-state-connected");
+});
+
 
 // Disconnect button
 rsDisconnectButton[0].addEventListener("click", function(e) {

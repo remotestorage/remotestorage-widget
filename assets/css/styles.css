@@ -60,7 +60,7 @@ body {
   dis
 }
 
-
+/* Initial Connect remote storage box */
 .rs-state-initial:hover {
   cursor: pointer;
 }
@@ -74,25 +74,36 @@ body {
 /*.rs-box-initial:hover {
   cursor: pointer;
 }*/
-.rs-box-initial .rs-headline {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
-}
-.rs-box-initial .rs-sub-headline {
-  color: #666;
-  font-size: 0.875em;
-}
 
-
+/* Choose provider box */
 .rs-box-choose {
+  float: left;
+  clear: left;
   display: none;
+  text-align: center;
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: max-height 350ms ease;
+  -webkit-transition-delay: 1s;
 }
 .rs-state-choose .rs-box-choose {
   display: block;
 }
+.rs-box-choose .rs-big-headline {
+  display: inline-block;
+}
+.rs-main-logo {
+  -webkit-transition: margin-left 350ms ease-out;
+}
+.rs-state-choose .rs-main-logo {
+  margin-left: 45%;
+}
+.rs-state-choose .rs-box-choose {
+  max-height: 466px;
+}
 
 
+/* Sign in box */
 .rs-box-sign-in {
   display: none;
 }
@@ -100,6 +111,7 @@ body {
 }
 
 
+/* Connected box */
 .rs-box-connected {
   display: none;
 }
@@ -111,4 +123,50 @@ body {
 /* Helper classes */
 .rs-small-text {
   font-size: 0.875em;
+}
+.rs-small-headline {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+.rs-sub-headline {
+  color: #666;
+  font-size: 0.875em;
+}
+.rs-big-headline {
+  font-size: 26px;
+  font-weight: normal;
+}
+.rs-button {
+  outline: 0;
+  font: inherit;
+  background-color: transparent;
+  border:1px solid #dcdcdc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.rs-small-button {
+
+}
+.rs-button-wrap {
+  display: table;
+}
+.rs-big-button {
+  padding: 15px 10px;
+  display: block;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: left;
+  transition: box-shadow 200ms;
+  display: table-cell;
+  vertical-align: middle;
+}
+.rs-big-button span {
+  display: table-cell;
+}
+.rs-big-button:hover {
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+}
+.rs-big-button:last-child {
+  margin-bottom: 0;
 }
