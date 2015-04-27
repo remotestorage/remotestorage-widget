@@ -1,6 +1,7 @@
 var rsWidget = document.getElementById("rs-widget");
 var rsInitial = document.getElementsByClassName("rs-box-initial");
 var rsChooseButton = document.getElementById("rs-choose-rs");
+var rsDisconnectButton = document.getElementById("rs-disconnect");
 
 
 // rsWidget.onclick = function(e) {

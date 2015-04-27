@@ -9,6 +9,16 @@ body {
 }
 /* Delete later ends */
 
+
+.rs-widget a {
+  color: #0093cc;
+}
+.rs-widget h1,{
+  font-weight: normal;
+  font-size: 26px;
+}
+
+
 .rs-widget,
 .rs-widget * {
   box-sizing: border-box;
@@ -41,6 +51,7 @@ body {
 
 .rs-logo {
   float: left;
+  margin-right: 10px;
 }
 .rs-floating .rs-logo {
   display: block;
@@ -58,7 +69,7 @@ body {
 }
 .rs-state-initial .rs-box-initial {
   display: inline-block;
-  padding: 3px 0 3px 10px;
+  padding: 3px 0 3px 0;
 }
 /*.rs-box-initial:hover {
   cursor: pointer;
@@ -70,6 +81,7 @@ body {
 }
 .rs-box-initial .rs-sub-headline {
   color: #666;
+  font-size: 0.875em;
 }
 
 
@@ -88,7 +100,7 @@ body {
 }
 
 
-.rs-connected {
+.rs-box-connected {
   display: none;
 }
 .rs-state-connected .rs-box-connected {
