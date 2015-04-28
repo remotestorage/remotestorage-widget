@@ -13,9 +13,30 @@ body {
 .rs-widget a {
   color: #0093cc;
 }
-.rs-widget h1,{
+/*.rs-widget h1,{
   font-weight: normal;
   font-size: 26px;
+}*/
+.rs-input {
+  padding: 15px 10px;
+  display: block;
+  width: 100%;
+  font: inherit;
+  margin-bottom: 20px;
+}
+.rs-submit {
+  padding: 15px 10px;
+  display: block;
+  width: 100%;
+  border-width: 0;
+  border-radius: 3px;
+	background-color: #3fb34f;
+  font: inherit;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.rs-submit:hover {
+  cursor: pointer;
 }
 
 
@@ -30,7 +51,7 @@ body {
   color: #333;
   background-color: #fff;
   border-radius: 3px;
-  padding: 10px;
+  padding: 20px;
   display: inline-block;
   margin: 10px;
 }
@@ -64,6 +85,7 @@ body {
   cursor: pointer;
 }
 .rs-box-initial {
+  white-space: nowrap;
   display: none;
 }
 .rs-state-initial .rs-box-initial {
@@ -73,6 +95,7 @@ body {
 /*.rs-box-initial:hover {
   cursor: pointer;
 }*/
+
 
 /* Main logo */
 .rs-main-logo {
@@ -90,9 +113,6 @@ body {
   -webkit-transition: height 500ms ease;
   -webkit-transition-delay: 0ms;
 }
-.rs-box-choose .rs-big-headline {
-  display: inline-block;
-}
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
   -webkit-transition-delay: 0ms;
@@ -107,8 +127,14 @@ body {
 /* Sign in box */
 .rs-box-sign-in {
   display: none;
+  text-align: center
 }
 .rs-state-sign-in .rs-box-sign-in {
+  display: block;
+}
+.rs-state-sign-in .rs-main-logo {
+  margin-left: 45%;
+  -webkit-transition-delay: 0ms;
 }
 
 
@@ -137,6 +163,7 @@ body {
 .rs-big-headline {
   font-size: 26px;
   font-weight: normal;
+  display: inline-block;
 }
 .rs-button {
   outline: 0;
