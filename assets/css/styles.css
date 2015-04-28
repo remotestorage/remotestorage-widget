@@ -57,7 +57,6 @@ body {
   display: block;
   float: right;
   margin-top: -10px;
-  dis
 }
 
 /* Initial Connect remote storage box */
@@ -75,31 +74,33 @@ body {
   cursor: pointer;
 }*/
 
+/* Main logo */
+.rs-main-logo {
+  -webkit-transition: margin-left 350ms ease-out;
+  -webkit-transition-delay: 500ms;
+}
+
 /* Choose provider box */
 .rs-box-choose {
   float: left;
   clear: left;
-  display: none;
   text-align: center;
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  -webkit-transition: max-height 350ms ease;
-  -webkit-transition-delay: 1s;
-}
-.rs-state-choose .rs-box-choose {
-  display: block;
+  -webkit-transition: height 500ms ease;
+  -webkit-transition-delay: 0ms;
 }
 .rs-box-choose .rs-big-headline {
   display: inline-block;
 }
-.rs-main-logo {
-  -webkit-transition: margin-left 350ms ease-out;
-}
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
+  -webkit-transition-delay: 0ms;
 }
 .rs-state-choose .rs-box-choose {
-  max-height: 466px;
+  height: 466px;
+  transition-delay: 500ms;
+  -webkit-transition-delay: 500ms;
 }
 
 
