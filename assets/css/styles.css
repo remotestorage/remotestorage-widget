@@ -9,14 +9,10 @@ body {
 }
 /* Delete later ends */
 
-
+/* General and reusable classes */
 .rs-widget a {
   color: #0093cc;
 }
-/*.rs-widget h1,{
-  font-weight: normal;
-  font-size: 26px;
-}*/
 .rs-input {
   padding: 15px 10px;
   display: block;
@@ -38,12 +34,64 @@ body {
 .rs-submit:hover {
   cursor: pointer;
 }
+.rs-small-text {
+  font-size: 0.875em;
+}
+.rs-small-headline {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+.rs-sub-headline {
+  color: #666;
+  font-size: 0.875em;
+}
+.rs-big-headline {
+  font-size: 26px;
+  font-weight: normal;
+  display: inline-block;
+}
+.rs-button {
+  outline: 0;
+  font: inherit;
+  background-color: transparent;
+  border:1px solid #dcdcdc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.rs-small-button {
+
+}
+.rs-button-wrap {
+  display: table;
+  margin-top: 10px;
+}
+.rs-big-button {
+  padding: 15px 10px;
+  display: block;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: left;
+  transition: box-shadow 200ms;
+  display: table-cell;
+  vertical-align: middle;
+}
+.rs-big-button span {
+  display: table-cell;
+}
+.rs-big-button:hover {
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+}
+.rs-big-button:last-child {
+  margin-bottom: 0;
+}
+
 
 
 .rs-widget,
 .rs-widget * {
   box-sizing: border-box;
-  font-family: Helvetica, arial, sans-serif;
+  font-family: arial, sans-serif;
 }
 .rs-widget {
   max-width: 100%;
@@ -122,6 +170,14 @@ body {
   transition-delay: 500ms;
   -webkit-transition-delay: 500ms;
 }
+.rs-box-choose h1 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.rs-box-choose p {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
 
 
 /* Sign in box */
@@ -144,57 +200,4 @@ body {
 }
 .rs-state-connected .rs-box-connected {
   display: block;
-}
-
-
-/* Helper classes */
-.rs-small-text {
-  font-size: 0.875em;
-}
-.rs-small-headline {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
-}
-.rs-sub-headline {
-  color: #666;
-  font-size: 0.875em;
-}
-.rs-big-headline {
-  font-size: 26px;
-  font-weight: normal;
-  display: inline-block;
-}
-.rs-button {
-  outline: 0;
-  font: inherit;
-  background-color: transparent;
-  border:1px solid #dcdcdc;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.rs-small-button {
-
-}
-.rs-button-wrap {
-  display: table;
-}
-.rs-big-button {
-  padding: 15px 10px;
-  display: block;
-  margin-bottom: 20px;
-  width: 100%;
-  text-align: left;
-  transition: box-shadow 200ms;
-  display: table-cell;
-  vertical-align: middle;
-}
-.rs-big-button span {
-  display: table-cell;
-}
-.rs-big-button:hover {
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
-}
-.rs-big-button:last-child {
-  margin-bottom: 0;
 }
