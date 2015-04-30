@@ -38,16 +38,17 @@ body {
   font-size: 0.875em;
 }
 .rs-small-headline {
-  font-size: 16px;
+  font-size: 1em;
   font-weight: bold;
   margin: 0;
+  margin-bottom: 2px;
 }
 .rs-sub-headline {
   color: #666;
-  font-size: 0.875em;
+  font-size: 0.92em;
 }
 .rs-big-headline {
-  font-size: 26px;
+  font-size: 1.625em;
   font-weight: normal;
   display: inline-block;
 }
@@ -59,14 +60,17 @@ body {
   border-radius: 3px;
   cursor: pointer;
 }
-.rs-small-button {
-
+.rs-button-small {
+  padding: 9px 9px;
+  margin-left: 10px;
+  transition: border-color 300ms ease-out;
+  -webkit-transition: border-color 300ms ease-out;
 }
 .rs-button-wrap {
   display: table;
   margin-top: 10px;
 }
-.rs-big-button {
+.rs-button-big {
   padding: 15px 10px;
   display: block;
   margin-bottom: 20px;
@@ -76,16 +80,20 @@ body {
   display: table-cell;
   vertical-align: middle;
 }
-.rs-big-button span {
+.rs-button-big span {
   display: table-cell;
 }
-.rs-big-button:hover {
+.rs-button-big:hover {
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
-.rs-big-button:last-child {
+.rs-button-big:last-child {
   margin-bottom: 0;
 }
-
+.rs-icon {
+  fill: #999;
+  transition: fill 300ms ease-out;
+  -webkit-transition: fill 300ms ease-out;
+}
 
 
 .rs-widget,
@@ -94,7 +102,6 @@ body {
   font-family: arial, sans-serif;
 }
 .rs-widget {
-  max-width: 100%;
   max-width: 300px;
   color: #333;
   background-color: #fff;
@@ -102,7 +109,8 @@ body {
   padding: 20px;
   display: inline-block;
   margin: 10px;
-  overflow: hidden
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 .rs-widget.rs-floating {
   width: 400px;
@@ -130,16 +138,20 @@ body {
 }
 
 /* Initial Connect remote storage box */
-.rs-state-initial:hover {
+.rs-box-initial:hover {
   cursor: pointer;
 }
 .rs-box-initial {
+  overflow: hidden;
   white-space: nowrap;
-  display: none;
+  /*margin-left: 280px;*/
+  -webkit-transition: margin-left 100ms linear;
+  -webkit-transition: margin-top 100ms linear;
 }
 .rs-state-initial .rs-box-initial {
-  display: inline-block;
-  padding: 3px 0 3px 0;
+  padding: 2px 0 2px 0;
+  display: block;
+  /*margin-left: 0;*/
 }
 /*.rs-box-initial:hover {
   cursor: pointer;
@@ -154,10 +166,10 @@ body {
 
 /* Choose provider box */
 .rs-box-choose {
-  clear: left;
+  clear: both;
   text-align: center;
   overflow: hidden;
-  -webkit-transition: height 300ms ease;
+  -webkit-transition: height 300ms ease-out;
   -webkit-transition-delay: 0ms;
 }
 .rs-state-choose .rs-main-logo {
@@ -183,13 +195,17 @@ body {
 .rs-box-sign-in {
   text-align: center;
   height: 0;
-  -webkit-transition: height 300ms ease;
+  overflow: hidden;
+  -webkit-transition: height 300ms ease-out;
+}
+.rs-box-sign-in h1 {
+  margin-top: 0;
 }
 .rs-state-sign-in .rs-box-sign-in {
   /* Needs to be added into js later*/
   /*height: 466px; */
 
-  /*-webkit-transition: none;*/
+  -webkit-transition: none;
 }
 .rs-state-sign-in .rs-main-logo {
   margin-left: 45%;
@@ -200,7 +216,49 @@ body {
 /* Connected box */
 .rs-box-connected {
   display: none;
+  padding: 2px 0 2px 0;
 }
 .rs-state-connected .rs-box-connected {
-  display: block;
+  /*display: block;*/
+}
+.rs-box-connected .rs-user {
+  font-weight: bold;
+}
+.rs-box-connected .rs-button {
+  float: right;
+}
+.rs-disconnect:hover {
+  border-color: #FF2D2D;
+}
+.rs-disconnect:hover .rs-icon{
+  fill: #FF2D2D;
+}
+.rs-sync:hover {
+  border-color: #FFBB0C;
+}
+.rs-sync:hover .rs-icon {
+  fill: #FFBB0C;
+}
+.rs-sync.rs-rotate {
+  border-color: #FFBB0C;
+}
+.rs-sync.rs-rotate .rs-icon {
+  fill: #FFBB0C;
+  -webkit-animation: rs-spin 1s linear infinite;
+  -moz-animation: rs-spin 1s linear infinite;
+  animation: rs-spin 1s linear infinite;
+}
+@-moz-keyframes rs-spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+
+@media screen and (max-width: 320px) {
+  .rs-widget {
+    font-size: 80%;
+    padding: 10px;
+  }
+  .rs-logo {
+    height: 35px;
+  }
 }
