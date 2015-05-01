@@ -1,26 +1,6 @@
-document.onreadystatechange = function() {
-  var state = document.readyState;
-
-  // When document has completely loaded
-  if (state == "complete") {
-    console.log("document completely loaded");
-    initOnCompleteLoad();
-  }
-
-};
-
-function initOnCompleteLoad () {
-  var logo = document.getElementById("rs-logo");
-  var logoWidth = logo.clientWidth;
-
-  // var box = document.getElementById("rs-box");
-  // var boxWidth = box.clientWidth;
-  // box.style.margin = "polygon(0% 0%, 90% 0%, 90% 8%, 95.5% 12.5%, 100% 9%, 100% 100%, 0% 100%)";
-}
-
 
 // CSS can't animate to unknown height (as in height: auto)
-// so we need to store the height, set it to 0 and readd it when we want the animation
+// so we need to store the height, set it to 0 and use it when we want the animation
 var chooseBox = document.getElementsByClassName("rs-box-choose")[0];
 var chooseBoxHeight = chooseBox.clientHeight;
 // Set the height to zero until the initial button is triggered
@@ -30,7 +10,7 @@ chooseBox.setAttribute("style", "height: 0");
 // Also center sign in box
 var signInBox = document.getElementsByClassName("rs-box-sign-in")[0];
 var signInBoxHeight = signInBox.clientHeight;
-var signInContent = document.getElementsByClassName("rs-sign-in-content")[0]
+var signInContent = document.getElementsByClassName("rs-sign-in-content")[0];
 var signInContentHeight = signInContent.clientHeight;
 
 
@@ -42,7 +22,7 @@ var rsDisconnectButton = document.getElementsByClassName("rs-disconnect");
 var rsSyncButton = document.getElementsByClassName("rs-sync");
 var rsSignIn = document.getElementsByClassName("rs-submit");
 var rsConnected = document.getElementsByClassName("rs-box-connected")[0];
-
+rsConnected.setAttribute("style", "display: none;");
 
 // Initial button
 rsInitial[0].addEventListener("click", function(e) {
@@ -73,7 +53,7 @@ rsSignIn[0].addEventListener("click", function(e) {
   rsWidget.classList.add("rs-state-connected");
 
   signInBox.setAttribute("style", "height: 0;");
-  fadeIn(rsConnected);
+  delayConnected();
 });
 
 // Choose Dropbox button
@@ -83,7 +63,7 @@ rsChooseButton[1].addEventListener("click", function(e) {
   rsWidget.classList.add("rs-state-connected");
   chooseBox.setAttribute("style", "height: 0");
 
-  fadeIn(rsConnected);
+  delayConnected();
 });
 
 // Choose Google drive button
@@ -93,7 +73,7 @@ rsChooseButton[2].addEventListener("click", function(e) {
   rsWidget.classList.add("rs-state-connected");
   chooseBox.setAttribute("style", "height: 0");
 
-  fadeIn(rsConnected);
+  delayConnected();
 });
 
 // Disconnect button
@@ -103,7 +83,7 @@ rsDisconnectButton[0].addEventListener("click", function(e) {
   rsWidget.classList.add("rs-state-initial");
 
   fadeOut(rsConnected);
-  // fadeIn(rsInitial[0]);
+  fadeIn(rsInitial[0]);
 });
 
 // Sync button
@@ -113,12 +93,17 @@ rsSyncButton[0].addEventListener("click", function(e) {
 });
 
 
+// Wait until the choose/sign-in box has scrolled up and the logo is back
+// Then fade the connected screen in.
+function delayConnected() {
+  setTimeout(function() {
+    console.log("fade in");
+    fadeIn(rsConnected);
+  }, 600);
+}
 
-
+// CSS can't fade elements in and out of DOM so we have to do it in JS
 function fadeOut(element) {
-  // Todo add delay option
-
-
   var op = 1;  // initial opacity
   var timer = setInterval(function () {
     if (op <= 0.1){
@@ -128,7 +113,7 @@ function fadeOut(element) {
     element.style.opacity = op;
     element.style.filter = 'alpha(opacity=' + op * 100 + ")";
     op -= op * 0.1;
-  }, 10);
+  }, 3);
 }
 function fadeIn(element) {
   var op = 0.1;  // initial opacity
@@ -140,5 +125,5 @@ function fadeIn(element) {
     element.style.opacity = op;
     element.style.filter = 'alpha(opacity=' + op * 100 + ")";
     op += op * 0.1;
-  }, 10);
+  }, 3);
 }

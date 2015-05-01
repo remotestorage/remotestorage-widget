@@ -142,6 +142,9 @@ body {
   cursor: pointer;
 }
 .rs-box-initial {
+  padding: 2px 0 2px 0;
+  position: absolute;
+  margin-left: 45px;
   overflow: hidden;
   white-space: nowrap;
   /*margin-left: 280px;*/
@@ -149,7 +152,6 @@ body {
   -webkit-transition: margin-top 100ms linear;
 }
 .rs-state-initial .rs-box-initial {
-  padding: 2px 0 2px 0;
   display: block;
   /*margin-left: 0;*/
 }
@@ -171,6 +173,9 @@ body {
   overflow: hidden;
   -webkit-transition: height 300ms ease-out;
   -webkit-transition-delay: 0ms;
+}
+.rs-box-choose-content {
+  padding: 0 10px 10px 10px;
 }
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
@@ -198,6 +203,9 @@ body {
   overflow: hidden;
   -webkit-transition: height 300ms ease-out;
 }
+.rs-sign-in-content {
+  padding: 0 10px 10px 10px;
+}
 .rs-box-sign-in h1 {
   margin-top: 0;
 }
@@ -205,7 +213,7 @@ body {
   /* Needs to be added into js later*/
   /*height: 466px; */
 
-  -webkit-transition: none;
+  /*-webkit-transition: none;*/
 }
 .rs-state-sign-in .rs-main-logo {
   margin-left: 45%;
@@ -215,7 +223,7 @@ body {
 
 /* Connected box */
 .rs-box-connected {
-  display: none;
+  /*display: none;*/
   padding: 2px 0 2px 0;
 }
 .rs-state-connected .rs-box-connected {
@@ -248,8 +256,8 @@ body {
   -moz-animation: rs-spin 1s linear infinite;
   animation: rs-spin 1s linear infinite;
 }
-@-moz-keyframes rs-spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); } }
+@-moz-keyframes rs-spin { 100% { -moz-transform: rotate(360deg); transform:rotate(360deg);} }
+@-webkit-keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 @keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 
