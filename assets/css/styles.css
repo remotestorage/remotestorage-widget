@@ -47,24 +47,24 @@ body {
   margin-left: 0.625em;
   transition: border-color 300ms ease-out;
   -webkit-transition: border-color 300ms ease-out;
+  -moz-transition: border-color 300ms ease-out;
+  -o-transition: border-color 300ms ease-out;
 }
 .rs-button-wrap {
-  display: table;
   margin-top: 10px;
 }
 .rs-button-big {
   padding: 15px 10px;
-  display: block;
   margin-bottom: 20px;
+  display: block;
   width: 100%;
   text-align: left;
   transition: box-shadow 200ms;
   -webkit-trasition: box-shadow 200ms;
-  display: table-cell;
-  vertical-align: middle;
+  -moz-transition: box-shadow 200ms;
+  -o-transition: box-shadow 200ms;
 }
-.rs-button-big span {
-  display: table-cell;
+.rs-button-big > div {
   font-size: 1.125em;
   padding: 10px 0;
 }
@@ -82,6 +82,8 @@ body {
   fill: #999;
   transition: fill 300ms ease-out;
   -webkit-transition: fill 300ms ease-out;
+  -moz-transition: fill 300ms ease-out;
+  -o-transition: fill 300ms ease-out;
 }
 
 
@@ -102,19 +104,6 @@ body {
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 
-.rs-widget.rs-floating {
-  /* Moves to middle for choose, and sign in -
-  only icon when connected and clicked outside of box*/
-}
-.rs-widget.rs-not-floating {
-  /* Floats on mobile for choose and sign in + adds x to close*/
-  /* This is the default one */
-}
-
-
-/* TODO Check if needed*/
-
-
 
 /* Initial Connect remote storage box */
 .rs-box-initial {
@@ -122,9 +111,6 @@ body {
   margin-left: 45px;
   overflow: hidden;
   white-space: nowrap;
-  /*margin-left: 280px;*/
-  -webkit-transition: margin-left 100ms linear;
-  -webkit-transition: margin-top 100ms linear;
 }
 .rs-box-initial:hover {
   cursor: pointer;
@@ -141,8 +127,14 @@ body {
 .rs-main-logo {
   float: left;
   margin-right: 0.625em;
+  transition: margin-left 300ms ease-out;
   -webkit-transition: margin-left 300ms ease-out;
+  -moz-transition: margin-left 300ms ease-out;
+  -o-transition: margin-left 300ms ease-out;
+  transition-delay: 300ms;
   -webkit-transition-delay: 300ms;
+  -moz-transition-delay: 300ms;
+  -o-transition-delay: 300ms;
 }
 
 
@@ -155,14 +147,20 @@ body {
   -webkit-transition: height 300ms ease-out;
   -moz-transition: height 300ms ease-out;
   -o-transition: height 300ms ease-out;
+  transition-delay: 0ms;
   -webkit-transition-delay: 0ms;
+  -moz-transition-delay: 0ms;
+  -o-transition-delay: 0ms;
 }
 .rs-box-choose-content {
   padding: 0 10px 10px 10px;
 }
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
+  transition-delay: 0ms;
   -webkit-transition-delay: 0ms;
+  -moz-transition-delay: 0ms;
+  -o-transition-delay: 0ms;
 }
 .rs-box-choose .rs-logo {
   float: left;
@@ -174,7 +172,7 @@ body {
   -moz-transition-delay: 300ms;
   -o-transition-delay: 300ms;
 }
-.rs-box-choose h1 {
+.rs-box-choose .rs-big-headline {
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -189,12 +187,15 @@ body {
   text-align: center;
   height: 0;
   overflow: hidden;
+  transition: height 300ms ease-out;
   -webkit-transition: height 300ms ease-out;
+  -moz-transition: height 300ms ease-out;
+  -o-transition: height 300ms ease-out;
 }
 .rs-sign-in-content {
   padding: 0 10px 10px 10px;
 }
-.rs-box-sign-in h1 {
+.rs-box-sign-in .rs-big-headline {
   margin-top: 0;
 }
 .rs-state-sign-in .rs-main-logo {
@@ -219,6 +220,8 @@ body {
   color: #fff;
   transition: box-shadow 200ms, background-color 200ms;
   -webkit-trasition: box-shadow 200ms, background-color 200ms;
+  -moz-transition: box-shadow 200ms, background-color 200ms;
+  -o-transition: box-shadow 200ms, background-color 200ms;
 }
 .rs-submit:hover {
   cursor: pointer;
@@ -228,8 +231,6 @@ body {
 .rs-submit:active {
 	background-color: #3fb34f;
 }
-/* Sign in box END*/
-
 
 
 /* Connected box */
@@ -297,6 +298,8 @@ body {
     padding: 10px;
     transition: all 300ms ease-out;
     -webkit-transition: all 300ms ease-out;
+    -moz-transition: all 300ms ease-out;
+    -o-transition: all 300ms ease-out;
   }
   .rs-floating {
     position: relative;
