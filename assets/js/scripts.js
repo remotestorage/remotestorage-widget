@@ -6,14 +6,11 @@ var chooseBoxHeight = chooseBox.clientHeight;
 // Set the height to zero until the initial button is clicked
 chooseBox.setAttribute("style", "height: 0");
 
-// Lets make the sign in box the same height as the choose box and center its
-// That way the input should be exactly where the "Choose RS" button was
+// Making the sign in box the same height as the choose box and centering it
+// should put the cursor exactly on the input box
 var signInBox = document.getElementsByClassName("rs-box-sign-in")[0];
 var signInContent = document.getElementsByClassName("rs-sign-in-content")[0];
 var signInContentHeight = signInContent.clientHeight;
-// Todo on window resize check height of box and adjust it
-
-// Button events
 var rsWidget = document.getElementById("rs-widget");
 var rsCloseButton = document.getElementsByClassName("rs-close")[0];
 var rsInitial = document.getElementsByClassName("rs-box-initial")[0];
@@ -29,9 +26,7 @@ rsInitial.addEventListener("click", function(e) {
   console.log("clicked initial button");
   rsWidget.classList.remove("rs-state-initial");
   rsWidget.classList.add("rs-state-choose");
-
   fadeOut(this);
-
   // Set height of the ChooseBox back to original height.
   chooseBox.setAttribute("style", "height: " + chooseBoxHeight);
 });
@@ -104,14 +99,14 @@ rsCloseButton.addEventListener("click", function(e) {
 });
 
 
-// Delay the fade in until other animatiosn are finished
+// To delay fadeIn until other animations are finished
 function delayFadeIn(element, delayTime) {
   setTimeout(function() {
     fadeIn(element);
   }, delayTime);
 }
 
-// CSS can't fade elements in and out of DOM so we have to do it in JS
+// CSS can't fade elements in and out of the page flow so we have to do it in JS
 function fadeOut(element) {
   var op = 1;  // initial opacity
   var timer = setInterval(function () {

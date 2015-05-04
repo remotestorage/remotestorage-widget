@@ -10,13 +10,10 @@ body {
 }
 /* Delete later ends */
 
+
 /* General and reusable classes */
 .rs-widget a {
   color: #0093cc;
-}
-
-.rs-small-text {
-  font-size: 0.875em;
 }
 .rs-small-headline {
   font-size: 1em;
@@ -34,7 +31,6 @@ body {
   display: inline-block;
 }
 .rs-button {
-  outline: 0;
   font: inherit;
   color: inherit;
   background-color: transparent;
@@ -87,6 +83,7 @@ body {
 }
 
 
+/* Widget */
 .rs-widget,
 .rs-widget * {
   box-sizing: border-box;
@@ -155,6 +152,14 @@ body {
 .rs-box-choose-content {
   padding: 0 10px 10px 10px;
 }
+.rs-box-choose .rs-big-headline {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.rs-box-choose p {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
   transition-delay: 0ms;
@@ -172,17 +177,10 @@ body {
   -moz-transition-delay: 300ms;
   -o-transition-delay: 300ms;
 }
-.rs-box-choose .rs-big-headline {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-.rs-box-choose p {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
 
 
-/* Sign in box START*/
+
+/* Sign in box */
 .rs-box-sign-in {
   text-align: center;
   height: 0;
