@@ -209,6 +209,7 @@ body {
 }
 .rs-submit {
   padding: 15px 10px;
+  margin-bottom: 15px;
   display: block;
   width: 100%;
   border-width: 0;
@@ -216,7 +217,6 @@ body {
 	background-color: #3fb34f;
   font: inherit;
   color: #fff;
-  margin-bottom: 10px;
   transition: box-shadow 200ms, background-color 200ms;
   -webkit-trasition: box-shadow 200ms, background-color 200ms;
 }
@@ -274,7 +274,7 @@ body {
 @keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 
-
+/* Floating widget styles*/
 .rs-floating {
   position: fixed;
   top: 0;
@@ -289,6 +289,7 @@ body {
 .rs-close:hover {
   cursor: pointer
 }
+
 
 @media screen and (max-width: 300px) {
   .rs-widget {
