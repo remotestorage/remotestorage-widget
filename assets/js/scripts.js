@@ -11,6 +11,7 @@ var signInContent = document.getElementsByClassName("rs-sign-in-content")[0];
 var signInContentHeight = signInContent.clientHeight;
 
 var rsWidget = document.getElementById("rs-widget");
+var rsLogo = document.getElementsByClassName("rs-main-logo")[0];
 var rsCloseButton = document.getElementsByClassName("rs-close")[0];
 var rsInitial = document.getElementsByClassName("rs-box-initial")[0];
 var rsChooseButton = document.getElementsByClassName("rs-button-big");
@@ -88,6 +89,24 @@ rsCloseButton.addEventListener("click", function(e) {
   delayFadeIn(rsInitial, 300);
   signInBox.setAttribute("style", "height: 0;");
   chooseBox.setAttribute("style", "height: 0;");
+});
+
+// Reduce to only icon if connected and clicked outside of widget
+document.addEventListener("click", function(e) {
+  console.log("clicked outside of widget");
+  if (rsWidget.classList.contains("rs-state-connected")) {
+    rsWidget.classList.toggle("rs-hide", true);
+    fadeOut(rsConnected);
+  }
+});
+// Stop clicks on the widget itself from triggering the above event
+rsWidget.addEventListener("click", function(e) {
+  e.stopPropagation();
+});
+// Click on the logo to bring the full widget back
+rsLogo.addEventListener("click", function(e) {
+  rsWidget.classList.toggle("rs-hide", false);
+  delayFadeIn(rsConnected, 300);
 });
 
 

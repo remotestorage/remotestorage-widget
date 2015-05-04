@@ -99,6 +99,27 @@ body {
   margin: 10px;
   overflow: hidden;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+  transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
+  -webkit-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
+  -moz-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
+  -o-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
+}
+
+
+/* Hide everything except logo when connected and clicked outside of box */
+.rs-hide {
+  max-width: 55px;
+  background-color: transparent;
+  box-shadow: none;
+  opacity: 0.5;
+  transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
+  -webkit-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
+  -moz-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
+  -o-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
+}
+.rs-hide:hover {
+  cursor: pointer;
+  opacity: 1;
 }
 
 
@@ -177,7 +198,6 @@ body {
   -moz-transition-delay: 300ms;
   -o-transition-delay: 300ms;
 }
-
 
 
 /* Sign in box */
