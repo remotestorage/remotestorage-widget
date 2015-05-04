@@ -104,7 +104,7 @@ body {
 
 /* Initial Connect remote storage box */
 .rs-box-initial {
-  padding: 2px 0 2px 0;
+  padding: 1px 0;
   margin-left: 45px;
   overflow: hidden;
   white-space: nowrap;
@@ -233,7 +233,7 @@ body {
 
 /* Connected box */
 .rs-box-connected {
-  padding: 2px 0 2px 0;
+  display: none;
 }
 .rs-connected-text {
   float: left;
@@ -289,7 +289,7 @@ body {
   cursor: pointer
 }
 
-
+/* Mobile styles */
 @media screen and (max-width: 300px) {
   .rs-widget {
     font-size: 80%;

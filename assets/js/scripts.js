@@ -6,11 +6,10 @@ var chooseBoxHeight = chooseBox.clientHeight;
 // Set the height to zero until the initial button is clicked
 chooseBox.setAttribute("style", "height: 0");
 
-// Making the sign in box the same height as the choose box and centering it
-// should put the cursor exactly on the input box
 var signInBox = document.getElementsByClassName("rs-box-sign-in")[0];
 var signInContent = document.getElementsByClassName("rs-sign-in-content")[0];
 var signInContentHeight = signInContent.clientHeight;
+
 var rsWidget = document.getElementById("rs-widget");
 var rsCloseButton = document.getElementsByClassName("rs-close")[0];
 var rsInitial = document.getElementsByClassName("rs-box-initial")[0];
@@ -19,7 +18,6 @@ var rsDisconnectButton = document.getElementsByClassName("rs-disconnect")[0];
 var rsSyncButton = document.getElementsByClassName("rs-sync")[0];
 var rsSignInButton = document.getElementsByClassName("rs-submit")[0];
 var rsConnected = document.getElementsByClassName("rs-box-connected")[0];
-rsConnected.setAttribute("style", "display: none;");
 
 // Initial button
 rsInitial.addEventListener("click", function(e) {
@@ -36,17 +34,15 @@ rsChooseButton[0].addEventListener("click", function(e) {
   console.log("clicked RS button");
   rsWidget.classList.remove("rs-state-choose");
   rsWidget.classList.add("rs-state-sign-in");
-
   chooseBox.setAttribute("style", "height: 0");
-  signInBox.setAttribute("style", "height: " + chooseBoxHeight);
-  signInContent.setAttribute("style", "padding-top:" + (chooseBoxHeight - signInContentHeight) / 2);
+  signInBox.setAttribute("style", "height: " + chooseBoxHeight); // Set the sign in box to same height as chooseBox
+  signInContent.setAttribute("style", "padding-top:" + (chooseBoxHeight - signInContentHeight) / 2); // Center it
 });
 
 // Sign in button
 rsSignInButton.addEventListener("click", function(e) {
   rsWidget.classList.remove("rs-state-sign-in");
   rsWidget.classList.add("rs-state-connected");
-
   delayFadeIn(rsConnected, 600);
   signInBox.setAttribute("style", "height: 0;");
 });
@@ -57,7 +53,6 @@ rsChooseButton[1].addEventListener("click", function(e) {
   rsWidget.classList.remove("rs-state-choose");
   rsWidget.classList.add("rs-state-connected");
   chooseBox.setAttribute("style", "height: 0");
-
   delayFadeIn(rsConnected, 600);
 });
 
@@ -67,7 +62,6 @@ rsChooseButton[2].addEventListener("click", function(e) {
   rsWidget.classList.remove("rs-state-choose");
   rsWidget.classList.add("rs-state-connected");
   chooseBox.setAttribute("style", "height: 0");
-
   delayFadeIn(rsConnected, 600);
 });
 
@@ -76,7 +70,6 @@ rsDisconnectButton.addEventListener("click", function(e) {
   console.log("clicked disconnect button");
   rsWidget.classList.remove("rs-state-connected");
   rsWidget.classList.add("rs-state-initial");
-
   fadeOut(rsConnected);
   delayFadeIn(rsInitial, 300);
 });
@@ -92,7 +85,6 @@ rsCloseButton.addEventListener("click", function(e) {
   console.log("clicked close button");
   rsWidget.classList.remove("rs-state-sign-in");
   rsWidget.classList.remove("rs-state-choose");
-
   delayFadeIn(rsInitial, 300);
   signInBox.setAttribute("style", "height: 0;");
   chooseBox.setAttribute("style", "height: 0;");
