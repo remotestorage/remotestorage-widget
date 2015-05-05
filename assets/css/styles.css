@@ -1,12 +1,11 @@
 /* Delete later begins */
-html,
 body {
-  height: 100%;
   margin: 0;
   background-color: black;
   background: url("../img/bg.png");
   background-repeat: no-repeat;
   color: white;
+  background-size: cover;
 }
 /* Delete later ends */
 
@@ -310,9 +309,9 @@ body {
 }
 
 /* Mobile styles */
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 360px) {
   .rs-widget {
-    font-size: 80%;
+    font-size: 100%;
     padding: 10px;
     transition: all 300ms ease-out;
     -webkit-transition: all 300ms ease-out;
@@ -331,6 +330,7 @@ body {
     margin: 0;
     border-radius: 0;
     height: 100%;
+    max-width: 100%;
   }
   .rs-state-choose .rs-close,
   .rs-state-sign-in .rs-close {
