@@ -336,11 +336,4 @@ body {
   .rs-state-sign-in .rs-close {
     display: block;
   }
-  .rs-main-logo,
-  .rs-logo {
-    height: 35px;
-  }
-  .rs-box-initial {
-    margin-left: 40px;
-  }
 }

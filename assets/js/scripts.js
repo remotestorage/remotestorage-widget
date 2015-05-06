@@ -105,8 +105,10 @@ rsWidget.addEventListener("click", function(e) {
 });
 // Click on the logo to bring the full widget back
 rsLogo.addEventListener("click", function(e) {
-  rsWidget.classList.toggle("rs-hide", false);
-  delayFadeIn(rsConnected, 300);
+  if (rsWidget.classList.contains("rs-state-connected")) {
+    rsWidget.classList.toggle("rs-hide", false);
+    delayFadeIn(rsConnected, 300);
+  }
 });
 
 
