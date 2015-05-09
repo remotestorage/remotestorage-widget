@@ -1,15 +1,3 @@
-/* Delete later begins */
-body {
-  margin: 0;
-  background-color: black;
-  background: url("../img/bg.png");
-  background-repeat: no-repeat;
-  color: white;
-  background-size: cover;
-}
-/* Delete later ends */
-
-
 /* General and reusable classes */
 .rs-widget a {
   color: #0093cc;
