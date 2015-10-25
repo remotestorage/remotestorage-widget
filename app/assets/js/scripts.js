@@ -36,8 +36,8 @@ rsChooseButton[0].addEventListener("click", function(e) {
   rsWidget.classList.remove("rs-state-choose");
   rsWidget.classList.add("rs-state-sign-in");
   chooseBox.setAttribute("style", "height: 0");
-  signInBox.setAttribute("style", "height: " + chooseBoxHeight); // Set the sign in box to same height as chooseBox
-  signInContent.setAttribute("style", "padding-top:" + (chooseBoxHeight - signInContentHeight) / 2); // Center it
+  signInBox.setAttribute("style", "height: " + chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
+  signInContent.setAttribute("style", "padding-top: " + ((chooseBoxHeight - signInContentHeight) / 2) + "px"); // Center it
 });
 
 // Sign in button
