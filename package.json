@@ -4,9 +4,9 @@
   "description": "remoteStorage.js connect widget",
   "main": "index.js",
   "scripts": {
-    "server": "python2 -m SimpleHTTPServer",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "copy-deps-to-app": "cp node_modules/remotestoragejs/release/stable/remotestorage.js app/assets/js/vendor/"
+    "app": "python2 -m SimpleHTTPServer",
+    "compile-assets": "node compile-assets.js assets/ build/assets.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
