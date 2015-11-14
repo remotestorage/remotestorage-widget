@@ -1,38 +1,4 @@
-// To delay fadeIn until other animations are finished
 "use strict";
-
-function delayFadeIn(element, delayTime) {
-  setTimeout(function () {
-    fadeIn(element);
-  }, delayTime);
-}
-
-// CSS can't fade elements in and out of the page flow so we have to do it in JS
-function fadeOut(element) {
-  var op = 1; // initial opacity
-  var timer = setInterval(function () {
-    if (op <= 0.1) {
-      clearInterval(timer);
-      element.style.display = "none";
-    }
-    element.style.opacity = op;
-    element.style.filter = "alpha(opacity=" + op * 100 + ")";
-    op -= op * 0.1;
-  }, 3);
-}
-
-function fadeIn(element) {
-  var op = 0.1; // initial opacity
-  element.style.display = "block";
-  var timer = setInterval(function () {
-    if (op >= 1) {
-      clearInterval(timer);
-    }
-    element.style.opacity = op;
-    element.style.filter = "alpha(opacity=" + op * 100 + ")";
-    op += op * 0.1;
-  }, 3);
-}
 
 var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
   this.rs = remoteStorage;
@@ -159,6 +125,40 @@ var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
       delayFadeIn(rsConnected, 300);
     }
   });
+
+  // To delay fadeIn until other animations are finished
+  function delayFadeIn(element, delayTime) {
+    setTimeout(function () {
+      fadeIn(element);
+    }, delayTime);
+  }
+
+  // CSS can't fade elements in and out of the page flow so we have to do it in JS
+  function fadeOut(element) {
+    var op = 1; // initial opacity
+    var timer = setInterval(function () {
+      if (op <= 0.1) {
+        clearInterval(timer);
+        element.style.display = "none";
+      }
+      element.style.opacity = op;
+      element.style.filter = "alpha(opacity=" + op * 100 + ")";
+      op -= op * 0.1;
+    }, 3);
+  }
+
+  function fadeIn(element) {
+    var op = 0.1; // initial opacity
+    element.style.display = "block";
+    var timer = setInterval(function () {
+      if (op >= 1) {
+        clearInterval(timer);
+      }
+      element.style.opacity = op;
+      element.style.filter = "alpha(opacity=" + op * 100 + ")";
+      op += op * 0.1;
+    }, 3);
+  }
 };
 
 RemoteStorage.prototype.displayWidget = function (elementId) {
