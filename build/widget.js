@@ -60,6 +60,15 @@ var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
   var rsSignInButton = document.getElementsByClassName("rs-submit")[0];
   var rsConnected = document.getElementsByClassName("rs-box-connected")[0];
 
+  // Add image/asset sources
+  rsCloseButton.src = RemoteStorage.Assets.close;
+  rsLogo.src = RemoteStorage.Assets.remoteStorage;
+  document.getElementsByClassName('rs-logo')[0].src = RemoteStorage.Assets.remoteStorage;
+  document.getElementsByClassName('dropbox-logo')[0].src = RemoteStorage.Assets.dropbox;
+  document.getElementsByClassName('gdrive-logo')[0].src = RemoteStorage.Assets.gdrive;
+  document.getElementsByClassName('rs-power-icon')[0].src = RemoteStorage.Assets.power;
+  document.getElementsByClassName('rs-loop-icon')[0].src = RemoteStorage.Assets.loop;
+
   // Initial button
   rsInitial.addEventListener("click", function () {
     console.log("clicked initial button");

@@ -29,9 +29,6 @@
   padding: 0.563em;
   margin-left: 0.625em;
   transition: border-color 300ms ease-out;
-  -webkit-transition: border-color 300ms ease-out;
-  -moz-transition: border-color 300ms ease-out;
-  -o-transition: border-color 300ms ease-out;
 }
 .rs-button-wrap {
   margin-top: 10px;
@@ -43,9 +40,6 @@
   width: 100%;
   text-align: left;
   transition: box-shadow 200ms;
-  -webkit-trasition: box-shadow 200ms;
-  -moz-transition: box-shadow 200ms;
-  -o-transition: box-shadow 200ms;
 }
 .rs-button-big > div {
   font-size: 1.125em;
@@ -64,9 +58,6 @@
 .rs-icon {
   fill: #999;
   transition: fill 300ms ease-out;
-  -webkit-transition: fill 300ms ease-out;
-  -moz-transition: fill 300ms ease-out;
-  -o-transition: fill 300ms ease-out;
 }
 
 
@@ -87,9 +78,6 @@
   overflow: hidden;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
   transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
-  -webkit-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
-  -moz-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
-  -o-transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
 }
 
 
@@ -100,9 +88,6 @@
   box-shadow: none;
   opacity: 0.5;
   transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
-  -webkit-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
-  -moz-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
-  -o-transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
 }
 .rs-hide:hover {
   cursor: pointer;
@@ -133,13 +118,7 @@
   float: left;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out;
-  -webkit-transition: margin-left 300ms ease-out;
-  -moz-transition: margin-left 300ms ease-out;
-  -o-transition: margin-left 300ms ease-out;
   transition-delay: 300ms;
-  -webkit-transition-delay: 300ms;
-  -moz-transition-delay: 300ms;
-  -o-transition-delay: 300ms;
 }
 
 
@@ -149,13 +128,7 @@
   text-align: center;
   overflow: hidden;
   transition: height 300ms ease-out;
-  -webkit-transition: height 300ms ease-out;
-  -moz-transition: height 300ms ease-out;
-  -o-transition: height 300ms ease-out;
   transition-delay: 0ms;
-  -webkit-transition-delay: 0ms;
-  -moz-transition-delay: 0ms;
-  -o-transition-delay: 0ms;
 }
 .rs-box-choose-content {
   padding: 0 10px 10px 10px;
@@ -171,19 +144,13 @@
 .rs-state-choose .rs-main-logo {
   margin-left: 45%;
   transition-delay: 0ms;
-  -webkit-transition-delay: 0ms;
-  -moz-transition-delay: 0ms;
-  -o-transition-delay: 0ms;
 }
-.rs-box-choose .rs-logo {
+.rs-box-choose img {
   float: left;
   margin-right: 0.625em;
 }
 .rs-state-choose .rs-box-choose {
   transition-delay: 300ms;
-  -webkit-transition-delay: 300ms;
-  -moz-transition-delay: 300ms;
-  -o-transition-delay: 300ms;
 }
 
 
@@ -193,9 +160,6 @@
   height: 0;
   overflow: hidden;
   transition: height 300ms ease-out;
-  -webkit-transition: height 300ms ease-out;
-  -moz-transition: height 300ms ease-out;
-  -o-transition: height 300ms ease-out;
 }
 .rs-sign-in-content {
   padding: 0 10px 10px 10px;
@@ -224,9 +188,6 @@
   font: inherit;
   color: #fff;
   transition: box-shadow 200ms, background-color 200ms;
-  -webkit-trasition: box-shadow 200ms, background-color 200ms;
-  -moz-transition: box-shadow 200ms, background-color 200ms;
-  -o-transition: box-shadow 200ms, background-color 200ms;
 }
 .rs-submit:hover {
   cursor: pointer;
@@ -271,13 +232,9 @@
 }
 .rs-sync.rs-rotate .rs-icon {
   fill: #FFBB0C;
-  -webkit-animation: rs-spin 1s linear infinite;
-  -moz-animation: rs-spin 1s linear infinite;
   animation: rs-spin 1s linear infinite;
 }
-@-moz-keyframes rs-spin { 100% { -moz-transform: rotate(360deg); transform:rotate(360deg);} }
-@-webkit-keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
-@keyframes rs-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@keyframes rs-spin { 100% { transform: rotate(360deg); transform:rotate(360deg); } }
 
 
 /* Floating widget styles*/
@@ -302,9 +259,6 @@
     font-size: 100%;
     padding: 10px;
     transition: all 300ms ease-out;
-    -webkit-transition: all 300ms ease-out;
-    -moz-transition: all 300ms ease-out;
-    -o-transition: all 300ms ease-out;
   }
   .rs-floating {
     position: relative;
