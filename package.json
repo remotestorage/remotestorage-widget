@@ -9,7 +9,7 @@
     "prebuild": "npm run clean -s",
     "build": "npm run build:scripts -s && npm run build:styles -s && npm run build:assets -s",
     "build:scripts": "babel src/widget.js > build/widget.js",
-    "build:styles": "cp src/*.css build/",
+    "build:styles": "cp src/widget.css src/assets/styles.css",
     "build:assets": "node compile-assets.js src/assets/ build/assets.js",
     "clean": "rm -rf build/*",
     "test": "echo \"Error: no test specified\" && exit 1"

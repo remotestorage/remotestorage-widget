@@ -39,12 +39,12 @@ RemoteStorageWidget.prototype = {
     var elementId = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
     var element = document.createElement('div');
-    // let style = document.createElement('style');
-    // style.innerHTML = RemoteStorage.Assets.widgetCss;
+    var style = document.createElement('style');
+    style.innerHTML = RemoteStorage.Assets.styles;
 
     element.id = "remotestorage-widget";
     element.innerHTML = RemoteStorage.Assets.widget;
-    // element.appendChild(style);
+    element.appendChild(style);
 
     if (elementId) {
       var _parent = document.getElementById(elementId);
