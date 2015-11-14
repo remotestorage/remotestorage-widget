@@ -1,7 +1,11 @@
 "use strict";
 
 var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
   this.rs = remoteStorage;
+
+  this.insertHtmlTemplate(options.domID);
 
   console.debug("Initializing widget for ", this.rs);
 
@@ -161,8 +165,33 @@ var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
   }
 };
 
-RemoteStorage.prototype.displayWidget = function (elementId) {
-  console.debug('Creating widget on element with ID', elementId);
-  this.widget = new RemoteStorageWidget(this);
+RemoteStorageWidget.prototype = {
+
+  insertHtmlTemplate: function insertHtmlTemplate() {
+    var elementId = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+
+    var element = document.createElement('div');
+    // let style = document.createElement('style');
+    // style.innerHTML = RemoteStorage.Assets.widgetCss;
+
+    element.id = "remotestorage-widget";
+    element.innerHTML = RemoteStorage.Assets.widget;
+    // element.appendChild(style);
+
+    if (elementId) {
+      var _parent = document.getElementById(elementId);
+      if (!_parent) {
+        throw "Failed to find target DOM element with id=\"" + elementId + "\"";
+      }
+      _parent.appendChild(element);
+    } else {
+      document.body.appendChild(element);
+    }
+  }
+
+};
+
+RemoteStorage.prototype.displayWidget = function (options) {
+  this.widget = new RemoteStorageWidget(this, options);
 };
 

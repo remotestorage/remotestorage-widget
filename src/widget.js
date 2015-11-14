@@ -1,5 +1,7 @@
-let RemoteStorageWidget = function(remoteStorage) {
+let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
+
+  this.insertHtmlTemplate(options.domID);
 
   console.debug("Initializing widget for ", this.rs);
 
@@ -158,7 +160,30 @@ let RemoteStorageWidget = function(remoteStorage) {
   }
 };
 
-RemoteStorage.prototype.displayWidget = function(elementId) {
-  console.debug('Creating widget on element with ID', elementId);
-  this.widget = new RemoteStorageWidget(this);
+RemoteStorageWidget.prototype = {
+
+  insertHtmlTemplate(elementId=null) {
+    let element = document.createElement('div');
+    // let style = document.createElement('style');
+    // style.innerHTML = RemoteStorage.Assets.widgetCss;
+
+    element.id = "remotestorage-widget";
+    element.innerHTML = RemoteStorage.Assets.widget;
+    // element.appendChild(style);
+
+    if (elementId) {
+      let parent = document.getElementById(elementId);
+      if (!parent) {
+        throw "Failed to find target DOM element with id=\"" + elementId + "\"";
+      }
+      parent.appendChild(element);
+    } else {
+      document.body.appendChild(element);
+    }
+  }
+
+};
+
+RemoteStorage.prototype.displayWidget = function(options) {
+  this.widget = new RemoteStorageWidget(this, options);
 };
