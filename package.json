@@ -1,12 +1,17 @@
 {
   "name": "remotestorage-widget",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "remoteStorage.js connect widget",
   "main": "index.js",
   "scripts": {
     "start": "npm run app -s",
-    "app": "http-server -p 8000 app/",
-    "compile:assets": "node compile-assets.js assets/ build/assets.js",
+    "app": "http-server -p 8008",
+    "prebuild": "npm run clean -s",
+    "build": "npm run build:scripts -s && npm run build:styles -s && npm run build:assets -s",
+    "build:scripts": "babel src/widget.js > build/widget.js",
+    "build:styles": "cp src/*.css build/",
+    "build:assets": "node compile-assets.js src/assets/ build/assets.js",
+    "clean": "rm -rf build/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
