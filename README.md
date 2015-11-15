@@ -6,12 +6,6 @@ Install deps:
 
     npm install
 
-Build:
+Build, run, watch and open test app:
 
-    npm run build
-
-Run server for local test app:
-
-    npm start
-
-Open http://localhost:8008
+    npm run dev

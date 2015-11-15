@@ -17,8 +17,9 @@
     "watch:build": "parallelshell 'npm run watch:scripts -s' 'npm run watch:assets -s'",
     "watch:scripts": "nodemon -q -w src/ --ext 'js' --exec 'npm run build:scripts'",
     "watch:assets": "nodemon -q -w src/assets/ --ext 'css,html,svg,png' --exec 'npm run build:assets'",
+    "live-reload": "live-reload --port 9091 build/",
     "open:dev": "opener http://localhost:8008",
-    "dev": "npm run open:dev -s | parallelshell 'npm run watch -s' 'npm run app -s'"
+    "dev": "npm run open:dev -s | parallelshell 'npm run live-reload -s' 'npm run app -s' 'npm run watch -s'"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "babel": "^5.6.14",
     "http-server": "^0.8.5",
+    "live-reload": "^1.1.0",
     "nodemon": "^1.8.1",
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
