@@ -1,3 +1,9 @@
+/**
+ * RemoteStorage connect widget
+ * @constructor
+ * @param {object} remoteStorage - remoteStorage instance
+ * @param {object} options - Widget options (domID, ...)
+ */
 "use strict";
 
 var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {

@@ -7,12 +7,16 @@
     "start": "npm run app -s",
     "app": "http-server -p 8008",
     "prebuild": "npm run clean -s",
-    "build": "npm run build:scripts -s && npm run build:styles -s && npm run build:assets -s",
+    "build": "npm run build:scripts -s && npm run build:assets -s",
     "build:scripts": "babel src/widget.js > build/widget.js",
-    "build:styles": "cp src/widget.css src/assets/styles.css",
-    "build:assets": "node compile-assets.js src/assets/ build/assets.js",
+    "build:assets": "npm run copy:assets && node compile-assets.js tmp/assets/ build/assets.js",
+    "copy:assets": "rimraf tmp/assets && mkdir -p tmp/assets && cp src/assets/* tmp/assets/",
     "clean": "rimraf build/*",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prewatch": "npm run clean -s",
+    "watch": " npm run watch:build",
+    "watch:build": "parallelshell 'npm run watch:scripts -s' 'npm run watch:assets -s'",
+    "watch:scripts": "nodemon -q -w src/ --ext 'js' --exec 'npm run build:scripts'",
+    "watch:assets": "nodemon -q -w src/assets/ --ext 'css,html,svg,png' --exec 'npm run build:assets'"
   },
   "repository": {
     "type": "git",
@@ -30,6 +34,8 @@
   "devDependencies": {
     "babel": "^5.6.14",
     "http-server": "^0.8.5",
+    "nodemon": "^1.8.1",
+    "parallelshell": "^2.0.0",
     "remotestoragejs": "0.12.1",
     "rimraf": "^2.4.3"
   }
