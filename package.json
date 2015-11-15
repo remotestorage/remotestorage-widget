@@ -11,7 +11,7 @@
     "build:scripts": "babel src/widget.js > build/widget.js",
     "build:styles": "cp src/widget.css src/assets/styles.css",
     "build:assets": "node compile-assets.js src/assets/ build/assets.js",
-    "clean": "rm -rf build/*",
+    "clean": "rimraf build/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,6 +30,7 @@
   "devDependencies": {
     "babel": "^5.6.14",
     "http-server": "^0.8.5",
-    "remotestoragejs": "0.12.1"
+    "remotestoragejs": "0.12.1",
+    "rimraf": "^2.4.3"
   }
 }
