@@ -134,11 +134,7 @@ RemoteStorageWidget.prototype = {
     // Close button
     self.rsCloseButton.addEventListener("click", function() {
       console.log("clicked close button");
-      self.rsWidget.classList.remove("rs-state-sign-in");
-      self.rsWidget.classList.remove("rs-state-choose");
-      self.delayFadeIn(self.rsInitial, 300);
-      self.signInBox.setAttribute("style", "height: 0;");
-      self.chooseBox.setAttribute("style", "height: 0;");
+      self.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
@@ -147,6 +143,8 @@ RemoteStorageWidget.prototype = {
       if (self.rsWidget.classList.contains("rs-state-connected")) {
         self.rsWidget.classList.toggle("rs-hide", true);
         self.fadeOut(self.rsConnected);
+      } else {
+        self.closeWidget();
       }
     });
 
@@ -162,6 +160,14 @@ RemoteStorageWidget.prototype = {
         self.delayFadeIn(self.rsConnected, 300);
       }
     });
+  },
+
+  closeWidget() {
+    this.rsWidget.classList.remove("rs-state-sign-in");
+    this.rsWidget.classList.remove("rs-state-choose");
+    this.delayFadeIn(this.rsInitial, 300);
+    this.signInBox.setAttribute("style", "height: 0;");
+    this.chooseBox.setAttribute("style", "height: 0;");
   },
 
   // To delay fadeIn until other animations are finished
