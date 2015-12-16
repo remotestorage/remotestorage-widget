@@ -169,14 +169,14 @@
 .rs-state-sign-in .rs-main-logo {
   margin-left: 45%;
 }
-.rs-input {
+.rs-sign-in-form input[type=text] {
   padding: 15px 10px;
   display: block;
   width: 100%;
   font: inherit;
   margin-bottom: 20px;
 }
-.rs-submit {
+.rs-sign-in-form input[type=submit] {
   padding: 15px 10px;
   margin-bottom: 15px;
   display: block;
@@ -188,12 +188,12 @@
   color: #fff;
   transition: box-shadow 200ms, background-color 200ms;
 }
-.rs-submit:hover {
+.rs-sign-in-form input[type=submit]:hover {
   cursor: pointer;
   background-color: #4BCB5D;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
-.rs-submit:active {
+.rs-sign-in-form input[type=submit]:active {
 	background-color: #3fb34f;
 }
 

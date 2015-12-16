@@ -12,26 +12,28 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 
   // CSS can't animate to unknown height (as in height: auto)
   // so we need to store the height, set it to 0 and use it when we want the animation
-  this.chooseBox = document.getElementsByClassName("rs-box-choose")[0];
+  this.chooseBox = document.querySelector('.rs-box-choose');
   this.chooseBoxHeight = this.chooseBox.clientHeight;
   // Set the height to zero until the initial button is clicked
   this.chooseBox.setAttribute("style", "height: 0");
 
-  this.signInBox = document.getElementsByClassName("rs-box-sign-in")[0];
-  this.signInContent = document.getElementsByClassName("rs-sign-in-content")[0];
+  this.signInBox = document.querySelector('.rs-box-sign-in');
+  this.signInContent = document.querySelector('.rs-sign-in-content');
   this.signInContentHeight = this.signInContent.clientHeight;
 
-  this.rsWidget = document.getElementById("rs-widget");
-  this.rsLogo = document.getElementsByClassName("rs-main-logo")[0];
-  this.rsCloseButton = document.getElementsByClassName("rs-close")[0];
-  this.rsInitial = document.getElementsByClassName("rs-box-initial")[0];
-  this.rsChooseButton = document.getElementsByClassName("rs-button-big");
-  this.rsDisconnectButton = document.getElementsByClassName("rs-disconnect")[0];
-  this.rsSyncButton = document.getElementsByClassName("rs-sync")[0];
-  this.rsSignInButton = document.getElementsByClassName("rs-submit")[0];
-  this.rsConnected = document.getElementsByClassName("rs-box-connected")[0];
+  this.rsWidget = document.querySelector('#rs-widget');
+  this.rsLogo = document.querySelector('.rs-main-logo');
+  this.rsCloseButton = document.querySelector('.rs-close');
+  this.rsInitial = document.querySelector('.rs-box-initial');
+  this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
+  this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
+  this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
+  this.rsDisconnectButton = document.querySelector('.rs-disconnect');
+  this.rsSyncButton = document.querySelector('.rs-sync');
+  this.rsConnected = document.querySelector('.rs-box-connected');
 
   this.setAssetUrls();
+  this.setEventListeners();
   this.setClickHandlers();
 };
 
@@ -60,11 +62,19 @@ RemoteStorageWidget.prototype = {
   setAssetUrls() {
     this.rsCloseButton.src = RemoteStorage.Assets.close;
     this.rsLogo.src = RemoteStorage.Assets.remoteStorage;
-    document.getElementsByClassName('rs-logo')[0].src = RemoteStorage.Assets.remoteStorage;
-    document.getElementsByClassName('dropbox-logo')[0].src = RemoteStorage.Assets.dropbox;
-    document.getElementsByClassName('gdrive-logo')[0].src = RemoteStorage.Assets.gdrive;
-    document.getElementsByClassName('rs-power-icon')[0].src = RemoteStorage.Assets.power;
-    document.getElementsByClassName('rs-loop-icon')[0].src = RemoteStorage.Assets.loop;
+    document.querySelector('.rs-logo').src = RemoteStorage.Assets.remoteStorage;
+    document.querySelector('.dropbox-logo').src = RemoteStorage.Assets.dropbox;
+    document.querySelector('.gdrive-logo').src = RemoteStorage.Assets.gdrive;
+    document.querySelector('.rs-power-icon').src = RemoteStorage.Assets.power;
+    document.querySelector('.rs-loop-icon').src = RemoteStorage.Assets.loop;
+  },
+
+  setEventListeners() {
+    // Sign-in form
+    let rsSignInForm = document.querySelector('.rs-sign-in-form');
+    rsSignInForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+    });
   },
 
   setClickHandlers() {
@@ -81,7 +91,7 @@ RemoteStorageWidget.prototype = {
     });
 
     // Choose RS button
-    self.rsChooseButton[0].addEventListener("click", function() {
+    self.rsChooseRemoteStorageButton.addEventListener("click", function() {
       console.log("clicked RS button");
       self.rsWidget.classList.remove("rs-state-choose");
       self.rsWidget.classList.add("rs-state-sign-in");
@@ -90,16 +100,8 @@ RemoteStorageWidget.prototype = {
       self.signInContent.setAttribute("style", "padding-top: " + ((self.chooseBoxHeight - self.signInContentHeight) / 2) + "px"); // Center it
     });
 
-    // Sign in button
-    self.rsSignInButton.addEventListener("click", function() {
-      self.rsWidget.classList.remove("rs-state-sign-in");
-      self.rsWidget.classList.add("rs-state-connected");
-      self.delayFadeIn(self.rsConnected, 600);
-      self.signInBox.setAttribute("style", "height: 0;");
-    });
-
     // Choose Dropbox button
-    self.rsChooseButton[1].addEventListener("click", function() {
+    self.rsChooseDropboxButton.addEventListener("click", function() {
       console.log("clicked Dropbox button");
       self.rsWidget.classList.remove("rs-state-choose");
       self.rsWidget.classList.add("rs-state-connected");
@@ -108,7 +110,7 @@ RemoteStorageWidget.prototype = {
     });
 
     // Choose Google drive button
-    self.rsChooseButton[2].addEventListener("click", function() {
+    self.rsChooseGoogleDriveButton.addEventListener("click", function() {
       console.log("clicked Google drive Button");
       self.rsWidget.classList.remove("rs-state-choose");
       self.rsWidget.classList.add("rs-state-connected");
