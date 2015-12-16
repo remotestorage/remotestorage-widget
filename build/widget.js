@@ -84,88 +84,88 @@ RemoteStorageWidget.prototype = {
   },
 
   setClickHandlers: function setClickHandlers() {
-    var self = this;
+    var _this = this;
 
     // Initial button
-    self.rsInitial.addEventListener("click", function () {
+    this.rsInitial.addEventListener('click', function () {
       console.log("clicked initial button");
-      self.rsWidget.classList.remove("rs-state-initial");
-      self.rsWidget.classList.add("rs-state-choose");
-      self.fadeOut(this);
+      _this.rsWidget.classList.remove("rs-state-initial");
+      _this.rsWidget.classList.add("rs-state-choose");
+      _this.fadeOut(_this.rsInitial);
       // Set height of the ChooseBox back to original height.
-      self.chooseBox.setAttribute("style", "height: " + self.chooseBoxHeight);
+      _this.chooseBox.setAttribute("style", "height: " + _this.chooseBoxHeight);
     });
 
     // Choose RS button
-    self.rsChooseRemoteStorageButton.addEventListener("click", function () {
+    this.rsChooseRemoteStorageButton.addEventListener('click', function () {
       console.log("clicked RS button");
-      self.rsWidget.classList.remove("rs-state-choose");
-      self.rsWidget.classList.add("rs-state-sign-in");
-      self.chooseBox.setAttribute("style", "height: 0");
-      self.signInBox.setAttribute("style", "height: " + self.chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
-      self.signInContent.setAttribute("style", "padding-top: " + (self.chooseBoxHeight - self.signInContentHeight) / 2 + "px"); // Center it
+      _this.rsWidget.classList.remove("rs-state-choose");
+      _this.rsWidget.classList.add("rs-state-sign-in");
+      _this.chooseBox.setAttribute("style", "height: 0");
+      _this.signInBox.setAttribute("style", "height: " + _this.chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
+      _this.signInContent.setAttribute("style", "padding-top: " + (_this.chooseBoxHeight - _this.signInContentHeight) / 2 + "px"); // Center it
     });
 
     // Choose Dropbox button
-    self.rsChooseDropboxButton.addEventListener("click", function () {
+    this.rsChooseDropboxButton.addEventListener('click', function () {
       console.log("clicked Dropbox button");
-      self.rsWidget.classList.remove("rs-state-choose");
-      self.rsWidget.classList.add("rs-state-connected");
-      self.chooseBox.setAttribute("style", "height: 0");
-      self.delayFadeIn(self.rsConnected, 600);
+      _this.rsWidget.classList.remove("rs-state-choose");
+      _this.rsWidget.classList.add("rs-state-connected");
+      _this.chooseBox.setAttribute("style", "height: 0");
+      _this.delayFadeIn(_this.rsConnected, 600);
     });
 
     // Choose Google drive button
-    self.rsChooseGoogleDriveButton.addEventListener("click", function () {
+    this.rsChooseGoogleDriveButton.addEventListener('click', function () {
       console.log("clicked Google drive Button");
-      self.rsWidget.classList.remove("rs-state-choose");
-      self.rsWidget.classList.add("rs-state-connected");
-      self.chooseBox.setAttribute("style", "height: 0");
-      self.delayFadeIn(self.rsConnected, 600);
+      _this.rsWidget.classList.remove("rs-state-choose");
+      _this.rsWidget.classList.add("rs-state-connected");
+      _this.chooseBox.setAttribute("style", "height: 0");
+      _this.delayFadeIn(_this.rsConnected, 600);
     });
 
     // Disconnect button
-    self.rsDisconnectButton.addEventListener("click", function () {
+    this.rsDisconnectButton.addEventListener('click', function () {
       console.log("clicked disconnect button");
-      self.rsWidget.classList.remove("rs-state-connected");
-      self.rsWidget.classList.add("rs-state-initial");
-      self.fadeOut(self.rsConnected);
-      self.delayFadeIn(self.rsInitial, 300);
+      _this.rsWidget.classList.remove("rs-state-connected");
+      _this.rsWidget.classList.add("rs-state-initial");
+      _this.fadeOut(_this.rsConnected);
+      _this.delayFadeIn(_this.rsInitial, 300);
     });
 
     // Sync button
-    self.rsSyncButton.addEventListener("click", function () {
+    this.rsSyncButton.addEventListener('click', function () {
       console.log("clicked sync button");
-      self.rsSyncButton.classList.toggle("rs-rotate");
+      _this.rsSyncButton.classList.toggle("rs-rotate");
     });
 
     // Close button
-    self.rsCloseButton.addEventListener("click", function () {
+    this.rsCloseButton.addEventListener('click', function () {
       console.log("clicked close button");
-      self.closeWidget();
+      _this.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
-    document.addEventListener("click", function () {
+    document.addEventListener('click', function () {
       console.log("clicked outside of widget");
-      if (self.rsWidget.classList.contains("rs-state-connected")) {
-        self.rsWidget.classList.toggle("rs-hide", true);
-        self.fadeOut(self.rsConnected);
+      if (_this.rsWidget.classList.contains("rs-state-connected")) {
+        _this.rsWidget.classList.toggle("rs-hide", true);
+        _this.fadeOut(_this.rsConnected);
       } else {
-        self.closeWidget();
+        _this.closeWidget();
       }
     });
 
-    // Stop clicks on the widget itself from triggering the above event
-    self.rsWidget.addEventListener("click", function (e) {
+    // Stop clicks on the widget itthis from triggering the above event
+    this.rsWidget.addEventListener('click', function (e) {
       e.stopPropagation();
     });
 
     // Click on the logo to bring the full widget back
-    self.rsLogo.addEventListener("click", function () {
-      if (self.rsWidget.classList.contains("rs-state-connected")) {
-        self.rsWidget.classList.toggle("rs-hide", false);
-        self.delayFadeIn(self.rsConnected, 300);
+    this.rsLogo.addEventListener('click', function () {
+      if (_this.rsWidget.classList.contains("rs-state-connected")) {
+        _this.rsWidget.classList.toggle("rs-hide", false);
+        _this.delayFadeIn(_this.rsConnected, 300);
       }
     });
   },
@@ -180,10 +180,10 @@ RemoteStorageWidget.prototype = {
 
   // To delay fadeIn until other animations are finished
   delayFadeIn: function delayFadeIn(element, delayTime) {
-    var _this = this;
+    var _this2 = this;
 
     setTimeout(function () {
-      _this.fadeIn(element);
+      _this2.fadeIn(element);
     }, delayTime);
   },
 
