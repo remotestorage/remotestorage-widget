@@ -16,6 +16,11 @@
   font-weight: normal;
   display: inline-block;
 }
+.rs-short-desc {
+}
+.rs-choose-backend {
+  font-weight: bold;
+}
 .rs-button {
   font: inherit;
   color: inherit;
@@ -34,7 +39,7 @@
 }
 .rs-button-big {
   padding: 15px 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: block;
   width: 100%;
   text-align: left;
