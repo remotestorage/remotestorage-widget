@@ -1,11 +1,11 @@
+"use strict";
+
 /**
  * RemoteStorage connect widget
  * @constructor
  * @param {object} remoteStorage - remoteStorage instance
  * @param {object} options - Widget options (domID, ...)
  */
-"use strict";
-
 var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
   var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
@@ -42,7 +42,6 @@ var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
 };
 
 RemoteStorageWidget.prototype = {
-
   insertHtmlTemplate: function insertHtmlTemplate() {
     var elementId = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
@@ -55,16 +54,15 @@ RemoteStorageWidget.prototype = {
     element.appendChild(style);
 
     if (elementId) {
-      var _parent = document.getElementById(elementId);
-      if (!_parent) {
+      var parent = document.getElementById(elementId);
+      if (!parent) {
         throw "Failed to find target DOM element with id=\"" + elementId + "\"";
       }
-      _parent.appendChild(element);
+      parent.appendChild(element);
     } else {
       document.body.appendChild(element);
     }
   },
-
   setAssetUrls: function setAssetUrls() {
     this.rsCloseButton.src = RemoteStorage.Assets.close;
     this.rsLogo.src = RemoteStorage.Assets.remoteStorage;
@@ -74,7 +72,6 @@ RemoteStorageWidget.prototype = {
     document.querySelector('.rs-power-icon').src = RemoteStorage.Assets.power;
     document.querySelector('.rs-loop-icon').src = RemoteStorage.Assets.loop;
   },
-
   setEventListeners: function setEventListeners() {
     // Sign-in form
     var rsSignInForm = document.querySelector('.rs-sign-in-form');
@@ -82,7 +79,6 @@ RemoteStorageWidget.prototype = {
       e.preventDefault();
     });
   },
-
   setClickHandlers: function setClickHandlers() {
     var _this = this;
 
@@ -169,7 +165,6 @@ RemoteStorageWidget.prototype = {
       }
     });
   },
-
   closeWidget: function closeWidget() {
     this.rsWidget.classList.remove("rs-state-sign-in");
     this.rsWidget.classList.remove("rs-state-choose");
@@ -177,6 +172,7 @@ RemoteStorageWidget.prototype = {
     this.signInBox.setAttribute("style", "height: 0;");
     this.chooseBox.setAttribute("style", "height: 0;");
   },
+
 
   // To delay fadeIn until other animations are finished
   delayFadeIn: function delayFadeIn(element, delayTime) {
@@ -186,6 +182,7 @@ RemoteStorageWidget.prototype = {
       _this2.fadeIn(element);
     }, delayTime);
   },
+
 
   // CSS can't fade elements in and out of the page flow so we have to do it in JS
   fadeOut: function fadeOut(element) {
@@ -200,7 +197,6 @@ RemoteStorageWidget.prototype = {
       op -= op * 0.1;
     }, 3);
   },
-
   fadeIn: function fadeIn(element) {
     var op = 0.1; // initial opacity
     element.style.display = "block";
