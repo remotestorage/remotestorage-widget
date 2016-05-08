@@ -8,6 +8,13 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
   console.debug("Initializing widget for ", this.rs);
 
+  // RemoteStorage.eventHandling(this,
+  //   'connect', 'disconnect', 'sync', 'reset'
+  // );
+  // for (var event in this.events){
+  //   this.events[event] = this.events[event].bind(this);
+  // }
+
   this.insertHtmlTemplate(options.domID);
 
   // CSS can't animate to unknown height (as in height: auto)
@@ -100,20 +107,22 @@ RemoteStorageWidget.prototype = {
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => {
-      console.log("clicked Dropbox button");
-      this.rsWidget.classList.remove("rs-state-choose");
-      this.rsWidget.classList.add("rs-state-connected");
-      this.chooseBox.setAttribute("style", "height: 0");
-      this.delayFadeIn(this.rsConnected, 600);
+      console.log("clicked Dropbox button", this.rs);
+      this.rs["dropbox"].connect();
+      // this.rsWidget.classList.remove("rs-state-choose");
+      // this.rsWidget.classList.add("rs-state-connected");
+      // this.chooseBox.setAttribute("style", "height: 0");
+      // this.delayFadeIn(this.rsConnected, 600);
     });
 
     // Choose Google drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', () => {
       console.log("clicked Google drive Button");
-      this.rsWidget.classList.remove("rs-state-choose");
-      this.rsWidget.classList.add("rs-state-connected");
-      this.chooseBox.setAttribute("style", "height: 0");
-      this.delayFadeIn(this.rsConnected, 600);
+      this.rs["googledrive"].connect();
+      // this.rsWidget.classList.remove("rs-state-choose");
+      // this.rsWidget.classList.add("rs-state-connected");
+      // this.chooseBox.setAttribute("style", "height: 0");
+      // this.delayFadeIn(this.rsConnected, 600);
     });
 
     // Disconnect button
