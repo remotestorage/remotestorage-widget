@@ -178,7 +178,8 @@ RemoteStorageWidget.prototype = {
   },
 
   // CSS can't fade elements in and out of the page flow so we have to do it in JS
-  fadeOut(element) { let op = 1;  // initial opacity
+  fadeOut(element) {
+    let op = 1;  // initial opacity
     let timer = setInterval(function () {
       if (op <= 0.1){
         clearInterval(timer);
