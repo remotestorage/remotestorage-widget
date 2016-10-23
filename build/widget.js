@@ -7,10 +7,17 @@
  * @param {object} options - Widget options (domID, ...)
  */
 var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
-  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   this.rs = remoteStorage;
   console.debug("Initializing widget for ", this.rs);
+
+  // RemoteStorage.eventHandling(this,
+  //   'connect', 'disconnect', 'sync', 'reset'
+  // );
+  // for (var event in this.events){
+  //   this.events[event] = this.events[event].bind(this);
+  // }
 
   this.insertHtmlTemplate(options.domID);
 
@@ -43,7 +50,7 @@ var RemoteStorageWidget = function RemoteStorageWidget(remoteStorage) {
 
 RemoteStorageWidget.prototype = {
   insertHtmlTemplate: function insertHtmlTemplate() {
-    var elementId = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+    var elementId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
     var element = document.createElement('div');
     var style = document.createElement('style');
@@ -73,82 +80,88 @@ RemoteStorageWidget.prototype = {
     document.querySelector('.rs-loop-icon').src = RemoteStorage.Assets.loop;
   },
   setEventListeners: function setEventListeners() {
+    var _this = this;
+
     // Sign-in form
     var rsSignInForm = document.querySelector('.rs-sign-in-form');
     rsSignInForm.addEventListener('submit', function (e) {
       e.preventDefault();
+      var userAddress = document.querySelector('input[name=rs-user-address]').value;
+      _this.rs.connect(userAddress);
     });
   },
   setClickHandlers: function setClickHandlers() {
-    var _this = this;
+    var _this2 = this;
 
     // Initial button
     this.rsInitial.addEventListener('click', function () {
       console.log("clicked initial button");
-      _this.rsWidget.classList.remove("rs-state-initial");
-      _this.rsWidget.classList.add("rs-state-choose");
-      _this.fadeOut(_this.rsInitial);
+      _this2.rsWidget.classList.remove("rs-state-initial");
+      _this2.rsWidget.classList.add("rs-state-choose");
+      _this2.fadeOut(_this2.rsInitial);
       // Set height of the ChooseBox back to original height.
-      _this.chooseBox.setAttribute("style", "height: " + _this.chooseBoxHeight);
+      _this2.chooseBox.setAttribute("style", "height: " + _this2.chooseBoxHeight);
     });
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', function () {
       console.log("clicked RS button");
-      _this.rsWidget.classList.remove("rs-state-choose");
-      _this.rsWidget.classList.add("rs-state-sign-in");
-      _this.chooseBox.setAttribute("style", "height: 0");
-      _this.signInBox.setAttribute("style", "height: " + _this.chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
-      _this.signInContent.setAttribute("style", "padding-top: " + (_this.chooseBoxHeight - _this.signInContentHeight) / 2 + "px"); // Center it
+      _this2.rsWidget.classList.remove("rs-state-choose");
+      _this2.rsWidget.classList.add("rs-state-sign-in");
+      _this2.chooseBox.setAttribute("style", "height: 0");
+      _this2.signInBox.setAttribute("style", "height: " + _this2.chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
+      _this2.signInContent.setAttribute("style", "padding-top: " + (_this2.chooseBoxHeight - _this2.signInContentHeight) / 2 + "px"); // Center it
     });
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', function () {
-      console.log("clicked Dropbox button");
-      _this.rsWidget.classList.remove("rs-state-choose");
-      _this.rsWidget.classList.add("rs-state-connected");
-      _this.chooseBox.setAttribute("style", "height: 0");
-      _this.delayFadeIn(_this.rsConnected, 600);
+      console.log("clicked Dropbox button", _this2.rs);
+      _this2.rs["dropbox"].connect();
+      // this.rsWidget.classList.remove("rs-state-choose");
+      // this.rsWidget.classList.add("rs-state-connected");
+      // this.chooseBox.setAttribute("style", "height: 0");
+      // this.delayFadeIn(this.rsConnected, 600);
     });
 
     // Choose Google drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', function () {
       console.log("clicked Google drive Button");
-      _this.rsWidget.classList.remove("rs-state-choose");
-      _this.rsWidget.classList.add("rs-state-connected");
-      _this.chooseBox.setAttribute("style", "height: 0");
-      _this.delayFadeIn(_this.rsConnected, 600);
+      _this2.rs["googledrive"].connect();
+      // this.rsWidget.classList.remove("rs-state-choose");
+      // this.rsWidget.classList.add("rs-state-connected");
+      // this.chooseBox.setAttribute("style", "height: 0");
+      // this.delayFadeIn(this.rsConnected, 600);
     });
 
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', function () {
       console.log("clicked disconnect button");
-      _this.rsWidget.classList.remove("rs-state-connected");
-      _this.rsWidget.classList.add("rs-state-initial");
-      _this.fadeOut(_this.rsConnected);
-      _this.delayFadeIn(_this.rsInitial, 300);
+      _this2.rsWidget.classList.remove("rs-state-connected");
+      _this2.rsWidget.classList.add("rs-state-initial");
+      _this2.fadeOut(_this2.rsConnected);
+      _this2.delayFadeIn(_this2.rsInitial, 300);
     });
 
     // Sync button
     this.rsSyncButton.addEventListener('click', function () {
       console.log("clicked sync button");
-      _this.rsSyncButton.classList.toggle("rs-rotate");
+      _this2.rsSyncButton.classList.toggle("rs-rotate");
     });
 
     // Close button
     this.rsCloseButton.addEventListener('click', function () {
       console.log("clicked close button");
-      _this.closeWidget();
+      _this2.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', function () {
       console.log("clicked outside of widget");
-      if (_this.rsWidget.classList.contains("rs-state-connected")) {
-        _this.rsWidget.classList.toggle("rs-hide", true);
-        _this.fadeOut(_this.rsConnected);
+      if (_this2.rsWidget.classList.contains("rs-state-connected")) {
+        _this2.rsWidget.classList.toggle("rs-hide", true);
+        _this2.fadeOut(_this2.rsConnected);
       } else {
-        _this.closeWidget();
+        _this2.closeWidget();
       }
     });
 
@@ -159,9 +172,9 @@ RemoteStorageWidget.prototype = {
 
     // Click on the logo to bring the full widget back
     this.rsLogo.addEventListener('click', function () {
-      if (_this.rsWidget.classList.contains("rs-state-connected")) {
-        _this.rsWidget.classList.toggle("rs-hide", false);
-        _this.delayFadeIn(_this.rsConnected, 300);
+      if (_this2.rsWidget.classList.contains("rs-state-connected")) {
+        _this2.rsWidget.classList.toggle("rs-hide", false);
+        _this2.delayFadeIn(_this2.rsConnected, 300);
       }
     });
   },
@@ -176,10 +189,10 @@ RemoteStorageWidget.prototype = {
 
   // To delay fadeIn until other animations are finished
   delayFadeIn: function delayFadeIn(element, delayTime) {
-    var _this2 = this;
+    var _this3 = this;
 
     setTimeout(function () {
-      _this2.fadeIn(element);
+      _this3.fadeIn(element);
     }, delayTime);
   },
 

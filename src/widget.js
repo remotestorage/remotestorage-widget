@@ -81,6 +81,8 @@ RemoteStorageWidget.prototype = {
     let rsSignInForm = document.querySelector('.rs-sign-in-form');
     rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      let userAddress = document.querySelector('input[name=rs-user-address]').value;
+      this.rs.connect(userAddress);
     });
   },
 
