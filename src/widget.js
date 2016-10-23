@@ -6,7 +6,6 @@
  */
 let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
-  console.debug("Initializing widget for ", this.rs);
 
   // RemoteStorage.eventHandling(this,
   //   'connect', 'disconnect', 'sync', 'reset'
@@ -38,6 +37,7 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsDisconnectButton = document.querySelector('.rs-disconnect');
   this.rsSyncButton = document.querySelector('.rs-sync');
   this.rsConnected = document.querySelector('.rs-box-connected');
+  this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
   this.setAssetUrls();
   this.setEventListeners();
@@ -84,12 +84,30 @@ RemoteStorageWidget.prototype = {
       let userAddress = document.querySelector('input[name=rs-user-address]').value;
       this.rs.connect(userAddress);
     });
+
+    //
+    // remoteStorage events
+    //
+    this.rs.on('connected', () => {
+      this.rsWidget.classList.remove("rs-state-choose");
+      this.rsWidget.classList.add("rs-state-connected");
+      this.fadeOut(this.rsInitial);
+      this.chooseBox.setAttribute("style", "height: 0");
+      this.rsConnectedUser.innerHTML = this.rs.remote.userAddress;
+      this.delayFadeIn(this.rsConnected, 600);
+    });
+
+    this.rs.on('disconnected', () => {
+      this.rsWidget.classList.remove("rs-state-connected");
+      this.rsWidget.classList.add("rs-state-initial");
+      this.fadeOut(this.rsConnected);
+      this.delayFadeIn(this.rsInitial, 300);
+    });
   },
 
   setClickHandlers() {
     // Initial button
     this.rsInitial.addEventListener('click', () => {
-      console.log("clicked initial button");
       this.rsWidget.classList.remove("rs-state-initial");
       this.rsWidget.classList.add("rs-state-choose");
       this.fadeOut(this.rsInitial);
@@ -99,7 +117,6 @@ RemoteStorageWidget.prototype = {
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', () => {
-      console.log("clicked RS button");
       this.rsWidget.classList.remove("rs-state-choose");
       this.rsWidget.classList.add("rs-state-sign-in");
       this.chooseBox.setAttribute("style", "height: 0");
@@ -109,7 +126,6 @@ RemoteStorageWidget.prototype = {
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => {
-      console.log("clicked Dropbox button", this.rs);
       this.rs["dropbox"].connect();
       // this.rsWidget.classList.remove("rs-state-choose");
       // this.rsWidget.classList.add("rs-state-connected");
@@ -119,7 +135,6 @@ RemoteStorageWidget.prototype = {
 
     // Choose Google drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', () => {
-      console.log("clicked Google drive Button");
       this.rs["googledrive"].connect();
       // this.rsWidget.classList.remove("rs-state-choose");
       // this.rsWidget.classList.add("rs-state-connected");
@@ -129,28 +144,21 @@ RemoteStorageWidget.prototype = {
 
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => {
-      console.log("clicked disconnect button");
-      this.rsWidget.classList.remove("rs-state-connected");
-      this.rsWidget.classList.add("rs-state-initial");
-      this.fadeOut(this.rsConnected);
-      this.delayFadeIn(this.rsInitial, 300);
+      this.rs.disconnect();
     });
 
     // Sync button
     this.rsSyncButton.addEventListener('click', () => {
-      console.log("clicked sync button");
       this.rsSyncButton.classList.toggle("rs-rotate");
     });
 
     // Close button
     this.rsCloseButton.addEventListener('click', () => {
-      console.log("clicked close button");
       this.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {
-      console.log("clicked outside of widget");
       if (this.rsWidget.classList.contains("rs-state-connected")) {
         this.rsWidget.classList.toggle("rs-hide", true);
         this.fadeOut(this.rsConnected);
