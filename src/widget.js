@@ -1,9 +1,11 @@
+const RemoteStorage = require('remotestoragejs');
 /**
  * RemoteStorage connect widget
  * @constructor
  * @param {object} remoteStorage - remoteStorage instance
  * @param {object} options - Widget options (domID, ...)
  */
+
 let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
 
