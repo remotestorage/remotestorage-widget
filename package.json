@@ -2,7 +2,7 @@
   "name": "remotestorage-widget",
   "version": "0.3.0",
   "description": "remoteStorage.js connect widget",
-  "main": "index.js",
+  "main": "build/widget.js",
   "scripts": {
     "start": "npm run app -s",
     "app": "http-server -p 8008",
