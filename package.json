@@ -42,8 +42,10 @@
     "nodemon": "^1.8.1",
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
-    "remotestoragejs": "0.12.1",
     "rimraf": "^2.4.3"
+  },
+  "peerDependencies": {
+    "remotestorage": "0.x"
   },
   "babel": {
     "presets": ["es2015"]
