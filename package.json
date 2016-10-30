@@ -8,7 +8,7 @@
     "app": "http-server -p 8008",
     "prebuild": "npm run clean -s",
     "build": "npm run build:scripts -s && npm run build:assets -s",
-    "build:scripts": "babel src/widget.js > build/widget.js",
+    "build:scripts": "webpack -p",
     "build:assets": "npm run copy:assets && node compile-assets.js tmp/assets/ build/assets.js",
     "copy:assets": "rimraf tmp/assets && mkdir -p tmp/assets && cp src/assets/* tmp/assets/",
     "clean": "rimraf build/*",
