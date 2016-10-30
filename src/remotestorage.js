@@ -1,0 +1,1 @@
+../node_modules/remotestoragejs/build/build.js
