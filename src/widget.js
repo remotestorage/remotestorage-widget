@@ -51,11 +51,11 @@ RemoteStorageWidget.prototype = {
   insertHtmlTemplate(elementId=null) {
     let element = document.createElement('div');
     let style = document.createElement('style');
-    style.innerHTML = RemoteStorage.Assets.styles;
+    style.innerHTML = require('raw!./assets/styles.css');
 
     element.id = "remotestorage-widget";
-    element.innerHTML = RemoteStorage.Assets.widget;
-    element.appendChild(style);
+    element.innerHTML = require('raw!./assets/widget.html');
+    element.appendChild(style); 
 
     if (elementId) {
       let parent = document.getElementById(elementId);
@@ -69,13 +69,13 @@ RemoteStorageWidget.prototype = {
   },
 
   setAssetUrls() {
-    this.rsCloseButton.src = RemoteStorage.Assets.close;
-    this.rsLogo.src = RemoteStorage.Assets.remoteStorage;
-    document.querySelector('.rs-logo').src = RemoteStorage.Assets.remoteStorage;
-    document.querySelector('.dropbox-logo').src = RemoteStorage.Assets.dropbox;
-    document.querySelector('.gdrive-logo').src = RemoteStorage.Assets.gdrive;
-    document.querySelector('.rs-power-icon').src = RemoteStorage.Assets.power;
-    document.querySelector('.rs-loop-icon').src = RemoteStorage.Assets.loop;
+    this.rsCloseButton.src = require('./assets/close.svg');
+    this.rsLogo.src = require('./assets/remoteStorage.svg');
+    document.querySelector('.rs-logo').src = require('./assets/remoteStorage.svg');
+    document.querySelector('.dropbox-logo').src = require('./assets/dropbox.svg');
+    document.querySelector('.gdrive-logo').src = require('./assets/gdrive.svg');
+    document.querySelector('.rs-power-icon').src = require('./assets/power.svg');
+    document.querySelector('.rs-loop-icon').src = require('./assets/loop.svg');
   },
 
   setEventListeners() {
