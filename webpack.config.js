@@ -1,7 +1,7 @@
 module.exports = {
   entry: "./src/widget.js",
   output: {
-    filename: "build/widget.js",
+    filename: __dirname + "/build/widget.js",
     // export itself to a global var
     libraryTarget: "umd"
   },
@@ -19,7 +19,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: '/node_modules/', loader: 'babel' },
+      { test: /\.js$/, exclude: '/node_modules|dist/', loader: 'babel' },
+      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url?limit=2000000' }
     ]
   },
+  devtool: "source-map"
 }
