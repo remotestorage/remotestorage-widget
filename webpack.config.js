@@ -1,10 +1,13 @@
 module.exports = {
   entry: "./src/widget.js",
   output: {
-    filename: __dirname + "/build/widget.js",
+    path:'build',
+    publicPath: 'build/',
+    filename: 'widget.js',
     // export itself to a global var
     libraryTarget: "umd"
   },
+  devtool: 'source-map',
   externals: {
       // require("remotestoragejs") is external and available
       // on the global var RemoteStorage
@@ -20,7 +23,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: '/node_modules|dist/', loader: 'babel' },
-      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url?limit=2000000' }
+      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader?limit=10000' }
     ]
   },
   devtool: "source-map"

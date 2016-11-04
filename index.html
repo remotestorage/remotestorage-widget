@@ -8,9 +8,8 @@
 </head>
 <body>
   <!-- <script type="text/javascript" src="/node_modules/remotestoragejs/release/stable/remotestorage.js"></script> -->
-  <script type="text/javascript" src="/src/remotestorage.js"></script>
-  <script type="text/javascript" src="/build/assets.js"></script>
-  <script type="text/javascript" src="/build/widget.js"></script>
+  <script type="text/javascript" src="src/remotestorage.js"></script>
+  <script type="text/javascript" src="build/widget.js"></script>
   <script>
     var remoteStorage = new RemoteStorage();
     remoteStorage.setApiKeys('dropbox', {
@@ -22,5 +21,4 @@
     remoteStorage.access.claim('widget-test', 'rw')
     remoteStorage.displayWidget();
   </script>
-  <script src="http://localhost:9091"></script>
 </body>
