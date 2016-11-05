@@ -103,6 +103,14 @@ RemoteStorageWidget.prototype = {
       this.fadeOut(this.rsConnected);
       this.delayFadeIn(this.rsInitial, 300);
     });
+
+    this.rs.on('error', (error) => {
+      if (error instanceof RemoteStorage.DiscoveryError) {
+        this.handleDiscoveryError(error);
+      } else {
+        // TODO handle other errors
+      }
+    });
   },
 
   setClickHandlers() {
@@ -221,6 +229,14 @@ RemoteStorageWidget.prototype = {
       element.style.filter = "alpha(opacity=" + op * 100 + ")";
       op += op * 0.1;
     }, 3);
+  },
+
+  handleDiscoveryError(error) {
+    let msgContainer = document.querySelector('.rs-sign-in-error');
+    msgContainer.innerHTML = error.message;
+    msgContainer.classList.remove('hidden');
+    msgContainer.classList.add('visible');
+    this.fadeIn(msgContainer);
   }
 };
 

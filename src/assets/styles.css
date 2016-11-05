@@ -179,14 +179,15 @@
   display: block;
   width: 100%;
   font: inherit;
-  margin-bottom: 20px;
+  border: 1px solid #aaa;
 }
 .rs-sign-in-form input[type=submit] {
   padding: 15px 10px;
+  margin-top: 20px;
   margin-bottom: 15px;
   display: block;
   width: 100%;
-  border-width: 0;
+  border: none;
   border-radius: 3px;
 	background-color: #3fb34f;
   font: inherit;
@@ -202,6 +203,19 @@
 	background-color: #3fb34f;
 }
 
+.rs-sign-in-error.hidden {
+  height: 0;
+}
+
+.rs-sign-in-error.visible {
+  height: auto;
+  border-radius: 3px;
+  padding: 0.5em 0.5em;
+  margin-top: 0.5em;
+  text-align: center;
+  background-color: rgba(255,0,0,0.1);
+  color: darkred;
+}
 
 /* Connected box */
 .rs-box-connected {

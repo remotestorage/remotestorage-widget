@@ -108,6 +108,14 @@ RemoteStorageWidget.prototype = {
       _this.fadeOut(_this.rsConnected);
       _this.delayFadeIn(_this.rsInitial, 300);
     });
+
+    this.rs.on('error', function (error) {
+      if (error instanceof RemoteStorage.DiscoveryError) {
+        _this.handleDiscoveryError(error);
+      } else {
+        // TODO handle other errors
+      }
+    });
   },
   setClickHandlers: function setClickHandlers() {
     var _this2 = this;
@@ -229,6 +237,13 @@ RemoteStorageWidget.prototype = {
       element.style.filter = "alpha(opacity=" + op * 100 + ")";
       op += op * 0.1;
     }, 3);
+  },
+  handleDiscoveryError: function handleDiscoveryError(error) {
+    var msgContainer = document.querySelector('.rs-sign-in-error');
+    msgContainer.innerHTML = error.message;
+    msgContainer.classList.remove('hidden');
+    msgContainer.classList.add('visible');
+    this.fadeIn(msgContainer);
   }
 };
 
