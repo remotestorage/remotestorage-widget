@@ -2,7 +2,7 @@ module.exports = {
   entry: "./src/widget.js",
   output: {
     path:'build',
-    publicPath: 'build/',
+    publicPath: __dirname + '/build/',
     filename: 'widget.js',
     // export itself to a global var
     libraryTarget: "umd"
@@ -22,9 +22,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: '/node_modules|dist/', loader: 'babel' },
-      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader?limit=10000' }
+      { test: /\.js$/, exclude: "/node_modules/", loader: 'babel?presets=es2015' },
+      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader?limit=10000000' }
     ]
-  },
-  devtool: "source-map"
+  }
 }
+

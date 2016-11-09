@@ -1,4 +1,4 @@
-const RemoteStorage = require('remotestoragejs');
+import RemoteStorage from 'remotestoragejs'
 /**
  * RemoteStorage connect widget
  * @constructor
