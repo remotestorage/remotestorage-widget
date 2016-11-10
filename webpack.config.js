@@ -1,13 +1,18 @@
+var webpack = require('webpack');
+var isProd = (process.env.NODE_ENV === 'production');
+
+// minimize only in production 
+var plugins = isProd ? [new webpack.optimize.UglifyJsPlugin({minimize: true})] : [];
+
 module.exports = {
   entry: "./src/widget.js",
   output: {
     path:'build',
     publicPath: __dirname + '/build/',
     filename: 'widget.js',
-    // export itself to a global var
     libraryTarget: "umd"
   },
-  devtool: 'source-map',
+  devtool: isProd ? 'source-map' : '',
   externals: {
       // require("remotestoragejs") is external and available
       // on the global var RemoteStorage
@@ -22,9 +27,10 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: "/node_modules/", loader: 'babel?presets=es2015' },
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets=es2015' },
       { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader?limit=10000000' }
     ]
-  }
+  },
+  plugins: plugins
 }
 
