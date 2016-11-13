@@ -126,12 +126,21 @@ RemoteStorageWidget.prototype = {
       this.handleNetworkOnline();
     });
 
-    this.rs.on('wire-busy', () => {
-      console.debug('WIRE BUSY');
-    });
-
-    this.rs.on('wire-done', () => {
-      console.debug('WIRE DONE');
+    this.rs.on('ready', () => {
+      this.rs.on('wire-busy', () => {
+        console.debug('WIRE BUSY');
+      });
+      this.rs.on('wire-done', () => {
+        console.debug('WIRE DONE');
+      });
+      this.rs.sync.on('req-done', () => {
+        console.debug('SYNC REQ DONE');
+        this.rsSyncButton.classList.add("rs-rotate");
+      });
+      this.rs.sync.on('done', () => {
+        console.debug('SYNC DONE');
+        this.rsSyncButton.classList.remove("rs-rotate");
+      });
     });
   },
 
@@ -179,7 +188,13 @@ RemoteStorageWidget.prototype = {
 
     // Sync button
     this.rsSyncButton.addEventListener('click', () => {
-      this.rsSyncButton.classList.toggle("rs-rotate");
+      if (this.rsSyncButton.classList.contains('rs-rotate')) {
+        this.rs.stopSync();
+        this.rsSyncButton.classList.remove("rs-rotate");
+      } else {
+        this.rs.startSync();
+        this.rsSyncButton.classList.add("rs-rotate");
+      }
     });
 
     // Close button
