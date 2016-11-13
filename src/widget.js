@@ -147,7 +147,6 @@ RemoteStorageWidget.prototype = {
 
       this.rs.sync.on('done', () => {
         console.debug('SYNC DONE');
-        console.debug('this.rs.remote.online', this.rs.remote.online);
 
         if (this.rs.remote.online) {
           this.lastSynced = new Date();
