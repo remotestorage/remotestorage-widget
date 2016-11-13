@@ -111,6 +111,22 @@ RemoteStorageWidget.prototype = {
         // TODO handle other errors
       }
     });
+
+    this.rs.on('network-offline', () => {
+      this.handleNetworkOffline();
+    });
+
+    this.rs.on('network-online', () => {
+      this.handleNetworkOnline();
+    });
+
+    this.rs.on('wire-busy', () => {
+      console.debug('WIRE BUSY');
+    });
+
+    this.rs.on('wire-done', () => {
+      console.debug('WIRE DONE');
+    });
   },
 
   setClickHandlers() {
@@ -237,6 +253,16 @@ RemoteStorageWidget.prototype = {
     msgContainer.classList.remove('hidden');
     msgContainer.classList.add('visible');
     this.fadeIn(msgContainer);
+  },
+
+  handleNetworkOffline() {
+    console.debug('NETWORK OFFLINE');
+    this.rsWidget.classList.add("rs-state-offline");
+  },
+
+  handleNetworkOnline() {
+    console.debug('NETWORK ONLINE');
+    this.rsWidget.classList.remove("rs-state-offline");
   }
 };
 

@@ -3441,6 +3441,18 @@ module.exports = ret;
      *
      * Fired when a wire request completes
      **/
+    /**
+     * Event: network-offline
+     *
+     * Fired once when a wire request fails for the first time, and
+     * `remote.online` is set to false
+     **/
+    /**
+     * Event: network-online
+     *
+     * Fired once when a wire request succeeds for the first time after a
+     * failed one, and `remote.online` is set back to true
+     **/
 
     // Initial configuration property settings.
     if (typeof cfg === 'object') {
@@ -3450,8 +3462,9 @@ module.exports = ret;
 
     RemoteStorage.eventHandling(
       this, 'ready', 'connected', 'disconnected', 'not-connected', 'conflict',
-            'error', 'features-loaded', 'connecting', 'authing', 'wire-busy',
-            'wire-done', 'sync-interval-change'
+            'error', 'features-loaded', 'connecting', 'authing',
+            'sync-interval-change', 'wire-busy', 'wire-done',
+            'network-offline', 'network-online'
     );
 
     // pending get/put/delete calls.
@@ -4887,6 +4900,7 @@ module.exports = ret;
    * Class : RemoteStorage.WireClient
    **/
   RS.WireClient = function (rs) {
+    this.rs = rs;
     this.connected = false;
 
     /**
@@ -4898,7 +4912,8 @@ module.exports = ret;
      *   Fired when the wireclient connect method realizes that it is in
      *   possession of a token and href
      **/
-    RS.eventHandling(this, 'change', 'connected', 'wire-busy', 'wire-done', 'not-connected');
+    RS.eventHandling(this, 'change', 'connected', 'not-connected',
+                           'wire-busy', 'wire-done');
 
     onErrorCb = function (error){
       if (error instanceof RemoteStorage.Unauthorized) {
@@ -4984,13 +4999,17 @@ module.exports = ret;
         body: body,
         headers: headers,
         responseType: 'arraybuffer'
-      }).then(function (response) {
+      }).then(function(response) {
+        if (!self.online) {
+          self.online = true;
+          self.rs._emit('network-online');
+        }
         self._emit('wire-done', {
           method: method,
           isFolder: isFolder(uri),
           success: true
         });
-        self.online = true;
+
         if (isErrorStatus(response.status)) {
           RemoteStorage.log('[WireClient] Error response status', response.status);
           if (getEtag) {
@@ -5026,11 +5045,16 @@ module.exports = ret;
           }
         }
       }, function (error) {
+        if (self.online) {
+          self.online = false;
+          self.rs._emit('network-offline');
+        }
         self._emit('wire-done', {
           method: method,
           isFolder: isFolder(uri),
           success: false
         });
+
         return Promise.reject(error);
       });
     },
@@ -9755,9 +9779,6 @@ Math.uuid = function (len, radix) {
     },
 
     interpretStatus: function (statusCode) {
-      // if (typeof statusCode.length === 'number') {
-      //   statusCode = statusCode[0];
-      // }
       if (statusCode === 'offline' || statusCode === 'timeout') {
         return {
           successful:      false,
@@ -9831,7 +9852,6 @@ Math.uuid = function (len, radix) {
           error = new RemoteStorage.Unauthorized();
         } else if (status.networkProblems) {
           error = new RemoteStorage.SyncError('Network request failed.');
-          this.remote.online = false;
         } else {
           error = new Error('HTTP response code ' + status.statusCode + ' received.');
         }
@@ -9862,7 +9882,6 @@ Math.uuid = function (len, radix) {
       .then(function (completed) {
         delete self._timeStarted[task.path];
         delete self._running[task.path];
-        self.remote.online = true;
 
         if (completed) {
           if (self._tasks[task.path]) {
@@ -9893,7 +9912,7 @@ Math.uuid = function (len, radix) {
           }
         });
       }, function (err) {
-        console.error('[Sync] Error', err);
+        RemoteStorage.log('[Sync] Error', err);
         delete self._timeStarted[task.path];
         delete self._running[task.path];
         self._emit('req-done');
@@ -11812,15 +11831,28 @@ Math.uuid = function (len, radix) {
 
     _request: function (method, url, options) {
       var self = this;
+
       if (! options.headers) { options.headers = {}; }
       options.headers['Authorization'] = 'Bearer ' + self.token;
-      return RS.WireClient.request(method, url, options).then(function (xhr) {
-        // google tokens expire from time to time...
+
+      return RS.WireClient.request.call(this, method, url, options).then(function(xhr) {
+        // Google tokens expire from time to time...
         if (xhr && xhr.status === 401) {
           self.connect();
           return;
+        } else {
+          if (!self.online) {
+            self.online = true;
+            self.rs._emit('network-online');
+          }
+          return Promise.resolve(xhr);
         }
-        return xhr;
+      }, function(error) {
+        if (self.online) {
+          self.online = false;
+          self.rs._emit('network-offline');
+        }
+        return Promise.reject(error);
       });
     }
   };
@@ -12464,15 +12496,32 @@ Math.uuid = function (len, radix) {
      */
     _request: function (method, url, options) {
       var self = this;
+
       if (! options.headers) { options.headers = {}; }
       options.headers['Authorization'] = 'Bearer ' + this.token;
-      return RS.WireClient.request.call(this, method, url, options).then(function (xhr) {
-        //503 means retry this later
+
+      return RS.WireClient.request.call(this, method, url, options).then(function(xhr) {
+        // 503 means retry this later
         if (xhr && xhr.status === 503) {
+          if (self.online) {
+            self.online = false;
+            self.rs._emit('network-offline');
+          }
           return global.setTimeout(self._request(method, url, options), 3210);
         } else {
+          if (!self.online) {
+            self.online = true;
+            self.rs._emit('network-online');
+          }
+
           return Promise.resolve(xhr);
         }
+      }, function(error) {
+        if (self.online) {
+          self.online = false;
+          self.rs._emit('network-offline');
+        }
+        return Promise.reject(error);
       });
     },
 
@@ -12700,7 +12749,7 @@ Math.uuid = function (len, radix) {
     }
   };
 
-  //hooking and unhooking the sync
+  // Hooking and unhooking the sync
 
   function hookSync(rs) {
     if (rs._dropboxOrigSync) { return; } // already hooked
@@ -12719,7 +12768,7 @@ Math.uuid = function (len, radix) {
     delete rs._dropboxOrigSync;
   }
 
-  // hooking and unhooking getItemURL
+  // Hooking and unhooking getItemURL
 
   function hookGetItemURL(rs) {
     if (rs._origBaseClientGetItemURL) { return; }
