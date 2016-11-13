@@ -89,11 +89,17 @@ RemoteStorageWidget.prototype = {
     // remoteStorage events
     //
     this.rs.on('connected', () => {
+      let connectedUser = this.rs.remote.userAddress;
+      // TODO set user address/name in rs.js core
+      if (typeof connectedUser === 'undefined' &&
+          this.rs.backend === 'googledrive') {
+        connectedUser = 'Google Drive';
+      }
       this.rsWidget.classList.remove("rs-state-choose");
       this.rsWidget.classList.add("rs-state-connected");
       this.fadeOut(this.rsInitial);
       this.chooseBox.setAttribute("style", "height: 0");
-      this.rsConnectedUser.innerHTML = this.rs.remote.userAddress;
+      this.rsConnectedUser.innerHTML = connectedUser;
       this.delayFadeIn(this.rsConnected, 600);
     });
 
