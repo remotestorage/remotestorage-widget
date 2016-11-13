@@ -39,6 +39,8 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsConnected = document.querySelector('.rs-box-connected');
   this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
+  this.lastSynced = null;
+
   this.setAssetUrls();
   this.setEventListeners();
   this.setClickHandlers();
@@ -113,34 +115,54 @@ RemoteStorageWidget.prototype = {
     this.rs.on('error', (error) => {
       if (error instanceof RemoteStorage.DiscoveryError) {
         this.handleDiscoveryError(error);
-      } else {
-        // TODO handle other errors
+      } else if (error instanceof RemoteStorage.SyncError) {
+        this.handleSyncError(error);
       }
     });
 
     this.rs.on('network-offline', () => {
-      this.handleNetworkOffline();
+      console.debug('NETWORK OFFLINE');
+      this.rsWidget.classList.add("rs-state-offline");
     });
 
     this.rs.on('network-online', () => {
-      this.handleNetworkOnline();
+      console.debug('NETWORK ONLINE');
+      this.rsWidget.classList.remove("rs-state-offline");
     });
 
     this.rs.on('ready', () => {
+
       this.rs.on('wire-busy', () => {
         console.debug('WIRE BUSY');
       });
+
       this.rs.on('wire-done', () => {
         console.debug('WIRE DONE');
       });
+
       this.rs.sync.on('req-done', () => {
         console.debug('SYNC REQ DONE');
-        this.rsSyncButton.classList.add("rs-rotate");
+        this.rsSyncButton.classList.add('rs-rotate');
       });
+
       this.rs.sync.on('done', () => {
         console.debug('SYNC DONE');
-        this.rsSyncButton.classList.remove("rs-rotate");
+        console.debug('this.rs.remote.online', this.rs.remote.online);
+
+        if (this.rs.remote.online) {
+          this.lastSynced = new Date();
+          console.debug('Set lastSynced to', this.lastSynced);
+          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+          this.fadeOut(subHeadlineEl);
+          subHeadlineEl.innerHTML = 'Synced just now';
+          this.delayFadeIn(subHeadlineEl, 300);
+        } else {
+          this.updateLastSyncedOutput();
+        }
+
+        this.rsSyncButton.classList.remove('rs-rotate');
       });
+
     });
   },
 
@@ -276,14 +298,15 @@ RemoteStorageWidget.prototype = {
     this.fadeIn(msgContainer);
   },
 
-  handleNetworkOffline() {
-    console.debug('NETWORK OFFLINE');
-    this.rsWidget.classList.add("rs-state-offline");
+  handleSyncError(error) {
+    // console.debug('Encountered SyncError', error);
   },
 
-  handleNetworkOnline() {
-    console.debug('NETWORK ONLINE');
-    this.rsWidget.classList.remove("rs-state-offline");
+  updateLastSyncedOutput() {
+    let now = new Date();
+    let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
+    let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+    subHeadlineEl.innerHTML = `Synced ${secondsSinceLastSync} seconds ago`;
   }
 };
 
