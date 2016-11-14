@@ -116,15 +116,25 @@
   position: absolute;
 }
 
-
 /* Main logo */
 .rs-main-logo {
   float: left;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out;
   transition-delay: 300ms;
+  height: 40px;
+  width: auto;
 }
-
+polygon.rs-logo-shape {
+  fill: #FF4B03;
+  transition-property: fill;
+  transition-duration: 0.5s;
+}
+.rs-state-offline polygon.rs-logo-shape {
+  fill: #888;
+  transition-property: fill;
+  transition-duration: 0.5s;
+}
 
 /* Choose provider box */
 .rs-box-choose {
@@ -179,14 +189,15 @@
   display: block;
   width: 100%;
   font: inherit;
-  margin-bottom: 20px;
+  border: 1px solid #aaa;
 }
 .rs-sign-in-form input[type=submit] {
   padding: 15px 10px;
+  margin-top: 20px;
   margin-bottom: 15px;
   display: block;
   width: 100%;
-  border-width: 0;
+  border: none;
   border-radius: 3px;
 	background-color: #3fb34f;
   font: inherit;
@@ -202,6 +213,19 @@
 	background-color: #3fb34f;
 }
 
+.rs-sign-in-error.hidden {
+  height: 0;
+}
+
+.rs-sign-in-error.visible {
+  height: auto;
+  border-radius: 3px;
+  padding: 0.5em 0.5em;
+  margin-top: 0.5em;
+  text-align: center;
+  background-color: rgba(255,0,0,0.1);
+  color: darkred;
+}
 
 /* Connected box */
 .rs-box-connected {

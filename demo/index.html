@@ -18,7 +18,8 @@
     remoteStorage.setApiKeys('googledrive', {
       clientId: '626692989184-4qj0epv5gcra69l8kvv3aj6nnahq7rrk.apps.googleusercontent.com'
     });
-    remoteStorage.access.claim('widget-test', 'rw')
+    remoteStorage.access.claim('bookmarks', 'rw');
+    remoteStorage.caching.enable('/bookmarks/');
     remoteStorage.displayWidget();
   </script>
 </body>

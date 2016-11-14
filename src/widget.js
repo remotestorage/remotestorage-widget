@@ -41,6 +41,8 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsConnected = document.querySelector('.rs-box-connected');
   this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
+  this.lastSynced = null;
+
   this.setAssetUrls();
   this.setEventListeners();
   this.setClickHandlers();
@@ -91,11 +93,17 @@ RemoteStorageWidget.prototype = {
     // remoteStorage events
     //
     this.rs.on('connected', () => {
+      let connectedUser = this.rs.remote.userAddress;
+      // TODO set user address/name in rs.js core
+      if (typeof connectedUser === 'undefined' &&
+          this.rs.backend === 'googledrive') {
+        connectedUser = 'Google Drive';
+      }
       this.rsWidget.classList.remove("rs-state-choose");
       this.rsWidget.classList.add("rs-state-connected");
       this.fadeOut(this.rsInitial);
       this.chooseBox.setAttribute("style", "height: 0");
-      this.rsConnectedUser.innerHTML = this.rs.remote.userAddress;
+      this.rsConnectedUser.innerHTML = connectedUser;
       this.delayFadeIn(this.rsConnected, 600);
     });
 
@@ -104,6 +112,59 @@ RemoteStorageWidget.prototype = {
       this.rsWidget.classList.add("rs-state-initial");
       this.fadeOut(this.rsConnected);
       this.delayFadeIn(this.rsInitial, 300);
+    });
+
+    this.rs.on('error', (error) => {
+      if (error instanceof RemoteStorage.DiscoveryError) {
+        this.handleDiscoveryError(error);
+      } else if (error instanceof RemoteStorage.SyncError) {
+        this.handleSyncError(error);
+      }
+    });
+
+    this.rs.on('network-offline', () => {
+      console.debug('NETWORK OFFLINE');
+      this.rsWidget.classList.add("rs-state-offline");
+    });
+
+    this.rs.on('network-online', () => {
+      console.debug('NETWORK ONLINE');
+      this.rsWidget.classList.remove("rs-state-offline");
+    });
+
+    this.rs.on('ready', () => {
+
+      this.rs.on('wire-busy', () => {
+        console.debug('WIRE BUSY');
+      });
+
+      this.rs.on('wire-done', () => {
+        console.debug('WIRE DONE');
+      });
+
+      this.rs.sync.on('req-done', () => {
+        console.debug('SYNC REQ DONE');
+        this.rsSyncButton.classList.add('rs-rotate');
+      });
+
+      this.rs.sync.on('done', () => {
+        console.debug('SYNC DONE');
+        console.debug('this.rs.remote.online', this.rs.remote.online);
+
+        if (this.rs.remote.online) {
+          this.lastSynced = new Date();
+          console.debug('Set lastSynced to', this.lastSynced);
+          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+          this.fadeOut(subHeadlineEl);
+          subHeadlineEl.innerHTML = 'Synced just now';
+          this.delayFadeIn(subHeadlineEl, 300);
+        } else {
+          this.updateLastSyncedOutput();
+        }
+
+        this.rsSyncButton.classList.remove('rs-rotate');
+      });
+
     });
   },
 
@@ -151,7 +212,13 @@ RemoteStorageWidget.prototype = {
 
     // Sync button
     this.rsSyncButton.addEventListener('click', () => {
-      this.rsSyncButton.classList.toggle("rs-rotate");
+      if (this.rsSyncButton.classList.contains('rs-rotate')) {
+        this.rs.stopSync();
+        this.rsSyncButton.classList.remove("rs-rotate");
+      } else {
+        this.rs.startSync();
+        this.rsSyncButton.classList.add("rs-rotate");
+      }
     });
 
     // Close button
@@ -223,6 +290,25 @@ RemoteStorageWidget.prototype = {
       element.style.filter = "alpha(opacity=" + op * 100 + ")";
       op += op * 0.1;
     }, 3);
+  },
+
+  handleDiscoveryError(error) {
+    let msgContainer = document.querySelector('.rs-sign-in-error');
+    msgContainer.innerHTML = error.message;
+    msgContainer.classList.remove('hidden');
+    msgContainer.classList.add('visible');
+    this.fadeIn(msgContainer);
+  },
+
+  handleSyncError(error) {
+    // console.debug('Encountered SyncError', error);
+  },
+
+  updateLastSyncedOutput() {
+    let now = new Date();
+    let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
+    let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+    subHeadlineEl.innerHTML = `Synced ${secondsSinceLastSync} seconds ago`;
   }
 };
 
