@@ -39,6 +39,8 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsConnected = document.querySelector('.rs-box-connected');
   this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
+  this.rsErrorBox = document.querySelector('.rs-box-error');
+
   this.lastSynced = null;
 
   this.setAssetUrls();
@@ -285,6 +287,20 @@ RemoteStorageWidget.prototype = {
       element.style.filter = "alpha(opacity=" + op * 100 + ")";
       op += op * 0.1;
     }, 3);
+  },
+
+  showErrorBox(errorMsg) {
+    this.openWidget();
+    this.rsErrorBox.innerHTML = errorMsg;
+    this.rsErrorBox.classList.remove('hidden');
+    this.rsErrorBox.classList.add('visible');
+    this.fadeIn(this.rsErrorBox);
+  },
+
+  hideErrorBox() {
+    this.rsErrorBox.innerHTML = '';
+    this.rsErrorBox.classList.remove('visible');
+    this.rsErrorBox.classList.add('hidden');
   },
 
   handleDiscoveryError(error) {
