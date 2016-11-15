@@ -91,6 +91,28 @@ RemoteStorageWidget.prototype = {
     // remoteStorage events
     //
     this.rs.on('connected', () => {
+      console.debug('RS CONNECTED');
+
+      this.rs.sync.on('req-done', () => {
+        console.debug('SYNC REQ DONE');
+        this.rsSyncButton.classList.add('rs-rotate');
+      });
+      this.rs.sync.on('done', () => {
+        console.debug('SYNC DONE');
+        if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
+            !this.rs.remote.online) {
+          this.updateLastSyncedOutput();
+        } else if (this.rs.remote.online) {
+          this.lastSynced = new Date();
+          console.debug('Set lastSynced to', this.lastSynced);
+          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+          this.fadeOut(subHeadlineEl);
+          subHeadlineEl.innerHTML = 'Synced just now';
+          this.delayFadeIn(subHeadlineEl, 300);
+        }
+        this.rsSyncButton.classList.remove('rs-rotate');
+      });
+
       let connectedUser = this.rs.remote.userAddress;
       // TODO set user address/name in rs.js core
       if (typeof connectedUser === 'undefined' &&
@@ -131,37 +153,13 @@ RemoteStorageWidget.prototype = {
     });
 
     this.rs.on('ready', () => {
-
+      console.debug('RS READY');
       this.rs.on('wire-busy', () => {
         console.debug('WIRE BUSY');
       });
-
       this.rs.on('wire-done', () => {
         console.debug('WIRE DONE');
       });
-
-      this.rs.sync.on('req-done', () => {
-        console.debug('SYNC REQ DONE');
-        this.rsSyncButton.classList.add('rs-rotate');
-      });
-
-      this.rs.sync.on('done', () => {
-        console.debug('SYNC DONE');
-
-        if (this.rs.remote.online) {
-          this.lastSynced = new Date();
-          console.debug('Set lastSynced to', this.lastSynced);
-          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-          this.fadeOut(subHeadlineEl);
-          subHeadlineEl.innerHTML = 'Synced just now';
-          this.delayFadeIn(subHeadlineEl, 300);
-        } else {
-          this.updateLastSyncedOutput();
-        }
-
-        this.rsSyncButton.classList.remove('rs-rotate');
-      });
-
     });
   },
 
