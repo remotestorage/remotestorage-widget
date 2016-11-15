@@ -42,6 +42,7 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsErrorBox = document.querySelector('.rs-box-error');
 
   this.lastSynced = null;
+  this.lastSyncedUpdateLoop = null;
 
   this.setAssetUrls();
   this.setEventListeners();
@@ -130,8 +131,10 @@ RemoteStorageWidget.prototype = {
     });
 
     this.rs.on('disconnected', () => {
+      console.debug('RS DISCONNECTED');
       this.rsWidget.classList.remove("rs-state-connected");
       this.rsWidget.classList.add("rs-state-initial");
+      this.hideErrorBox();
       this.fadeOut(this.rsConnected);
       this.delayFadeIn(this.rsInitial, 300);
     });
@@ -141,6 +144,10 @@ RemoteStorageWidget.prototype = {
         this.handleDiscoveryError(error);
       } else if (error instanceof RemoteStorage.SyncError) {
         this.handleSyncError(error);
+      } else if (error instanceof RemoteStorage.Unauthorized) {
+        this.handleUnauthorized(error);
+      } else {
+        console.debug('Encountered unhandled error', error);
       }
     });
 
@@ -225,6 +232,10 @@ RemoteStorageWidget.prototype = {
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {
+      if (this.rsErrorBox.classList.contains('visible')) {
+        // Don't allow closing the widget while there's an error to acknowledge
+        return;
+      }
       if (this.rsWidget.classList.contains("rs-state-connected")) {
         this.rsWidget.classList.toggle("rs-hide", true);
         this.fadeOut(this.rsConnected);
@@ -240,14 +251,22 @@ RemoteStorageWidget.prototype = {
 
     // Click on the logo to bring the full widget back
     this.rsLogo.addEventListener('click', () => {
-      if (this.rsWidget.classList.contains("rs-state-connected")) {
-        this.rsWidget.classList.toggle("rs-hide", false);
-        this.delayFadeIn(this.rsConnected, 300);
-      }
+      this.openWidget();
     });
   },
 
+  openWidget() {
+    if (this.rsWidget.classList.contains("rs-state-connected")) {
+      this.rsWidget.classList.toggle("rs-hide", false);
+      this.fadeIn(this.rsConnected, 300);
+    }
+  },
+
   closeWidget() {
+    if (this.rsErrorBox.classList.contains('visible')) {
+      // Don't allow closing the widget while there's an error to acknowledge
+      return;
+    }
     this.rsWidget.classList.remove("rs-state-sign-in");
     this.rsWidget.classList.remove("rs-state-choose");
     this.delayFadeIn(this.rsInitial, 300);
@@ -311,8 +330,19 @@ RemoteStorageWidget.prototype = {
     this.fadeIn(msgContainer);
   },
 
-  handleSyncError(error) {
+  handleSyncError(/* error */) {
     // console.debug('Encountered SyncError', error);
+  },
+
+  handleUnauthorized() {
+    console.debug('RS UNAUTHORIZED');
+    console.debug('Bearer token not valid anymore');
+    this.rs.stopSync();
+    this.rsWidget.classList.add('rs-state-unauthorized');
+    this.showErrorBox('App authorization expired or revoked');
+    this.lastSyncedUpdateLoop = setInterval(() => {
+    this.updateLastSyncedOutput();
+    }, 5000);
   },
 
   updateLastSyncedOutput() {
