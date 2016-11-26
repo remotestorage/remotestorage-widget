@@ -41,7 +41,10 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsConnected = document.querySelector('.rs-box-connected');
   this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
+  this.rsErrorBox = document.querySelector('.rs-box-error');
+
   this.lastSynced = null;
+  this.lastSyncedUpdateLoop = null;
 
   this.setAssetUrls();
   this.setEventListeners();
@@ -93,6 +96,28 @@ RemoteStorageWidget.prototype = {
     // remoteStorage events
     //
     this.rs.on('connected', () => {
+      console.debug('RS CONNECTED');
+
+      this.rs.sync.on('req-done', () => {
+        console.debug('SYNC REQ DONE');
+        this.rsSyncButton.classList.add('rs-rotate');
+      });
+      this.rs.sync.on('done', () => {
+        console.debug('SYNC DONE');
+        if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
+            !this.rs.remote.online) {
+          this.updateLastSyncedOutput();
+        } else if (this.rs.remote.online) {
+          this.lastSynced = new Date();
+          console.debug('Set lastSynced to', this.lastSynced);
+          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+          this.fadeOut(subHeadlineEl);
+          subHeadlineEl.innerHTML = 'Synced just now';
+          this.delayFadeIn(subHeadlineEl, 300);
+        }
+        this.rsSyncButton.classList.remove('rs-rotate');
+      });
+
       let connectedUser = this.rs.remote.userAddress;
       // TODO set user address/name in rs.js core
       if (typeof connectedUser === 'undefined' &&
@@ -108,8 +133,10 @@ RemoteStorageWidget.prototype = {
     });
 
     this.rs.on('disconnected', () => {
+      console.debug('RS DISCONNECTED');
       this.rsWidget.classList.remove("rs-state-connected");
       this.rsWidget.classList.add("rs-state-initial");
+      this.hideErrorBox();
       this.fadeOut(this.rsConnected);
       this.delayFadeIn(this.rsInitial, 300);
     });
@@ -119,6 +146,10 @@ RemoteStorageWidget.prototype = {
         this.handleDiscoveryError(error);
       } else if (error instanceof RemoteStorage.SyncError) {
         this.handleSyncError(error);
+      } else if (error instanceof RemoteStorage.Unauthorized) {
+        this.handleUnauthorized(error);
+      } else {
+        console.debug('Encountered unhandled error', error);
       }
     });
 
@@ -133,38 +164,13 @@ RemoteStorageWidget.prototype = {
     });
 
     this.rs.on('ready', () => {
-
+      console.debug('RS READY');
       this.rs.on('wire-busy', () => {
         console.debug('WIRE BUSY');
       });
-
       this.rs.on('wire-done', () => {
         console.debug('WIRE DONE');
       });
-
-      this.rs.sync.on('req-done', () => {
-        console.debug('SYNC REQ DONE');
-        this.rsSyncButton.classList.add('rs-rotate');
-      });
-
-      this.rs.sync.on('done', () => {
-        console.debug('SYNC DONE');
-        console.debug('this.rs.remote.online', this.rs.remote.online);
-
-        if (this.rs.remote.online) {
-          this.lastSynced = new Date();
-          console.debug('Set lastSynced to', this.lastSynced);
-          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-          this.fadeOut(subHeadlineEl);
-          subHeadlineEl.innerHTML = 'Synced just now';
-          this.delayFadeIn(subHeadlineEl, 300);
-        } else {
-          this.updateLastSyncedOutput();
-        }
-
-        this.rsSyncButton.classList.remove('rs-rotate');
-      });
-
     });
   },
 
@@ -228,6 +234,10 @@ RemoteStorageWidget.prototype = {
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {
+      if (this.rsErrorBox.classList.contains('visible')) {
+        // Don't allow closing the widget while there's an error to acknowledge
+        return;
+      }
       if (this.rsWidget.classList.contains("rs-state-connected")) {
         this.rsWidget.classList.toggle("rs-hide", true);
         this.fadeOut(this.rsConnected);
@@ -243,14 +253,22 @@ RemoteStorageWidget.prototype = {
 
     // Click on the logo to bring the full widget back
     this.rsLogo.addEventListener('click', () => {
-      if (this.rsWidget.classList.contains("rs-state-connected")) {
-        this.rsWidget.classList.toggle("rs-hide", false);
-        this.delayFadeIn(this.rsConnected, 300);
-      }
+      this.openWidget();
     });
   },
 
+  openWidget() {
+    if (this.rsWidget.classList.contains("rs-state-connected")) {
+      this.rsWidget.classList.toggle("rs-hide", false);
+      this.fadeIn(this.rsConnected, 300);
+    }
+  },
+
   closeWidget() {
+    if (this.rsErrorBox.classList.contains('visible')) {
+      // Don't allow closing the widget while there's an error to acknowledge
+      return;
+    }
     this.rsWidget.classList.remove("rs-state-sign-in");
     this.rsWidget.classList.remove("rs-state-choose");
     this.delayFadeIn(this.rsInitial, 300);
@@ -292,6 +310,20 @@ RemoteStorageWidget.prototype = {
     }, 3);
   },
 
+  showErrorBox(errorMsg) {
+    this.openWidget();
+    this.rsErrorBox.innerHTML = errorMsg;
+    this.rsErrorBox.classList.remove('hidden');
+    this.rsErrorBox.classList.add('visible');
+    this.fadeIn(this.rsErrorBox);
+  },
+
+  hideErrorBox() {
+    this.rsErrorBox.innerHTML = '';
+    this.rsErrorBox.classList.remove('visible');
+    this.rsErrorBox.classList.add('hidden');
+  },
+
   handleDiscoveryError(error) {
     let msgContainer = document.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
@@ -300,8 +332,19 @@ RemoteStorageWidget.prototype = {
     this.fadeIn(msgContainer);
   },
 
-  handleSyncError(error) {
+  handleSyncError(/* error */) {
     // console.debug('Encountered SyncError', error);
+  },
+
+  handleUnauthorized() {
+    console.debug('RS UNAUTHORIZED');
+    console.debug('Bearer token not valid anymore');
+    this.rs.stopSync();
+    this.rsWidget.classList.add('rs-state-unauthorized');
+    this.showErrorBox('App authorization expired or revoked');
+    this.lastSyncedUpdateLoop = setInterval(() => {
+    this.updateLastSyncedOutput();
+    }, 5000);
   },
 
   updateLastSyncedOutput() {
