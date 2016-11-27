@@ -12,7 +12,7 @@ module.exports = {
     filename: 'widget.js',
     libraryTarget: "umd"
   },
-  devtool: isProd ? 'source-map' : '',
+  devtool: isProd ? '#source-map' : '#eval-source-map',
   externals: {
       // require("remotestoragejs") is external and available
       // on the global var RemoteStorage
