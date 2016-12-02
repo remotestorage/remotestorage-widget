@@ -173,7 +173,7 @@ polygon.rs-logo-shape {
   margin-left: 45%;
   transition-delay: 0ms;
 }
-.rs-box-choose img {
+.rs-box-choose svg {
   float: left;
   margin-right: 0.625em;
 }
