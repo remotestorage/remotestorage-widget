@@ -288,15 +288,6 @@ polygon.rs-logo-shape {
   top: 0;
   right: 0;
 }
-.rs-close {
-  display: none;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-}
-.rs-close:hover {
-  cursor: pointer
-}
 
 /* Mobile styles */
 @media screen and (max-width: 360px) {
@@ -318,9 +309,5 @@ polygon.rs-logo-shape {
     border-radius: 0;
     height: 100%;
     max-width: 100%;
-  }
-  .rs-state-choose .rs-close,
-  .rs-state-sign-in .rs-close {
-    display: block;
   }
 }

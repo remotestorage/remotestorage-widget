@@ -29,7 +29,6 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 
   this.rsWidget = document.querySelector('#rs-widget');
   this.rsLogo = document.querySelector('.rs-main-logo');
-  this.rsCloseButton = document.querySelector('.rs-close');
   this.rsInitial = document.querySelector('.rs-box-initial');
   this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
   this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
@@ -72,7 +71,6 @@ RemoteStorageWidget.prototype = {
   },
 
   setAssetUrls() {
-    this.rsCloseButton.src = RemoteStorage.Assets.close;
     this.rsLogo.src = RemoteStorage.Assets.remoteStorage;
     document.querySelector('.rs-logo').src = RemoteStorage.Assets.remoteStorage;
     document.querySelector('.dropbox-logo').src = RemoteStorage.Assets.dropbox;
@@ -226,11 +224,6 @@ RemoteStorageWidget.prototype = {
         this.rs.startSync();
         this.rsSyncButton.classList.add("rs-rotate");
       }
-    });
-
-    // Close button
-    this.rsCloseButton.addEventListener('click', () => {
-      this.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
