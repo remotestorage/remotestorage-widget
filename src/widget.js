@@ -31,7 +31,6 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 
   this.rsWidget = document.querySelector('#rs-widget');
   this.rsLogo = document.querySelector('.rs-main-logo');
-  this.rsCloseButton = document.querySelector('.rs-close');
   this.rsInitial = document.querySelector('.rs-box-initial');
   this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
   this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
@@ -129,6 +128,9 @@ RemoteStorageWidget.prototype = {
           this.rs.backend === 'googledrive') {
         connectedUser = 'Google Drive';
       }
+      this.rsWidget.classList.remove("rs-state-sign-in");
+      this.signInBox.setAttribute("style", "height: 0;");
+      this.rsWidget.classList.remove('rs-state-initial')
       this.rsWidget.classList.remove("rs-state-choose");
       this.rsWidget.classList.add("rs-state-connected");
       this.fadeOut(this.rsInitial);
@@ -230,11 +232,6 @@ RemoteStorageWidget.prototype = {
         this.rs.startSync();
         this.rsSyncButton.classList.add("rs-rotate");
       }
-    });
-
-    // Close button
-    this.rsCloseButton.addEventListener('click', () => {
-      this.closeWidget();
     });
 
     // Reduce to only icon if connected and clicked outside of widget
