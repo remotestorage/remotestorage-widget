@@ -102,10 +102,13 @@ RemoteStorageWidget.prototype = {
         console.debug('SYNC REQ DONE');
         this.rsSyncButton.classList.add('rs-rotate');
       });
+
       this.rs.sync.on('done', () => {
         console.debug('SYNC DONE');
+
         if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
             !this.rs.remote.online) {
+          console.error('sono qui dentro ?!?!!?')
           this.updateLastSyncedOutput();
         } else if (this.rs.remote.online) {
           this.lastSynced = new Date();
@@ -114,6 +117,8 @@ RemoteStorageWidget.prototype = {
           this.fadeOut(subHeadlineEl);
           subHeadlineEl.innerHTML = 'Synced just now';
           this.delayFadeIn(subHeadlineEl, 300);
+        } else {
+          console.error('sono proprio qui')
         }
         this.rsSyncButton.classList.remove('rs-rotate');
       });

@@ -7,7 +7,7 @@
     "start": "npm run app -s",
     "app": "http-server -p 8008",
     "prebuild": "npm run clean -s",
-    "build": "webpack -p",
+    "build": "NODE_ENV=production webpack -p",
     "clean": "rimraf build/*",
     "prewatch": "npm run clean -s",
     "watch": " npm run watch:build",
@@ -16,7 +16,7 @@
     "watch:assets": "nodemon -q -w src/assets/ --ext 'css,html,svg,png' --exec 'npm run build'",
     "live-reload": "live-reload --port 9091 build/",
     "open:dev": "opener http://localhost:8008",
-    "dev": "npm run open:dev -s | parallelshell 'npm run live-reload -s' 'npm run app -s' 'npm run watch -s'"
+    "dev": "parallelshell 'npm run live-reload -s' 'npm run app -s' 'npm run watch -s'"
   },
   "repository": {
     "type": "git",
