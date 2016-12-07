@@ -1,3 +1,130 @@
+.rs-box-initial {
+  overflow: hidden;
+  transition: all 300ms ease-out;
+  height: 0;
+  opacity: 0;
+}
+.rs-box-choose {
+  overflow: hidden;
+  transition: all 300ms ease-out;
+  height: 0;
+  opacity: 0;
+}
+.rs-box-sign-in {
+  overflow: hidden;
+  transition: all 300ms ease-out;
+  opacity: 0;
+  height: 0;
+}
+.rs-box-connected {
+  overflow: hidden;
+  transition: all 300ms ease-out;
+  height: 0;
+  opacity: 0;
+}
+
+
+/** WIDGET STATE */
+.rs-state-initial .rs-box-initial {
+  height: 50px;
+  opacity: 1;
+}
+.rs-state-choose .rs-box-choose {
+  height: 414px;
+  opacity: 1;
+}
+.rs-state-sign-in .rs-box-sign-in {
+  height: 210px;
+  opacity: 1;
+}
+.rs-state-connected .rs-box-connected {
+  height: 50px;
+  opacity: 1;
+}
+
+.rs-box-choose img {
+  float: left;
+  margin-right: 0.625em;
+}
+
+/* Main logo */
+.rs-main-logo {
+  float: left;
+  margin-right: 0.625em;
+  transition: margin-left 300ms ease-out;
+  transition-delay: 300ms;
+  height: 40px;
+  width: auto;
+}
+polygon.rs-logo-shape {
+  fill: #FF4B03;
+  transition-property: fill;
+  transition-duration: 0.5s;
+}
+.rs-state-offline polygon.rs-logo-shape {
+  fill: #888;
+  transition-property: fill;
+  transition-duration: 0.5s;
+}
+
+ /*  Widget */
+.rs-widget,
+.rs-widget * {
+  box-sizing: border-box;
+  font-family: arial, sans-serif;
+}
+.rs-widget {
+  /*height: auto;*/
+  max-width: 350px;
+  color: #333;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 10px;
+  display: block;
+  margin: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+  transition: all 300ms;
+  /*transition: height 300ms linear, max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;*/
+}
+
+
+/* Hide everything except logo when connected and clicked outside of box  */
+.rs-hide {
+  max-width: 55px;
+  background-color: transparent;
+  box-shadow: none;
+  opacity: 0.5;
+  transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
+}
+.rs-hide:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+
+
+
+/* Initial Connect remote storage box  */
+.rs-box-initial {
+  padding: 1px 0;
+  margin-left: 45px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.rs-box-initial:hover {
+  cursor: pointer;
+}
+.rs-state-initial .rs-box-initial {
+  display: block;
+}
+.rs-state-choose .rs-box-initial {
+  position: absolute;
+}
+
+
+
+
 .rs-clearfix:before,
 .rs-clearfix:after {
   content: ".";
@@ -9,12 +136,14 @@
   clear: both;
 }
 .rs-clearfix {
-  zoom: 1; /* IE < 8 */
+  zoom: 1; 
 }
 
 .rs-widget a {
   color: #0093cc;
 }
+
+
 .rs-small-headline {
   font-size: 1em;
   font-weight: bold;
@@ -29,7 +158,10 @@
   font-size: 1.625em;
   font-weight: normal;
   display: inline-block;
+  margin: 0px;
 }
+
+
 .rs-short-desc {
 }
 .rs-choose-backend {
@@ -79,109 +211,6 @@
 }
 
 
-/* Widget */
-.rs-widget,
-.rs-widget * {
-  box-sizing: border-box;
-  font-family: arial, sans-serif;
-}
-.rs-widget {
-  max-width: 350px;
-  color: #333;
-  background-color: #fff;
-  border-radius: 3px;
-  padding: 10px;
-  display: inline-block;
-  margin: 10px;
-  overflow: hidden;
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
-  transition: max-width 300ms ease-out 0ms, background 300ms linear 300ms, box-shadow 300ms linear 300ms;
-}
-
-
-/* Hide everything except logo when connected and clicked outside of box */
-.rs-hide {
-  max-width: 55px;
-  background-color: transparent;
-  box-shadow: none;
-  opacity: 0.5;
-  transition: max-width 300ms ease-out 300ms, opacity 300ms linear 0ms, background 300ms linear, box-shadow 300ms linear 0ms;
-}
-.rs-hide:hover {
-  cursor: pointer;
-  opacity: 1;
-}
-
-
-/* Initial Connect remote storage box */
-.rs-box-initial {
-  padding: 1px 0;
-  margin-left: 45px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.rs-box-initial:hover {
-  cursor: pointer;
-}
-.rs-state-initial .rs-box-initial {
-  display: block;
-}
-.rs-state-choose .rs-box-initial {
-  position: absolute;
-}
-
-/* Main logo */
-.rs-main-logo {
-  float: left;
-  margin-right: 0.625em;
-  transition: margin-left 300ms ease-out;
-  transition-delay: 300ms;
-  height: 40px;
-  width: auto;
-}
-polygon.rs-logo-shape {
-  fill: #FF4B03;
-  transition-property: fill;
-  transition-duration: 0.5s;
-}
-.rs-state-offline polygon.rs-logo-shape {
-  fill: #888;
-  transition-property: fill;
-  transition-duration: 0.5s;
-}
-
-/* Choose provider box */
-.rs-box-choose {
-  clear: both;
-  text-align: center;
-  overflow: hidden;
-  transition: height 300ms ease-out;
-  transition-delay: 0ms;
-}
-.rs-box-choose-content {
-  padding: 0 10px 10px 10px;
-}
-.rs-box-choose .rs-big-headline {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-.rs-box-choose p {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-.rs-state-choose .rs-main-logo {
-  margin-left: 45%;
-  transition-delay: 0ms;
-}
-.rs-box-choose img {
-  float: left;
-  margin-right: 0.625em;
-}
-.rs-state-choose .rs-box-choose {
-  transition-delay: 300ms;
-}
-
-
 /* Sign in box */
 .rs-box-sign-in {
   text-align: center;
@@ -213,7 +242,7 @@ polygon.rs-logo-shape {
   width: 100%;
   border: none;
   border-radius: 3px;
-	background-color: #3fb34f;
+  background-color: #3fb34f;
   font: inherit;
   color: #fff;
   transition: box-shadow 200ms, background-color 200ms;
@@ -224,7 +253,7 @@ polygon.rs-logo-shape {
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 .rs-sign-in-form input[type=submit]:active {
-	background-color: #3fb34f;
+  background-color: #3fb34f;
 }
 
 .rs-sign-in-error.hidden,
@@ -243,7 +272,41 @@ polygon.rs-logo-shape {
   color: darkred;
 }
 
-/* Connected box */
+
+
+
+/*
+///Choose provider box 
+.rs-box-choose {
+  clear: both;
+  text-align: center;
+  overflow: hidden;
+  transition: height 300ms ease-out;
+  transition-delay: 0ms;
+}
+.rs-box-choose-content {
+  padding: 0 10px 10px 10px;
+}
+.rs-box-choose .rs-big-headline {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.rs-box-choose p {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.rs-state-choose .rs-main-logo {
+  margin-left: 45%;
+  transition-delay: 0ms;
+}
+
+.rs-state-choose .rs-box-choose {
+  transition-delay: 300ms;
+}
+
+
+
+// Connected box 
 .rs-box-connected {
   display: none;
 }
@@ -282,7 +345,7 @@ polygon.rs-logo-shape {
 @keyframes rs-spin { 100% { transform: rotate(360deg); transform:rotate(360deg); } }
 
 
-/* Floating widget styles*/
+// Floating widget styles
 .rs-floating {
   position: fixed;
   top: 0;
@@ -298,7 +361,7 @@ polygon.rs-logo-shape {
   cursor: pointer
 }
 
-/* Mobile styles */
+// Mobile styles 
 @media screen and (max-width: 360px) {
   .rs-widget {
     font-size: 100%;
@@ -324,3 +387,4 @@ polygon.rs-logo-shape {
     display: block;
   }
 }
+*/
