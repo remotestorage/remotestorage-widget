@@ -5,74 +5,76 @@
   rs-state-choose
   rs-state-sign-in
   rs-state-connected
+  
+  rs-state-offline
+  rs-state-online
+
+  rs-state-syncing
 
   rs-floating        - will make it fixed in the right corner
+  rs-modal           - will make it a modal window
 -->
 <div class="rs-widget rs-state-initial">
 
-  <svg class="rs-main-logo" xmlns="http://www.w3.org/2000/svg" version="1.1"
-       xml:space="preserve" width="0.739008in" height="0.853339in"
-       style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
-       viewBox="0 0 739 853"
-       xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="rs-logo-shape">
+  <svg class="rs-main-logo"
+       viewBox="0 0 739 853">
      <polygon class="rs-logo-shape" points="370,754 0,542 0,640 185,747 370,853 554,747 739,640 739,525 739,525 739,476 739,427 739,378 653,427 370,589 86,427 86,427 86,361 185,418 370,524 554,418 653,361 739,311 739,213 739,213 554,107 370,0 185,107 58,180 144,230 228,181 370,100 511,181 652,263 370,425 87,263 87,263 0,213 0,213 0,311 0,378 0,427 0,476 86,525 185,582 370,689 554,582 653,525 653,590 653,592 "/>
-    </g>
   </svg>
 
-  <!-- <img role="button" class="rs-close" width="40" src=""> -->
-
-  <div class="rs-box-initial rs-clearfix">
+  <div class="rs-box rs-box-initial">
     <h3 class="rs-small-headline">Connect Remote Storage</h3>
     <span class="rs-sub-headline">To own and control your data</span>
   </div>
 
-  <div class="rs-box-connected rs-clearfix">
+  <div class="rs-box rs-box-connected">
     <div class="rs-connected-text">
       <h1 class="rs-user rs-small-headline">user@provider.com</h1>
-      <span class="rs-sub-headline">Online</span>
+      <span class="rs-sub-headline">Offline</span>
     </div>
     <div class="rs-connected-buttons">
       <button class="rs-button rs-button-small rs-disconnect" title="Disconnect">
-        <img class="rs-icon rs-power-icon" height="16" width="16" src="">
+        <img class="rs-icon rs-power-icon" height="16" width="16" src="./power.svg">
       </button>
       <button class="rs-button rs-button-small rs-sync" title="Sync now">
-        <img class="rs-icon rs-loop-icon" height="16" width="16" src="">
+        <img class="rs-icon rs-loop-icon" height="16" width="16" src="./loop.svg">
       </button>
     </div>
   </div>
 
-  <div class="rs-box-error hidden"></div>
+  <div class="rs-box rs-box-error"></div>
 
-  <div class="rs-box-choose">
-    <div class="rs-box-choose-content">
-      <h3 class="rs-big-headline">Own Your Data</h3>
+  <div class="rs-box rs-box-choose">
+    <div class="rs-content">
+      <h1 class="rs-big-headline">Own Your Data</h1>
       <p class="rs-short-desc">
         This app allows you to own and control your data.
         <a class="rs-help" href="https://remotestorage.io/" target="_blank">Read more</a>
       </p>
-      <p class="rs-choose-backend">
+      <p class="rs-small-headline">
         Please choose your storage:
       </p>
       <div class="rs-button-wrap">
         <button class="rs-button rs-button-big rs-choose-rs">
-          <img class="rs-logo" width="40" height="40" src="">
+          <svg class="rs-logo"
+               viewBox="0 0 739 853">
+             <polygon class="rs-logo-shape" points="370,754 0,542 0,640 185,747 370,853 554,747 739,640 739,525 739,525 739,476 739,427 739,378 653,427 370,589 86,427 86,427 86,361 185,418 370,524 554,418 653,361 739,311 739,213 739,213 554,107 370,0 185,107 58,180 144,230 228,181 370,100 511,181 652,263 370,425 87,263 87,263 0,213 0,213 0,311 0,378 0,427 0,476 86,525 185,582 370,689 554,582 653,525 653,590 653,592 "/>
+          </svg>
           <div>RemoteStorage</div>
         </button>
         <button class="rs-button rs-button-big rs-choose-dropbox">
-          <img class="dropbox-logo" width="40" height="40" src="">
+          <img class="dropbox-logo" src="dropbox.svg">
           <div>Dropbox</div>
         </button>
         <button class="rs-button rs-button-big rs-choose-gdrive">
-          <img class="gdrive-logo" width="40" height="40" src="">
+          <img class="gdrive-logo" src="gdrive.svg">
           <div>Google Drive</div>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="rs-box-sign-in">
-    <div class="rs-sign-in-content">
+  <div class="rs-box rs-box-sign-in">
+    <div class="rs-content">
       <form name="rs-sign-in-form" class="rs-sign-in-form">
         <h1 class="rs-big-headline">Connect your storage</h1>
         <input type="text" name='rs-user-address' placeholder="user@provider.com">
@@ -82,5 +84,4 @@
       </form>
     </div>
   </div>
-
 </div>
