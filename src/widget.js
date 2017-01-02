@@ -1,4 +1,4 @@
-import RemoteStorage from 'remotestoragejs'
+import RemoteStorage from 'remotestoragejs';
 
 /**
  * RemoteStorage connect widget
@@ -8,7 +8,7 @@ import RemoteStorage from 'remotestoragejs'
  */
 
 let RemoteStorageWidget = function(remoteStorage, options={}) {
-  this.rs = remoteStorage
+  this.rs = remoteStorage;
   
   
   this.state = 'initial';
@@ -25,28 +25,27 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   // logo will be gray when (active && !online)
 
 
-  this.insertHtmlTemplate(options.domID)
+  this.insertHtmlTemplate(options.domID);
 
-  remoteStorage.on('connected', () => this.eventHandler('connected'))
-  remoteStorage.on('ready', () => this.eventHandler('ready'))
-  remoteStorage.on('disconnected', () => this.eventHandler('disconnected'))
-  remoteStorage.on('network-online', () => this.eventHandler('network-online'))
-  remoteStorage.on('network-offline', () => this.eventHandler('network-offline'))
-  remoteStorage.on('error', (error) => this.eventHandler('error', error))
+  remoteStorage.on('connected', () => this.eventHandler('connected'));
+  remoteStorage.on('ready', () => this.eventHandler('ready'));
+  remoteStorage.on('disconnected', () => this.eventHandler('disconnected'));
+  remoteStorage.on('network-online', () => this.eventHandler('network-online'));
+  remoteStorage.on('network-offline', () => this.eventHandler('network-offline'));
+  remoteStorage.on('error', (error) => this.eventHandler('error', error));
 
-
-  this.showProviders = false
+  this.showProviders = false;
 
   // check if apyKeys is set for Dropbox or Google
   if (Object.keys(remoteStorage.apiKeys).length > 0) {
-    this.showProviders = true    
+    this.showProviders = true;
   }
 
-  this.rsWidget = document.querySelector('.rs-widget')
-  this.rsInitial = document.querySelector('.rs-box-initial')
-  this.rsChoose = document.querySelector('.rs-box-choose')
-  this.rsConnected = document.querySelector('.rs-box-connected')
-  this.rsSignIn = document.querySelector('.rs-box-sign-in')
+  this.rsWidget = document.querySelector('.rs-widget');
+  this.rsInitial = document.querySelector('.rs-box-initial');
+  this.rsChoose = document.querySelector('.rs-box-choose');
+  this.rsConnected = document.querySelector('.rs-box-connected');
+  this.rsSignIn = document.querySelector('.rs-box-sign-in');
 
   this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
   this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
@@ -73,12 +72,12 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 RemoteStorageWidget.prototype = {
 
   log (...msg) {
-    console.debug('[RS-WIDGET] ', ...msg)
+    console.debug('[RS-WIDGET] ', ...msg);
   },
 
   // handle events !
   eventHandler (event, msg) {
-    this.log('EVENTI: ', event)
+    this.log('EVENTI: ', event);
     switch (event) {
       case 'req-done':
         this.rsSyncButton.classList.add("rs-rotate");
@@ -107,11 +106,11 @@ RemoteStorageWidget.prototype = {
       case 'connected':
         this.active = true;
         this.online = true;
-        this.rs.sync.on('req-done', () => this.eventHandler('req-done'))
-        this.rs.sync.on('done', () => this.eventHandler('done'))
+        this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
+        this.rs.sync.on('done', () => this.eventHandler('done'));
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
-        this.setState('connected')
+        this.setState('connected');
         break;
       case 'network-offline':
         this.online = false;
@@ -142,21 +141,23 @@ RemoteStorageWidget.prototype = {
   },
 
   setState (state) {
-    this.log('Setting state ', state)
+    this.log('Setting state ', state);
 
     if (this.closed && state !== 'close') {
-      this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`
+      this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`;
     } else {
-      this.rsWidget.className = `rs-widget rs-state-${state || this.state}`
+      this.rsWidget.className = `rs-widget rs-state-${state || this.state}`;
     }
 
     if (!this.online && this.active) {
-      this.rsWidget.classList.add('rs-state-offline')
+      this.rsWidget.classList.add('rs-state-offline');
     } else {
-      this.rsWidget.classList.remove('rs-state-offline')
+      this.rsWidget.classList.remove('rs-state-offline');
     }
 
-    if (state) this.state = state
+    if (state) {
+      this.state = state;
+    }
   },
 
   /**
@@ -286,14 +287,14 @@ RemoteStorageWidget.prototype = {
     // Initial button
     this.rsInitial.addEventListener('click', () => {
       if (this.showProviders) {
-        this.setState('choose')
+        this.setState('choose');
       } else {
-        this.setState('sign-in')
+        this.setState('sign-in');
       }
     });
 
     // Choose RS button
-    this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in'));
+    this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
@@ -302,7 +303,7 @@ RemoteStorageWidget.prototype = {
     this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
 
     // Disconnect button
-    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() )
+    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
     // Sync button
     this.rsSyncButton.addEventListener('click', () => {
@@ -342,8 +343,8 @@ RemoteStorageWidget.prototype = {
   },
 
   closeWidget() {
-    this.setState('close')
-    this.closed = true
+    this.setState('close');
+    this.closed = true;
     // if (this.rsErrorBox.classList.contains('visible')) {
     //   // Don't allow closing the widget while there's an error to acknowledge
     //   return;
