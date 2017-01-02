@@ -1,14 +1,14 @@
 var webpack = require('webpack');
 var isProd = (process.env.NODE_ENV === 'production');
+var path = require('path')
 
 // minimize only in production 
 var plugins = isProd ? [new webpack.optimize.UglifyJsPlugin({minimize: true})] : [];
 
 module.exports = {
-  entry: "./src/widget.js",
+  entry: ["./src/widget.js"],
   output: {
-    path:'build',
-    publicPath: __dirname + '/build/',
+    path: path.resolve(__dirname, 'build'),
     filename: 'widget.js',
     libraryTarget: "umd"
   },
@@ -28,7 +28,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets=es2015' },
-      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader?limit=10000000' }
+      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader' }
     ]
   },
   plugins: plugins

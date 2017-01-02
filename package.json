@@ -7,7 +7,6 @@
     "start": "npm run app -s",
     "app": "http-server -p 8008",
     "prebuild": "npm run clean -s",
-    "build": "NODE_ENV=production webpack -p",
     "clean": "rimraf build/*",
     "prewatch": "npm run clean -s",
     "watch": " npm run watch:build",
@@ -16,7 +15,8 @@
     "watch:assets": "nodemon -q -w src/assets/ --ext 'css,html,svg,png' --exec 'npm run build'",
     "live-reload": "live-reload --port 9091 build/",
     "open:dev": "opener http://localhost:8008",
-    "dev": "parallelshell 'npm run live-reload -s' 'npm run app -s' 'npm run watch -s'"
+    "build": "NODE_ENV=production webpack -p",
+    "dev": "webpack-dev-server --inline --hot"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,10 @@
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
     "file-loader": "^0.9.0",
+    "html-loader": "^0.4.4",
     "http-server": "^0.8.5",
+    "inline-loader": "^0.1.1",
+    "inline-svg-loader": "0.0.1",
     "live-reload": "^1.1.0",
     "nodemon": "^1.8.1",
     "opener": "^1.4.1",
@@ -45,7 +48,10 @@
     "raw-loader": "^0.5.1",
     "remotestoragejs": "github:remotestorage/remotestorage.js#feature/949-noglobal",
     "rimraf": "^2.4.3",
-    "webpack": "^1.13.3"
+    "svg-inline-loader": "^0.7.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
   },
   "babel": {
     "presets": [
