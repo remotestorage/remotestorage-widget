@@ -19,7 +19,6 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   // remoteStorage is connected!
   this.online = false;
 
-
   // widget is minimized ?
   this.closed = false;
 
@@ -318,7 +317,6 @@ RemoteStorageWidget.prototype = {
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {
-      console.error('sono qui')
       // if (this.rsErrorBox.classList.contains('visible')) {
       //   // Don't allow closing the widget while there's an error to acknowledge
       //   return;
@@ -331,7 +329,7 @@ RemoteStorageWidget.prototype = {
       // }
     });
 
-    // // Stop clicks on the widget itthis from triggering the above event
+    // Stop clicks on the widget itthis from triggering the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to bring the full widget back
@@ -339,24 +337,11 @@ RemoteStorageWidget.prototype = {
   },
 
   openWidget() {
-    console.error('sono dentro openWidget');
     this.closed = false;
-    // if ()
-    // this.setState('connected')
-    if (this.active) {
-      this.setState('connected');
-    } else {
-      this.setState('initial');
-    }
-
-    // if (this.rsWidget.classList.contains("rs-state-connected")) {
-      // this.rsWidget.classList.toggle("rs-hide", false);
-      // this.fadeIn(this.rsConnected, 300);
-    // }
+    this.setState(this.active ? 'connected' : 'initial');
   },
 
   closeWidget() {
-    console.error('dentro closed!??!')
     this.setState('close')
     this.closed = true
     // if (this.rsErrorBox.classList.contains('visible')) {
@@ -396,6 +381,7 @@ RemoteStorageWidget.prototype = {
 
   handleSyncError(/* error */) {
     // console.debug('Encountered SyncError', error);
+    this.showErrorBox('App sync error');
   },
 
   handleUnauthorized() {
@@ -403,7 +389,7 @@ RemoteStorageWidget.prototype = {
     // console.debug('Bearer token not valid anymore');
     // this.rs.stopSync();
     // this.rsWidget.classList.add('rs-state-unauthorized');
-    // this.showErrorBox('App authorization expired or revoked');
+    this.showErrorBox('App authorization expired or revoked');
     // this.lastSyncedUpdateLoop = setInterval(() => {
     // this.updateLastSyncedOutput();
     // }, 5000);
