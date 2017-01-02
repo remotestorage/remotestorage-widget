@@ -16,7 +16,7 @@
     "live-reload": "live-reload --port 9091 build/",
     "open:dev": "opener http://localhost:8008",
     "build": "NODE_ENV=production webpack -p",
-    "dev": "webpack-dev-server --inline --hot"
+    "dev": "webpack-dev-server --inline --hot --content-base demo"
   },
   "repository": {
     "type": "git",

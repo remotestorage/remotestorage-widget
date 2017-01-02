@@ -10,7 +10,21 @@ import RemoteStorage from 'remotestoragejs'
 let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage
   
-  this.state = 'initial'
+  
+  this.state = 'initial';
+
+  // true if we have remoteStorage connection's info
+  this.active = false;
+
+  // remoteStorage is connected!
+  this.online = false;
+
+
+  // widget is minimized ?
+  this.closed = false;
+
+  // logo will be gray when (active && !online)
+
 
   this.insertHtmlTemplate(options.domID)
 
@@ -19,6 +33,8 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   remoteStorage.on('disconnected', () => this.eventHandler('disconnected'))
   remoteStorage.on('network-online', () => this.eventHandler('network-online'))
   remoteStorage.on('network-offline', () => this.eventHandler('network-offline'))
+  remoteStorage.on('error', (error) => this.eventHandler('error', error))
+
 
   this.showProviders = false
 
@@ -34,37 +50,26 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsSignIn = document.querySelector('.rs-box-sign-in')
 
   this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
+  this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
+  this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
+  this.rsErrorBox = document.querySelector('.rs-box-error');
 
-  // CSS can't animate to unknown height (as in height: auto)
-  // so we need to store the height, set it to 0 and use it when we want the animation
-  // this.chooseBox = document.querySelector('.rs-box-choose');
-  // this.chooseBoxHeight = this.chooseBox.clientHeight;
-  // // Set the height to zero until the initial button is clicked
-  // this.chooseBox.setAttribute("style", "height: 0");
+  this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+  
+  this.rsDisconnectButton = document.querySelector('.rs-disconnect');
+  this.rsSyncButton = document.querySelector('.rs-sync');
+  this.rsLogo = document.querySelector('.rs-main-logo');
 
-  // this.signInBox = document.querySelector('.rs-box-sign-in');
-  // this.signInContent = document.querySelector('.rs-sign-in-content');
-  // this.signInContentHeight = this.signInContent.clientHeight;
+  this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
-  // this.rsWidget = document.querySelector('#rs-widget');
-  // this.rsLogo = document.querySelector('.rs-main-logo');
-  // this.rsInitial = document.querySelector('.rs-box-initial');
-  // this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
-  // this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
-  // this.rsDisconnectButton = document.querySelector('.rs-disconnect');
-  // this.rsSyncButton = document.querySelector('.rs-sync');
-  // this.rsConnected = document.querySelector('.rs-box-connected');
-  // this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
-
-  // this.rsErrorBox = document.querySelector('.rs-box-error');
-
-  // this.lastSynced = null;
-  // this.lastSyncedUpdateLoop = null;
+  this.lastSynced = null;
+  this.lastSyncedUpdateLoop = null;
 
   // this.setAssetUrls();
   this.setEventListeners();
   this.setClickHandlers();
 };
+
 
 RemoteStorageWidget.prototype = {
 
@@ -73,21 +78,86 @@ RemoteStorageWidget.prototype = {
   },
 
   // handle events !
-  eventHandler (event) {
-    this.log('EVENT: ', event)
-    if (event === 'connected' ) {
-      this.rs.sync.on('req-done', () => this.eventHandler('req-done'))
-      this.rs.sync.on('done', () => this.eventHandler('done'))
+  eventHandler (event, msg) {
+    this.log('EVENTI: ', event)
+    switch (event) {
+      case 'req-done':
+        this.rsSyncButton.classList.add("rs-rotate");
+        break;
+      case 'done':
+        this.rsSyncButton.classList.remove("rs-rotate");
+
+        if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
+            !this.rs.remote.online) {
+          this.updateLastSyncedOutput();
+        } else if (this.rs.remote.online) {
+          this.lastSynced = new Date();
+          console.debug('Set lastSynced to', this.lastSynced);
+          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+          // this.fadeOut(subHeadlineEl);
+          subHeadlineEl.innerHTML = 'Synced just now';
+          // this.delayFadeIn(subHeadlineEl, 300);
+        }
+        // this.updateLastSyncedOutput()
+        break;
+      case 'disconnected':
+        this.active = false;
+        this.online = false;
+        this.setState('initial');
+        break;
+      case 'connected':
+        this.active = true;
+        this.online = true;
+        this.rs.sync.on('req-done', () => this.eventHandler('req-done'))
+        this.rs.sync.on('done', () => this.eventHandler('done'))
+        let connectedUser = this.rs.remote.userAddress;
+        this.rsConnectedUser.innerHTML = connectedUser;
+        this.setState('connected')
+        break;
+      case 'network-offline':
+        this.online = false;
+        // this.active = false;
+        this.setState();
+        break;
+      case 'network-online':
+        this.online = true;
+        this.active = true;
+        this.setState('connected');
+        break;
+      case 'error':
+        if (msg instanceof RemoteStorage.DiscoveryError) {
+          this.handleDiscoveryError(msg);
+        } else if (msg instanceof RemoteStorage.SyncError) {
+          this.handleSyncError(msg);
+        } else if (msg instanceof RemoteStorage.Unauthorized) {
+          this.handleUnauthorized(msg);
+        } else {
+          console.debug('Encountered unhandled error', msg);
+        }
+        // console.error('sono dentro error', msg)
+        // this.rsErrorBox.innerHTML = msg
+        // this.setState('error')
+        break;
     }
 
   },
 
   setState (state) {
     this.log('Setting state ', state)
-    this.rsWidget.className = `rs-widget rs-state-${state}`
 
+    if (this.closed && state !== 'close') {
+      this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`
+    } else {
+      this.rsWidget.className = `rs-widget rs-state-${state || this.state}`
+    }
 
-    this.state = state
+    if (!this.online && this.active) {
+      this.rsWidget.classList.add('rs-state-offline')
+    } else {
+      this.rsWidget.classList.remove('rs-state-offline')
+    }
+
+    if (state) this.state = state
   },
 
   /**
@@ -100,7 +170,7 @@ RemoteStorageWidget.prototype = {
     style.innerHTML = require('raw!./assets/styles.css');
 
     element.id = "remotestorage-widget";
-    element.innerHTML = require('raw!./assets/widget.html');
+    element.innerHTML = require('html!./assets/widget.html');
     element.appendChild(style); 
 
     if (elementId) {
@@ -114,24 +184,13 @@ RemoteStorageWidget.prototype = {
     }
   },
 
-  setAssetUrls() {
-    //this.rsCloseButton.src = require('./assets/close.svg');
-    this.rsLogo.src = require('./assets/remoteStorage.svg');
-    document.querySelector('.rs-logo').src = require('./assets/remoteStorage.svg');
-    document.querySelector('.dropbox-logo').src = require('./assets/dropbox.svg');
-    document.querySelector('.gdrive-logo').src = require('./assets/gdrive.svg');
-    document.querySelector('.rs-power-icon').src = require('./assets/power.svg');
-    document.querySelector('.rs-loop-icon').src = require('./assets/loop.svg');
-  },
-
   setEventListeners() {
     // Sign-in form
-    // let rsSignInForm = document.querySelector('.rs-sign-in-form');
-    // rsSignInForm.addEventListener('submit', (e) => {
-    //   e.preventDefault();
-    //   let userAddress = document.querySelector('input[name=rs-user-address]').value;
-    //   this.rs.connect(userAddress);
-    // });
+    this.rsSignInForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let userAddress = document.querySelector('input[name=rs-user-address]').value;
+      this.rs.connect(userAddress);
+    });
   },
     //
     // remoteStorage events
@@ -224,6 +283,7 @@ RemoteStorageWidget.prototype = {
   // },
 
   setClickHandlers() {
+
     // Initial button
     this.rsInitial.addEventListener('click', () => {
       if (this.showProviders) {
@@ -231,45 +291,19 @@ RemoteStorageWidget.prototype = {
       } else {
         this.setState('sign-in')
       }
-      // this.rsWidget.classList.remove("rs-state-initial");
-      // this.rsWidget.classList.add("rs-state-choose");
-      // this.fadeOut(this.rsInitial);
-      // Set height of the ChooseBox back to original height.
-      // this.chooseBox.setAttribute("style", "height: " + this.chooseBoxHeight);
     });
 
     // Choose RS button
-    this.rsChooseRemoteStorageButton.addEventListener('click', () => {
-      this.setState('sign-in')
-      // this.rsWidget.classList.remove("rs-state-choose");
-      // this.rsWidget.classList.add("rs-state-sign-in");
-      // this.chooseBox.setAttribute("style", "height: 0");
-      // this.signInBox.setAttribute("style", "height: " + this.chooseBoxHeight + "px"); // Set the sign in box to same height as chooseBox
-      // this.signInContent.setAttribute("style", "padding-top: " + ((this.chooseBoxHeight - this.signInContentHeight) / 2) + "px"); // Center it
-    });
+    this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in'));
 
     // Choose Dropbox button
-    this.rsChooseDropboxButton.addEventListener('click', () => {
-      this.rs["dropbox"].connect();
-      // this.rsWidget.classList.remove("rs-state-choose");
-      // this.rsWidget.classList.add("rs-state-connected");
-      // this.chooseBox.setAttribute("style", "height: 0");
-      // this.delayFadeIn(this.rsConnected, 600);
-    });
+    this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
 
     // Choose Google drive button
-    this.rsChooseGoogleDriveButton.addEventListener('click', () => {
-      this.rs["googledrive"].connect();
-      // this.rsWidget.classList.remove("rs-state-choose");
-      // this.rsWidget.classList.add("rs-state-connected");
-      // this.chooseBox.setAttribute("style", "height: 0");
-      // this.delayFadeIn(this.rsConnected, 600);
-    });
+    this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
 
     // Disconnect button
-    this.rsDisconnectButton.addEventListener('click', () => {
-      this.rs.disconnect();
-    });
+    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() )
 
     // Sync button
     this.rsSyncButton.addEventListener('click', () => {
@@ -284,94 +318,72 @@ RemoteStorageWidget.prototype = {
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {
-      if (this.rsErrorBox.classList.contains('visible')) {
-        // Don't allow closing the widget while there's an error to acknowledge
-        return;
-      }
-      if (this.rsWidget.classList.contains("rs-state-connected")) {
-        this.rsWidget.classList.toggle("rs-hide", true);
-        this.fadeOut(this.rsConnected);
-      } else {
+      console.error('sono qui')
+      // if (this.rsErrorBox.classList.contains('visible')) {
+      //   // Don't allow closing the widget while there's an error to acknowledge
+      //   return;
+      // }
+      // if (this.rsWidget.classList.contains("rs-state-connected")) {
+      //   this.rsWidget.classList.toggle("rs-hide", true);
+      //   // this.fadeOut(this.rsConnected);
+      // } else {
         this.closeWidget();
-      }
+      // }
     });
 
-    // Stop clicks on the widget itthis from triggering the above event
-    this.rsWidget.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    // // Stop clicks on the widget itthis from triggering the above event
+    this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to bring the full widget back
-    this.rsLogo.addEventListener('click', () => {
-      this.openWidget();
-    });
+    this.rsLogo.addEventListener('click', () => this.openWidget());
   },
 
   openWidget() {
-    if (this.rsWidget.classList.contains("rs-state-connected")) {
-      this.rsWidget.classList.toggle("rs-hide", false);
-      this.fadeIn(this.rsConnected, 300);
+    console.error('sono dentro openWidget');
+    this.closed = false;
+    // if ()
+    // this.setState('connected')
+    if (this.active) {
+      this.setState('connected');
+    } else {
+      this.setState('initial');
     }
+
+    // if (this.rsWidget.classList.contains("rs-state-connected")) {
+      // this.rsWidget.classList.toggle("rs-hide", false);
+      // this.fadeIn(this.rsConnected, 300);
+    // }
   },
 
   closeWidget() {
-    if (this.rsErrorBox.classList.contains('visible')) {
-      // Don't allow closing the widget while there's an error to acknowledge
-      return;
-    }
-    this.rsWidget.classList.remove("rs-state-sign-in");
-    this.rsWidget.classList.remove("rs-state-choose");
-    this.delayFadeIn(this.rsInitial, 300);
-    this.signInBox.setAttribute("style", "height: 0;");
-    this.chooseBox.setAttribute("style", "height: 0;");
-  },
-
-  // To delay fadeIn until other animations are finished
-  delayFadeIn(element, delayTime) {
-    setTimeout(() => {
-      this.fadeIn(element);
-    }, delayTime);
-  },
-
-  // CSS can't fade elements in and out of the page flow so we have to do it in JS
-  fadeOut(element) {
-    let op = 1;  // initial opacity
-    let timer = setInterval(function () {
-      if (op <= 0.1){
-        clearInterval(timer);
-        element.style.display = "none";
-      }
-      element.style.opacity = op;
-      element.style.filter = "alpha(opacity=" + op * 100 + ")";
-      op -= op * 0.1;
-    }, 3);
-  },
-
-  fadeIn(element) {
-    let op = 0.1;  // initial opacity
-    element.style.display = "block";
-    let timer = setInterval(function () {
-      if (op >= 1){
-        clearInterval(timer);
-      }
-      element.style.opacity = op;
-      element.style.filter = "alpha(opacity=" + op * 100 + ")";
-      op += op * 0.1;
-    }, 3);
+    console.error('dentro closed!??!')
+    this.setState('close')
+    this.closed = true
+    // if (this.rsErrorBox.classList.contains('visible')) {
+    //   // Don't allow closing the widget while there's an error to acknowledge
+    //   return;
+    // }
+    // this.rsWidget.classList.remove("rs-state-sign-in");
+    // this.rsWidget.classList.remove("rs-state-choose");
+    // // this.delayFadeIn(this.rsInitial, 300);
+    // this.signInBox.setAttribute("style", "height: 0;");
+    // this.chooseBox.setAttribute("style", "height: 0;");
   },
 
   showErrorBox(errorMsg) {
-    this.openWidget();
+    // this.openWidget();
     this.rsErrorBox.innerHTML = errorMsg;
-    this.rsErrorBox.classList.remove('hidden');
-    this.rsErrorBox.classList.add('visible');
-    this.fadeIn(this.rsErrorBox);
+    this.setState('error');
+    // this.rsErrorBox.classList.remove('hidden');
+    // this.rsErrorBox.classList.add('visible');
+    // // this.fadeIn(this.rsErrorBox);
   },
 
   hideErrorBox() {
     this.rsErrorBox.innerHTML = '';
-    this.rsErrorBox.classList.remove('visible');
-    this.rsErrorBox.classList.add('hidden');
+    this.setState('close');
+    // this.rsErrorBox.classList.remove('visible');
+    // this.rsErrorBox.classList.add('hidden');
   },
 
   handleDiscoveryError(error) {
@@ -379,7 +391,7 @@ RemoteStorageWidget.prototype = {
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('hidden');
     msgContainer.classList.add('visible');
-    this.fadeIn(msgContainer);
+    // // this.fadeIn(msgContainer);
   },
 
   handleSyncError(/* error */) {
@@ -387,14 +399,14 @@ RemoteStorageWidget.prototype = {
   },
 
   handleUnauthorized() {
-    console.debug('RS UNAUTHORIZED');
-    console.debug('Bearer token not valid anymore');
-    this.rs.stopSync();
-    this.rsWidget.classList.add('rs-state-unauthorized');
-    this.showErrorBox('App authorization expired or revoked');
-    this.lastSyncedUpdateLoop = setInterval(() => {
-    this.updateLastSyncedOutput();
-    }, 5000);
+    // console.debug('RS UNAUTHORIZED');
+    // console.debug('Bearer token not valid anymore');
+    // this.rs.stopSync();
+    // this.rsWidget.classList.add('rs-state-unauthorized');
+    // this.showErrorBox('App authorization expired or revoked');
+    // this.lastSyncedUpdateLoop = setInterval(() => {
+    // this.updateLastSyncedOutput();
+    // }, 5000);
   },
 
   updateLastSyncedOutput() {
