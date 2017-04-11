@@ -52,6 +52,14 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
   this.rsErrorBox = document.querySelector('.rs-box-error');
 
+  // check if apyKeys is set for Dropbox or Google [googledrive, dropbox]
+  // to show/hide relative buttons only if needed
+  if(!remoteStorage.apiKeys.hasOwnProperty('googledrive'))
+    this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton)
+
+  if(!remoteStorage.apiKeys.hasOwnProperty('dropbox'))
+    this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton)
+
   this.rsSignInForm = document.querySelector('.rs-sign-in-form');
   
   this.rsDisconnectButton = document.querySelector('.rs-disconnect');
@@ -286,7 +294,8 @@ RemoteStorageWidget.prototype = {
 
     // Initial button
     this.rsInitial.addEventListener('click', () => {
-      if (this.showProviders) {
+      // choose backend only if some providers are declared
+      if (remoteStorage.apiKeys) {
         this.setState('choose');
       } else {
         this.setState('sign-in');
