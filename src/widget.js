@@ -4,12 +4,12 @@ import RemoteStorage from 'remotestoragejs';
  * RemoteStorage connect widget
  * @constructor
  * @param {object} remoteStorage - remoteStorage instance
- * @param {object} options - Widget options (domID, ...)
+ * @param {object} options - Widget options
+ *     leaveOpen: bool (default: false) do not minimize widget when user click outside of it
  */
 
 let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
-  
   
   this.state = 'initial';
 
@@ -26,6 +26,7 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 
 
   this.insertHtmlTemplate(options.domID);
+  this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
 
   remoteStorage.on('connected', () => this.eventHandler('connected'));
   remoteStorage.on('ready', () => this.eventHandler('ready'));
@@ -33,13 +34,6 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   remoteStorage.on('network-online', () => this.eventHandler('network-online'));
   remoteStorage.on('network-offline', () => this.eventHandler('network-offline'));
   remoteStorage.on('error', (error) => this.eventHandler('error', error));
-
-  this.showProviders = false;
-
-  // check if apyKeys is set for Dropbox or Google
-  if (Object.keys(remoteStorage.apiKeys).length > 0) {
-    this.showProviders = true;
-  }
 
   this.rsWidget = document.querySelector('.rs-widget');
   this.rsInitial = document.querySelector('.rs-box-initial');
@@ -71,7 +65,6 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
   this.lastSynced = null;
   this.lastSyncedUpdateLoop = null;
 
-  // this.setAssetUrls();
   this.setEventListeners();
   this.setClickHandlers();
 };
@@ -87,6 +80,8 @@ RemoteStorageWidget.prototype = {
   eventHandler (event, msg) {
     this.log('EVENTI: ', event);
     switch (event) {
+      case 'ready':
+        this.setState(this.state);
       case 'req-done':
         this.rsSyncButton.classList.add("rs-rotate");
         break;
@@ -98,13 +93,9 @@ RemoteStorageWidget.prototype = {
           this.updateLastSyncedOutput();
         } else if (this.rs.remote.online) {
           this.lastSynced = new Date();
-          console.debug('Set lastSynced to', this.lastSynced);
           let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-          // this.fadeOut(subHeadlineEl);
           subHeadlineEl.innerHTML = 'Synced just now';
-          // this.delayFadeIn(subHeadlineEl, 300);
         }
-        // this.updateLastSyncedOutput()
         break;
       case 'disconnected':
         this.active = false;
@@ -140,9 +131,6 @@ RemoteStorageWidget.prototype = {
         } else {
           console.debug('Encountered unhandled error', msg);
         }
-        // console.error('sono dentro error', msg)
-        // this.rsErrorBox.innerHTML = msg
-        // this.setState('error')
         break;
     }
 
@@ -150,6 +138,12 @@ RemoteStorageWidget.prototype = {
 
   setState (state) {
     this.log('Setting state ', state);
+
+    let lastSelected = document.querySelector('.rs-box.selected');
+    lastSelected && lastSelected.classList.remove('selected');
+
+    let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+    toSelect && toSelect.classList.add('selected');
 
     if (this.closed && state !== 'close') {
       this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`;
@@ -200,95 +194,6 @@ RemoteStorageWidget.prototype = {
       this.rs.connect(userAddress);
     });
   },
-    //
-    // remoteStorage events
-    //
-  //   this.rs.on('connected', () => {
-  //     console.debug('RS CONNECTED');
-
-  //     this.rs.sync.on('req-done', () => {
-  //       console.debug('SYNC REQ DONE');
-  //       this.rsSyncButton.classList.add('rs-rotate');
-  //     });
-
-  //     this.rs.sync.on('done', () => {
-  //       console.debug('SYNC DONE');
-
-  //       if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
-  //           !this.rs.remote.online) {
-  //         console.error('sono qui dentro ?!?!!?')
-  //         this.updateLastSyncedOutput();
-  //       } else if (this.rs.remote.online) {
-  //         this.lastSynced = new Date();
-  //         console.debug('Set lastSynced to', this.lastSynced);
-  //         let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-  //         this.fadeOut(subHeadlineEl);
-  //         subHeadlineEl.innerHTML = 'Synced just now';
-  //         this.delayFadeIn(subHeadlineEl, 300);
-  //       } else {
-  //         console.error('sono proprio qui')
-  //       }
-  //       this.rsSyncButton.classList.remove('rs-rotate');
-  //     });
-
-  //     let connectedUser = this.rs.remote.userAddress;
-  //     // TODO set user address/name in rs.js core
-  //     if (typeof connectedUser === 'undefined' &&
-  //         this.rs.backend === 'googledrive') {
-  //       connectedUser = 'Google Drive';
-  //     }
-  //     this.rsWidget.classList.remove("rs-state-sign-in");
-  //     this.signInBox.setAttribute("style", "height: 0;");
-  //     this.rsWidget.classList.remove('rs-state-initial')
-  //     this.rsWidget.classList.remove("rs-state-choose");
-  //     this.rsWidget.classList.add("rs-state-connected");
-  //     this.fadeOut(this.rsInitial);
-  //     this.chooseBox.setAttribute("style", "height: 0");
-  //     this.rsConnectedUser.innerHTML = connectedUser;
-  //     this.delayFadeIn(this.rsConnected, 600);
-  //   });
-
-  //   this.rs.on('disconnected', () => {
-  //     console.debug('RS DISCONNECTED');
-  //     this.rsWidget.classList.remove("rs-state-connected");
-  //     this.rsWidget.classList.add("rs-state-initial");
-  //     this.hideErrorBox();
-  //     this.fadeOut(this.rsConnected);
-  //     this.delayFadeIn(this.rsInitial, 300);
-  //   });
-
-  //   this.rs.on('error', (error) => {
-  //     if (error instanceof RemoteStorage.DiscoveryError) {
-  //       this.handleDiscoveryError(error);
-  //     } else if (error instanceof RemoteStorage.SyncError) {
-  //       this.handleSyncError(error);
-  //     } else if (error instanceof RemoteStorage.Unauthorized) {
-  //       this.handleUnauthorized(error);
-  //     } else {
-  //       console.debug('Encountered unhandled error', error);
-  //     }
-  //   });
-
-  //   this.rs.on('network-offline', () => {
-  //     console.debug('NETWORK OFFLINE');
-  //     this.rsWidget.classList.add("rs-state-offline");
-  //   });
-
-  //   this.rs.on('network-online', () => {
-  //     console.debug('NETWORK ONLINE');
-  //     this.rsWidget.classList.remove("rs-state-offline");
-  //   });
-
-  //   this.rs.on('ready', () => {
-  //     console.debug('RS READY');
-  //     this.rs.on('wire-busy', () => {
-  //       console.debug('WIRE BUSY');
-  //     });
-  //     this.rs.on('wire-done', () => {
-  //       console.debug('WIRE DONE');
-  //     });
-  //   });
-  // },
 
   setClickHandlers() {
 
@@ -325,21 +230,10 @@ RemoteStorageWidget.prototype = {
       }
     });
 
-    // Reduce to only icon if connected and clicked outside of widget
-    document.addEventListener('click', () => {
-      // if (this.rsErrorBox.classList.contains('visible')) {
-      //   // Don't allow closing the widget while there's an error to acknowledge
-      //   return;
-      // }
-      // if (this.rsWidget.classList.contains("rs-state-connected")) {
-      //   this.rsWidget.classList.toggle("rs-hide", true);
-      //   // this.fadeOut(this.rsConnected);
-      // } else {
-        this.closeWidget();
-      // }
-    });
-
-    // Stop clicks on the widget itthis from triggering the above event
+    // Reduce to icon only if connected and clicked outside of widget
+    document.addEventListener('click', () => this.closeWidget() );
+    
+    // clicks on the widget stops the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to bring the full widget back
@@ -352,33 +246,22 @@ RemoteStorageWidget.prototype = {
   },
 
   closeWidget() {
-    this.setState('close');
-    this.closed = true;
-    // if (this.rsErrorBox.classList.contains('visible')) {
-    //   // Don't allow closing the widget while there's an error to acknowledge
-    //   return;
-    // }
-    // this.rsWidget.classList.remove("rs-state-sign-in");
-    // this.rsWidget.classList.remove("rs-state-choose");
-    // // this.delayFadeIn(this.rsInitial, 300);
-    // this.signInBox.setAttribute("style", "height: 0;");
-    // this.chooseBox.setAttribute("style", "height: 0;");
+    if (!this.leaveOpen) {
+      this.setState('close');
+      this.closed = true;
+    } else {
+      this.setState(this.active ? 'connected' : 'initial');
+    }
   },
 
   showErrorBox(errorMsg) {
-    // this.openWidget();
     this.rsErrorBox.innerHTML = errorMsg;
     this.setState('error');
-    // this.rsErrorBox.classList.remove('hidden');
-    // this.rsErrorBox.classList.add('visible');
-    // // this.fadeIn(this.rsErrorBox);
   },
 
   hideErrorBox() {
     this.rsErrorBox.innerHTML = '';
     this.setState('close');
-    // this.rsErrorBox.classList.remove('visible');
-    // this.rsErrorBox.classList.add('hidden');
   },
 
   handleDiscoveryError(error) {
@@ -386,7 +269,6 @@ RemoteStorageWidget.prototype = {
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('hidden');
     msgContainer.classList.add('visible');
-    // // this.fadeIn(msgContainer);
   },
 
   handleSyncError(/* error */) {
