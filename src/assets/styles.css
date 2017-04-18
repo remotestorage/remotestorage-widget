@@ -1,37 +1,37 @@
+/* RemoteStorage widget style */
+ 
+.rs-widget * {
+  box-sizing: border-box;
+}
+
 .rs-widget {
-  will-change: height, width;
+  font-family: arial, sans-serif;
+  max-width: 350px;
+  color: #333;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+  will-change: max-height, height, width, opacity, max-width, background, box-shadow;
+  transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
+  transition-duration: 300ms;
 }
 
 .rs-box {
-  will-change: opacity, height;
   overflow: hidden;
-  transition: height 300ms ease-out, width 300ms linear;
+  will-change: height;
+  transition-property: height, width, max-height;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in;
   opacity: 0;
-  height: 0;
+  max-height: 0px;
 }
 
-
-.rs-box-choose {
-  clear: both;
-}
-
-
-/** WIDGET STATE */
-.rs-state-initial .rs-box-initial {
-  height: 40px;
+.rs-box.selected {
   opacity: 1;
-}
-.rs-state-choose .rs-box-choose {
-  height: 414px;
-  opacity: 1;
-}
-.rs-state-sign-in .rs-box-sign-in {
-  height: 240px;
-  opacity: 1;
-}
-.rs-state-connected .rs-box-connected {
-  height: 40px;
-  opacity: 1;
+  max-height: 400px;
 }
 
 /* Main logo */
@@ -39,9 +39,9 @@
   float: left;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
-  /*transition-delay: 300ms;*/
   height: 40px;
   width: auto;
+  cursor: pointer;
 }
 
 
@@ -58,26 +58,6 @@ polygon.rs-logo-shape {
   transition-duration: 0.5s;
 }
 
- /*  Widget */
-.rs-widget,
-.rs-widget * {
-  box-sizing: border-box;
-  font-family: arial, sans-serif;
-}
-.rs-widget {
-  /*height: auto;*/
-  max-width: 350px;
-  color: #333;
-  background-color: #fff;
-  border-radius: 3px;
-  padding: 10px;
-  display: inline-block;
-  margin: 10px;
-  overflow: hidden;
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
-  /*transition: all 300ms;*/
-  transition: width 300ms ease-out, height 300ms ease-out, opacity 200ms ease-out, max-width 300ms ease-out, background 300ms linear, box-shadow 300ms linear ;
-}
 
 
 /* Hide everything except logo when connected and clicked outside of box  */
@@ -86,7 +66,6 @@ polygon.rs-logo-shape {
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
-  transition: max-width 300ms ease-out , opacity 300ms linear, background 300ms linear, box-shadow 300ms linear;
 }
 
 .rs-state-close:hover {
@@ -94,35 +73,33 @@ polygon.rs-logo-shape {
   opacity: 1;
 }
 
-
-
-
-/* Initial Connect remote storage box  */
+ /*Initial Connect remote storage box  */
 .rs-box-initial:hover {
   cursor: pointer;
 }
-.rs-state-initial .rs-box-initial {
-  display: block;
-}
-.rs-state-choose .rs-box-initial {
-  position: absolute;
-}
-
 
 .rs-widget a {
   color: #0093cc;
 }
 
 
+ /*HEADLINE */
 .rs-small-headline {
   font-size: 1em;
   font-weight: bold;
   margin: 0;
   margin-bottom: 2px;
+  height: 1.1em;
+  word-break: break-all;
+  overflow: hidden;
 }
+
 .rs-sub-headline {
+  word-break: break-all;
+  overflow: hidden;
   color: #666;
   font-size: 0.92em;
+  height: 1.2em;
 }
 .rs-big-headline {
   font-size: 1.625em;
@@ -185,15 +162,12 @@ polygon.rs-logo-shape {
   padding: 0 10px 10px 10px;
 }
 
+
+.rs-state-choose .rs-main-logo,
 .rs-state-sign-in .rs-main-logo {
   margin-left: 45%;
-  transform: rotate(90deg);
+  float: none;
 }
-
-.rs-state-offline .rs-main-logo {
-  transform: rotate(180deg);
-}
-
 
 
 .rs-sign-in-form input[type=text] {
@@ -241,17 +215,10 @@ polygon.rs-logo-shape {
   color: darkred;
 }
 
-
-
-
-
-/* Choose provider box */
+ /*Choose provider box */
 .rs-box-choose {
-  clear: both;
   text-align: center;
   overflow: hidden;
-  transition: height 300ms ease-out, width 300ms ease-out;
-  transition-delay: 0ms;
 }
 .rs-box-choose .rs-big-headline {
   margin-top: 20px;
@@ -261,25 +228,16 @@ polygon.rs-logo-shape {
   margin-top: 0;
   margin-bottom: 20px;
 }
-.rs-state-choose .rs-main-logo {
-  margin-left: 45%;
+
+/*Connected box */
+.rs-box-connected {
+  height: 40px;
 }
-
-.rs-state-choose .rs-box-choose {
-  /*transition-delay: 300ms;*/
-}
-
-
-
-/* Connected box */
 .rs-connected-text {
   float: left;
 }
 .rs-box-connected .rs-user {
   font-weight: bold;
-}
-.rs-box-connected .rs-button {
-  float: right;
 }
 .rs-connected-buttons {
   float: right;
@@ -291,65 +249,28 @@ polygon.rs-logo-shape {
   fill: #FF2D2D;
 }
 
-.rs-sync:hover {
-  border-color: #FFBB0C;
-}
-
-.rs-sync:hover .rs-icon {
-  fill: #FFBB0C;
-}
-
-.rs-sync.rs-rotate {
-  border-color: #FFBB0C;
-}
-
-.rs-sync.rs-rotate .rs-icon {
-  fill: #FFBB0C;
-  animation: rs-spin 1s linear infinite;
-}
-
-@keyframes rs-spin { 100% { transform: rotate(360deg); transform:rotate(360deg); } }
-
-/* Floating widget styles */
-.rs-floating {
+ /*Floating widget styles */
+/*.rs-floating {
   position: fixed;
   top: 0;
   right: 0;
 }
+*/
 
 
-/*.rs-main-logo {*/
-  /*animation: rotate 5s infinite;*/
-/*}*/
+/* used during sync 
 @keyframes rotate {
   0% {
     transform: rotate(0deg);
   }
-
-  8%, 16% {
-    transform: rotate(60deg);
-  }
-
-  24%, 32% {
-    transform: rotate(120deg);
-  } 
-
-  40%, 48% {
-    transform: rotate(180deg);
-  } 
-
-  56%, 64% {
-    transform: rotate(240deg);
-  }
-
-  72%, 80% {
-    transform: rotate(300deg);
-  }
-
-  88%, 100% {
+  100% {
     transform: rotate(360deg);
   }
+}
 
+
+.rs-state-close {
+  transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
 }
 
 
@@ -379,4 +300,3 @@ polygon.rs-logo-shape {
     display: block;
   }
 }
-*/
