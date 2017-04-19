@@ -94,7 +94,7 @@ RemoteStorageWidget.prototype = {
     this.rs.on('connected', () => {
       console.debug('RS CONNECTED');
 
-      if (this.rs.sync) {
+      if (this.rs.hasFeature('Sync')) {
         this.rs.sync.on('req-done', () => {
           console.debug('SYNC REQ DONE');
           this.rsSyncButton.classList.add('rs-rotate');
@@ -220,7 +220,7 @@ RemoteStorageWidget.prototype = {
     });
 
     // Sync button
-    if (this.rs.sync) {
+    if (this.rs.hasFeature('Sync')) {
       this.rsSyncButton.addEventListener('click', () => {
         if (this.rsSyncButton.classList.contains('rs-rotate')) {
           this.rs.stopSync();
