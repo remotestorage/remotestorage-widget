@@ -94,25 +94,29 @@ RemoteStorageWidget.prototype = {
     this.rs.on('connected', () => {
       console.debug('RS CONNECTED');
 
-      this.rs.sync.on('req-done', () => {
-        console.debug('SYNC REQ DONE');
-        this.rsSyncButton.classList.add('rs-rotate');
-      });
-      this.rs.sync.on('done', () => {
-        console.debug('SYNC DONE');
-        if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
-            !this.rs.remote.online) {
-          this.updateLastSyncedOutput();
-        } else if (this.rs.remote.online) {
-          this.lastSynced = new Date();
-          console.debug('Set lastSynced to', this.lastSynced);
-          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-          this.fadeOut(subHeadlineEl);
-          subHeadlineEl.innerHTML = 'Synced just now';
-          this.delayFadeIn(subHeadlineEl, 300);
-        }
-        this.rsSyncButton.classList.remove('rs-rotate');
-      });
+      if (this.rs.hasFeature('Sync')) {
+        this.rs.sync.on('req-done', () => {
+          console.debug('SYNC REQ DONE');
+          this.rsSyncButton.classList.add('rs-rotate');
+        });
+        this.rs.sync.on('done', () => {
+          console.debug('SYNC DONE');
+          if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
+              !this.rs.remote.online) {
+            this.updateLastSyncedOutput();
+          } else if (this.rs.remote.online) {
+            this.lastSynced = new Date();
+            console.debug('Set lastSynced to', this.lastSynced);
+            let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
+            this.fadeOut(subHeadlineEl);
+            subHeadlineEl.innerHTML = 'Synced just now';
+            this.delayFadeIn(subHeadlineEl, 300);
+          }
+          this.rsSyncButton.classList.remove('rs-rotate');
+        });
+      } else {
+        this.rsSyncButton.classList.add('hidden');
+      }
 
       let connectedUser = this.rs.remote.userAddress;
       // TODO set user address/name in rs.js core
@@ -216,15 +220,17 @@ RemoteStorageWidget.prototype = {
     });
 
     // Sync button
-    this.rsSyncButton.addEventListener('click', () => {
-      if (this.rsSyncButton.classList.contains('rs-rotate')) {
-        this.rs.stopSync();
-        this.rsSyncButton.classList.remove("rs-rotate");
-      } else {
-        this.rs.startSync();
-        this.rsSyncButton.classList.add("rs-rotate");
-      }
-    });
+    if (this.rs.hasFeature('Sync')) {
+      this.rsSyncButton.addEventListener('click', () => {
+        if (this.rsSyncButton.classList.contains('rs-rotate')) {
+          this.rs.stopSync();
+          this.rsSyncButton.classList.remove("rs-rotate");
+        } else {
+          this.rs.startSync();
+          this.rsSyncButton.classList.add("rs-rotate");
+        }
+      });
+    }
 
     // Reduce to only icon if connected and clicked outside of widget
     document.addEventListener('click', () => {

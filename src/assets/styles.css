@@ -272,6 +272,9 @@ polygon.rs-logo-shape {
 .rs-sync:hover .rs-icon {
   fill: #FFBB0C;
 }
+.rs-sync.hidden {
+  display: none;
+}
 .rs-sync.rs-rotate {
   border-color: #FFBB0C;
 }
