@@ -1,16 +1,14 @@
-import RemoteStorage from 'remotestoragejs';
-
 /**
  * RemoteStorage connect widget
  * @constructor
  * @param {object} remoteStorage - remoteStorage instance
  * @param {object} options - Widget options
  *     leaveOpen: bool (default: false) do not minimize widget when user click outside of it
+ *     domID: DOM element to attach widget to
  */
-
-let RemoteStorageWidget = function(remoteStorage, options={}) {
+let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
-  
+
   this.state = 'initial';
 
   // true if we have remoteStorage connection's info
@@ -48,14 +46,16 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 
   // check if apyKeys is set for Dropbox or Google [googledrive, dropbox]
   // to show/hide relative buttons only if needed
-  if(!remoteStorage.apiKeys.hasOwnProperty('googledrive'))
-    this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton)
+  if (! remoteStorage.apiKeys.hasOwnProperty('googledrive')) {
+    this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton);
+  }
 
-  if(!remoteStorage.apiKeys.hasOwnProperty('dropbox'))
-    this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton)
+  if (! remoteStorage.apiKeys.hasOwnProperty('dropbox')) {
+    this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
+  }
 
   this.rsSignInForm = document.querySelector('.rs-sign-in-form');
-  
+
   this.rsDisconnectButton = document.querySelector('.rs-disconnect');
   this.rsSyncButton = document.querySelector('.rs-sync');
   this.rsLogo = document.querySelector('.rs-main-logo');
@@ -70,7 +70,7 @@ let RemoteStorageWidget = function(remoteStorage, options={}) {
 };
 
 
-RemoteStorageWidget.prototype = {
+Widget.prototype = {
 
   log (...msg) {
     console.debug('[RS-WIDGET] ', ...msg);
@@ -82,6 +82,7 @@ RemoteStorageWidget.prototype = {
     switch (event) {
       case 'ready':
         this.setState(this.state);
+        break;
       case 'req-done':
         this.rsSyncButton.classList.add("rs-rotate");
         break;
@@ -140,9 +141,11 @@ RemoteStorageWidget.prototype = {
     this.log('Setting state ', state);
 
     let lastSelected = document.querySelector('.rs-box.selected');
+    // FIXME why is this an expression?
     lastSelected && lastSelected.classList.remove('selected');
 
     let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+    // FIXME why is this an expression?
     toSelect && toSelect.classList.add('selected');
 
     if (this.closed && state !== 'close') {
@@ -173,7 +176,7 @@ RemoteStorageWidget.prototype = {
 
     element.id = "remotestorage-widget";
     element.innerHTML = require('html!./assets/widget.html');
-    element.appendChild(style); 
+    element.appendChild(style);
 
     if (elementId) {
       const parent = document.getElementById(elementId);
@@ -200,7 +203,7 @@ RemoteStorageWidget.prototype = {
     // Initial button
     this.rsInitial.addEventListener('click', () => {
       // choose backend only if some providers are declared
-      if (remoteStorage.apiKeys) {
+      if (this.rs.apiKeys) {
         this.setState('choose');
       } else {
         this.setState('sign-in');
@@ -232,7 +235,7 @@ RemoteStorageWidget.prototype = {
 
     // Reduce to icon only if connected and clicked outside of widget
     document.addEventListener('click', () => this.closeWidget() );
-    
+
     // clicks on the widget stops the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
@@ -295,6 +298,4 @@ RemoteStorageWidget.prototype = {
   }
 };
 
-RemoteStorage.prototype.displayWidget = function(options) {
-  this.widget = new RemoteStorageWidget(this, options);
-};
+module.exports = Widget;
