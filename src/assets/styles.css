@@ -13,6 +13,7 @@
   padding: 10px;
   margin: 10px;
   overflow: hidden;
+  z-index: 21000000; /* Make sure we're on a reasonably high visibility layer */
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
   will-change: max-height, height, width, opacity, max-width, background, box-shadow;
   transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
