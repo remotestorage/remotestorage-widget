@@ -12,14 +12,17 @@
   <script type="text/javascript" src="widget.js"></script>
   <script>
     var remoteStorage = new RemoteStorage();
+
     remoteStorage.setApiKeys('dropbox', {
       appKey: '6sa61p53d6qa88q'
     });
     remoteStorage.setApiKeys('googledrive', {
       clientId: '626692989184-4qj0epv5gcra69l8kvv3aj6nnahq7rrk.apps.googleusercontent.com'
     });
+
     remoteStorage.access.claim('bookmarks', 'rw');
     remoteStorage.caching.enable('/bookmarks/');
-    remoteStorage.displayWidget();
+
+    var widget = new Widget(remoteStorage);
   </script>
 </body>
