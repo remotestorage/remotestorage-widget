@@ -9,7 +9,6 @@
     "document",
     "setInterval",
     "setTimeout",
-    "RemoteStorage",
     "clearInterval"
   ],
   "browser": false,

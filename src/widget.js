@@ -127,11 +127,11 @@ Widget.prototype = {
         this.setState('connected');
         break;
       case 'error':
-        if (msg instanceof RemoteStorage.DiscoveryError) {
+        if (msg.name === 'DiscoveryError') {
           this.handleDiscoveryError(msg);
-        } else if (msg instanceof RemoteStorage.SyncError) {
+        } else if (msg.name === 'SyncError') {
           this.handleSyncError(msg);
-        } else if (msg instanceof RemoteStorage.Unauthorized) {
+        } else if (msg.name === 'Unauthorized') {
           this.handleUnauthorized(msg);
         } else {
           console.debug('Encountered unhandled error', msg);
