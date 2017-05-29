@@ -78,7 +78,7 @@ Widget.prototype = {
 
   // handle events !
   eventHandler (event, msg) {
-    this.log('EVENTI: ', event);
+    this.log('EVENT: ', event);
     switch (event) {
       case 'ready':
         this.setState(this.state);
@@ -106,8 +106,12 @@ Widget.prototype = {
       case 'connected':
         this.active = true;
         this.online = true;
-        this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
-        this.rs.sync.on('done', () => this.eventHandler('done'));
+        if (this.rs.hasFeature('Sync')) {
+          this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
+          this.rs.sync.on('done', () => this.eventHandler('done'));
+        } else {
+          this.rsSyncButton.classList.add('hidden');
+        }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
         this.setState('connected');
@@ -223,15 +227,17 @@ Widget.prototype = {
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
     // Sync button
-    this.rsSyncButton.addEventListener('click', () => {
-      if (this.rsSyncButton.classList.contains('rs-rotate')) {
-        this.rs.stopSync();
-        this.rsSyncButton.classList.remove("rs-rotate");
-      } else {
-        this.rs.startSync();
-        this.rsSyncButton.classList.add("rs-rotate");
-      }
-    });
+    if (this.rs.hasFeature('Sync')) {
+      this.rsSyncButton.addEventListener('click', () => {
+        if (this.rsSyncButton.classList.contains('rs-rotate')) {
+          this.rs.stopSync();
+          this.rsSyncButton.classList.remove("rs-rotate");
+        } else {
+          this.rs.startSync();
+          this.rsSyncButton.classList.add("rs-rotate");
+        }
+      });
+    }
 
     // Reduce to icon only if connected and clicked outside of widget
     document.addEventListener('click', () => this.closeWidget() );
