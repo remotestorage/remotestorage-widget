@@ -30,9 +30,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets=es2015' },
-      { test: /\.(jpe?g|png|gif|svg)$/i, loader: 'url-loader' }
     ]
   },
   plugins: plugins
 };
-

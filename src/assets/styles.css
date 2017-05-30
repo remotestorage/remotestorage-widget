@@ -1,5 +1,5 @@
-/* RemoteStorage widget style */
- 
+/* RemoteStorage widget styles */
+
 .rs-widget * {
   box-sizing: border-box;
 }
@@ -38,13 +38,13 @@
 /* Main logo */
 .rs-main-logo {
   float: left;
+  height: 36px;
+  width: auto;
+  margin-top: 1px;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
-  height: 40px;
-  width: auto;
   cursor: pointer;
 }
-
 
 polygon.rs-logo-shape {
   fill: #FF4B03;
@@ -52,21 +52,20 @@ polygon.rs-logo-shape {
   transition-duration: 0.5s;
 }
 
-
 .rs-state-offline polygon.rs-logo-shape {
   fill: #888;
   transition-property: fill;
   transition-duration: 0.5s;
 }
 
-
-
-/* Hide everything except logo when connected and clicked outside of box  */
+/* Hide everything except logo when connected and clicked outside of box */
 .rs-state-close {
   max-width: 55px;
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
+
+  transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
 }
 
 .rs-state-close:hover {
@@ -74,7 +73,7 @@ polygon.rs-logo-shape {
   opacity: 1;
 }
 
- /*Initial Connect remote storage box  */
+/* Initial Connect remote storage box */
 .rs-box-initial:hover {
   cursor: pointer;
 }
@@ -83,8 +82,7 @@ polygon.rs-logo-shape {
   color: #0093cc;
 }
 
-
- /*HEADLINE */
+/* HEADLINE */
 .rs-small-headline {
   font-size: 1em;
   font-weight: bold;
@@ -108,20 +106,18 @@ polygon.rs-logo-shape {
   text-align: center;
 }
 
-
-
-/** BUTTONS  */
+/* BUTTONS  */
 .rs-button {
   font: inherit;
   color: inherit;
   background-color: transparent;
-  border:1px solid #dcdcdc;
+  border: 1px solid #dcdcdc;
   border-radius: 3px;
   cursor: pointer;
 }
 .rs-button-small {
-  padding: 0.5em;
-  margin-left: 0.6em;
+  padding: 0.5em 0.6em;
+  margin-left: 0.3em;
   transition: border-color 300ms ease-out;
 }
 .rs-button-wrap {
@@ -249,33 +245,30 @@ polygon.rs-logo-shape {
 .rs-disconnect:hover .rs-icon{
   fill: #FF2D2D;
 }
+.rs-sync:hover {
+  border-color: #FFBB0C;
+}
+.rs-sync:hover .rs-icon {
+  fill: #FFBB0C;
+}
+.rs-sync.rs-rotate {
+  border-color: #FFBB0C;
+}
+.rs-sync.rs-rotate .rs-icon {
+  fill: #FFBB0C;
+  animation: rs-spin 1s linear infinite;
+}
+@keyframes rs-spin { 100% { transform: rotate(360deg); transform:rotate(360deg); } }
 
- /*Floating widget styles */
-/*.rs-floating {
+/* Floating widget styles (top right corner) */
+.rs-floating {
   position: fixed;
   top: 0;
   right: 0;
 }
-*/
 
 
-/* used during sync 
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
-.rs-state-close {
-  transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
-}
-
-
-/* Mobile styles 
+/* Small/mobile screens */
 @media screen and (max-width: 360px) {
   .rs-widget {
     font-size: 100%;
@@ -295,9 +288,5 @@ polygon.rs-logo-shape {
     border-radius: 0;
     height: 100%;
     max-width: 100%;
-  }
-  .rs-state-choose .rs-close,
-  .rs-state-sign-in .rs-close {
-    display: block;
   }
 }
