@@ -1,11 +1,9 @@
 # remotestorage-widget [WORK IN PROGRESS]
 
-Provides a connect-widget as add-on library for remoteStorage.js.
+Provides a connect-widget as add-on library for
+[remoteStorage.js](https://github.com/remotestorage/remotestorage.js/).
 
 ## Usage
-
-This example is from an Ember.js app, using ember-browserify, but other than
-the imports, the usage is the same in all scenarios:
 
 ```js
 import RemoteStorage from 'npm:remotestoragejs';
@@ -21,6 +19,9 @@ new Widget(remoteStorage);
 
 // ...
 ```
+
+(This example is from an Ember.js app, using ember-browserify. But other than
+the imports, the usage is the same in all scenarios.)
 
 ## Development / Customization
 
