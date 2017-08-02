@@ -46,7 +46,7 @@
     "opener": "^1.4.1",
     "parallelshell": "^2.0.0",
     "raw-loader": "^0.5.1",
-    "remotestoragejs": "github:remotestorage/remotestorage.js#feature/949-noglobal",
+    "remotestoragejs": "github:remotestorage/remotestorage.js",
     "rimraf": "^2.4.3",
     "svg-inline-loader": "^0.7.1",
     "url-loader": "^0.5.7",
