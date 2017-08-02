@@ -115,7 +115,7 @@ Widget.prototype = {
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
-        this.setState('connected');
+        this.setState('close');
         break;
       case 'network-offline':
         this.online = false;
