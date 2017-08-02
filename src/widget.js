@@ -39,6 +39,7 @@ let Widget = function(remoteStorage, options={}) {
   this.rsConnected = document.querySelector('.rs-box-connected');
   this.rsSignIn = document.querySelector('.rs-box-sign-in');
 
+  this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline')
   this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
   this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
   this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
@@ -124,7 +125,7 @@ Widget.prototype = {
       case 'network-online':
         this.online = true;
         this.active = true;
-        this.setState('connected');
+        this.setState();
         break;
       case 'error':
         if (msg.name === 'DiscoveryError') {
@@ -142,31 +143,36 @@ Widget.prototype = {
   },
 
   setState (state) {
-    this.log('Setting state ', state);
 
-    let lastSelected = document.querySelector('.rs-box.selected');
-    // FIXME why is this an expression?
-    lastSelected && lastSelected.classList.remove('selected');
+    if (state) {
+      this.log('Setting state ', state);
+      let lastSelected = document.querySelector('.rs-box.selected');
+      if (lastSelected) {
+        lastSelected.classList.remove('selected');
+      }
 
-    let toSelect = document.querySelector('.rs-box.rs-box-'+state);
-    // FIXME why is this an expression?
-    toSelect && toSelect.classList.add('selected');
+      let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+      if (toSelect) {
+        toSelect.classList.add('selected');
+      }
 
-    if (this.closed && state !== 'close') {
-      this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`;
-    } else {
-      this.rsWidget.className = `rs-widget rs-state-${state || this.state}`;
+      if (this.closed && state !== 'close') {
+        this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`;
+      } else {
+        this.rsWidget.className = `rs-widget rs-state-${state || this.state}`;
+      }
+  
+      this.state = state;
     }
 
     if (!this.online && this.active) {
       this.rsWidget.classList.add('rs-state-offline');
+      this.rsConnectedLabel.textContent = 'Not Connected';
     } else {
+      this.rsConnectedLabel.textContent = 'Connected';
       this.rsWidget.classList.remove('rs-state-offline');
     }
-
-    if (state) {
-      this.state = state;
-    }
+    
   },
 
   /**
