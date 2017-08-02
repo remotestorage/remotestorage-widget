@@ -290,3 +290,16 @@ polygon.rs-logo-shape {
     max-width: 100%;
   }
 }
+
+/* remove dotted outline border on Firefox */
+.rs-widget a:focus,
+.rs-widget a:active,
+.rs-widget button:focus,
+.rs-widget input:focus {
+  outline:none;
+}
+.rs-widget button::-moz-focus-inner, 
+.rs-widget input[type="button"]::-moz-focus-inner,
+.rs-widget input[type="submit"]::-moz-focus-inner {
+  border:0;
+}
