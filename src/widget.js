@@ -102,6 +102,9 @@ Widget.prototype = {
       case 'disconnected':
         this.active = false;
         this.online = false;
+        this.rsWidget.classList.remove('rs-backend-remotestorage');
+        this.rsWidget.classList.remove('rs-backend-dropbox');
+        this.rsWidget.classList.remove('rs-backend-gdrive');
         this.setState('initial');
         break;
       case 'connected':
@@ -115,6 +118,7 @@ Widget.prototype = {
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
+        this.rsWidget.classList.add(`rs-backend-${this.rs.backend}`);
         this.setState('connected');
         break;
       case 'network-offline':
@@ -156,23 +160,25 @@ Widget.prototype = {
         toSelect.classList.add('selected');
       }
 
+      let currentStateClass = this.rsWidget.className.match(/rs-state-(.+)(\s|$)/)[0];
+      this.rsWidget.classList.remove(currentStateClass);
+      this.rsWidget.classList.add(`rs-state-${state || this.state}`);
       if (this.closed && state !== 'close') {
-        this.rsWidget.className = `rs-widget rs-state-close rs-state-${state || this.state}`;
-      } else {
-        this.rsWidget.className = `rs-widget rs-state-${state || this.state}`;
+        this.rsWidget.classList.add('rs-state-close');
       }
-  
+
       this.state = state;
     }
 
     if (!this.online && this.active) {
       this.rsWidget.classList.add('rs-state-offline');
+      // TODO offline is not the same as "not connected"
       this.rsConnectedLabel.textContent = 'Not Connected';
     } else {
       this.rsConnectedLabel.textContent = 'Connected';
       this.rsWidget.classList.remove('rs-state-offline');
     }
-    
+
   },
 
   /**
