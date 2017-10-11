@@ -174,11 +174,11 @@ Widget.prototype = {
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
-    if (! remoteStorage.apiKeys.hasOwnProperty('googledrive')) {
+    if (! this.rs.apiKeys.hasOwnProperty('googledrive')) {
       this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton);
     }
 
-    if (! remoteStorage.apiKeys.hasOwnProperty('dropbox')) {
+    if (! this.rs.apiKeys.hasOwnProperty('dropbox')) {
       this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
     }
 
@@ -197,12 +197,12 @@ Widget.prototype = {
    * @private
    */
   setupHandlers() {
-    remoteStorage.on('connected', () => this.eventHandler('connected'));
-    remoteStorage.on('ready', () => this.eventHandler('ready'));
-    remoteStorage.on('disconnected', () => this.eventHandler('disconnected'));
-    remoteStorage.on('network-online', () => this.eventHandler('network-online'));
-    remoteStorage.on('network-offline', () => this.eventHandler('network-offline'));
-    remoteStorage.on('error', (error) => this.eventHandler('error', error));
+    this.rs.on('connected', () => this.eventHandler('connected'));
+    this.rs.on('ready', () => this.eventHandler('ready'));
+    this.rs.on('disconnected', () => this.eventHandler('disconnected'));
+    this.rs.on('network-online', () => this.eventHandler('network-online'));
+    this.rs.on('network-offline', () => this.eventHandler('network-offline'));
+    this.rs.on('error', (error) => this.eventHandler('error', error));
 
     this.setEventListeners();
     this.setClickHandlers();
