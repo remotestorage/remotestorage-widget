@@ -15,7 +15,8 @@ let remoteStorage = new RemoteStorage(/* options */);
 
 remoteStorage.access.claim('bookmarks', 'rw');
 
-new Widget(remoteStorage);
+let widget = new Widget(remoteStorage);
+widget.attach();
 
 // ...
 ```
