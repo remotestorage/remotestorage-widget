@@ -160,7 +160,7 @@ Widget.prototype = {
         toSelect.classList.add('selected');
       }
 
-      let currentStateClass = this.rsWidget.className.match(/rs-state-(.+)(\s|$)/)[0];
+      let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
       this.rsWidget.classList.remove(currentStateClass);
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
       if (this.closed && state !== 'close') {
