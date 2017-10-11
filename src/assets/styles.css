@@ -32,7 +32,7 @@
 
 .rs-box.selected {
   opacity: 1;
-  max-height: 400px;
+  max-height: 380px;
 }
 
 /* Main logo */
@@ -123,6 +123,8 @@ polygon.rs-logo-shape {
   font-size: 1.625em;
   font-weight: normal;
   text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 /* BUTTONS  */
@@ -236,10 +238,7 @@ polygon.rs-logo-shape {
   text-align: center;
   overflow: hidden;
 }
-.rs-box-choose .rs-big-headline {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
+
 .rs-box-choose p {
   margin-top: 0;
   margin-bottom: 20px;
