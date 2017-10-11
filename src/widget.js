@@ -116,7 +116,7 @@ Widget.prototype = {
       }
 
       let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
-      this.rsWidget.classList.remove(...currentStateClass.split(' '));
+      this.rsWidget.classList.remove(currentStateClass);
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
       if (this.closed && state !== 'close') {
         this.rsWidget.classList.add('rs-state-close');
