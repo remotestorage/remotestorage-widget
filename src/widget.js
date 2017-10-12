@@ -186,7 +186,7 @@ Widget.prototype = {
 
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
     this.rsSyncButton = document.querySelector('.rs-sync');
-    this.rsLogo = document.querySelector('.rs-main-logo');
+    this.rsLogo = document.querySelector('.rs-widget-icon');
 
     this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
   },
