@@ -293,8 +293,14 @@ Widget.prototype = {
     this.setState(this.active ? 'connected' : 'initial');
   },
 
-  closeWidget() {
-    if (!this.leaveOpen) {
+  /**
+   * Close the widget to only show the icon.
+   *
+   * If the ``leaveOpen`` config is true or there is no storage connected,
+   * the widget will not close.
+   */
+  closeWidget () {
+    if (!this.leaveOpen && this.active) {
       this.setState('close');
       this.closed = true;
     } else {
