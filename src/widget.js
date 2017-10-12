@@ -61,7 +61,7 @@ Widget.prototype = {
         this.online = false;
         this.rsWidget.classList.remove('rs-backend-remotestorage');
         this.rsWidget.classList.remove('rs-backend-dropbox');
-        this.rsWidget.classList.remove('rs-backend-gdrive');
+        this.rsWidget.classList.remove('rs-backend-googledrive');
         this.setState('initial');
         break;
       case 'connected':
@@ -169,7 +169,7 @@ Widget.prototype = {
     this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline')
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
-    this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
+    this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
     this.rsErrorBox = document.querySelector('.rs-box-error');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]

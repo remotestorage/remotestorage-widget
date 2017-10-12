@@ -58,10 +58,10 @@
 .rs-widget:not(.rs-backend-dropbox) svg#rs-main-logo-dropbox {
   display: none;
 }
-.rs-widget .rs-backend-gdrive svg#rs-main-logo-gdrive {
+.rs-widget .rs-backend-googledrive svg#rs-main-logo-googledrive {
   display: normal;
 }
-.rs-widget:not(.rs-backend-gdrive) svg#rs-main-logo-gdrive {
+.rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive {
   display: none;
 }
 
