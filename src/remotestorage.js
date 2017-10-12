@@ -1,1 +1,1 @@
-../node_modules/remotestoragejs/release/stable/remotestorage.js
+../node_modules/remotestoragejs/release/remotestorage.js
