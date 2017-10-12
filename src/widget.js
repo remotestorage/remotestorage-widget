@@ -246,7 +246,7 @@ Widget.prototype = {
     // Initial button
     this.rsInitial.addEventListener('click', () => {
       // choose backend only if some providers are declared
-      if (this.rs.apiKeys) {
+      if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
         this.setState('choose');
       } else {
         this.setState('sign-in');
