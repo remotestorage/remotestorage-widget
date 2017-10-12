@@ -260,7 +260,7 @@ Widget.prototype = {
 
   setClickHandlers () {
     // Initial button
-    this.rsInitial.addEventListener('click', () => { this.showChooseOrSignIn() });
+    this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn() );
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
@@ -294,7 +294,7 @@ Widget.prototype = {
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to toggle the widget's open/close state
-    this.rsLogo.addEventListener('click', () => this.toggleWidget());
+    this.rsLogo.addEventListener('click', () => this.toggleWidget() );
   },
 
   /**
