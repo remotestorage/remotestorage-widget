@@ -40,6 +40,7 @@ Widget.prototype = {
     switch (event) {
       case 'ready':
         this.setState(this.state);
+        this.shouldCloseWhenSyncDone = true;
         break;
       case 'req-done':
         this.rsSyncButton.classList.add("rs-rotate");
@@ -54,6 +55,10 @@ Widget.prototype = {
           this.lastSynced = new Date();
           let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
           subHeadlineEl.innerHTML = 'Synced just now';
+        }
+
+        if (!this.closed && this.shouldCloseWhenSyncDone) {
+          setTimeout(this.closeWidget.bind(this), 1500);
         }
         break;
       case 'disconnected':
@@ -318,6 +323,7 @@ Widget.prototype = {
   openWidget () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
+    this.shouldCloseWhenSyncDone = false;
   },
 
   /**
