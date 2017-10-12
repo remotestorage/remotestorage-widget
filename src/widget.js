@@ -142,7 +142,7 @@ Widget.prototype = {
    *
    * @private
    */
-  createHtmlTemplate() {
+  createHtmlTemplate () {
     const element = document.createElement('div');
     const style = document.createElement('style');
     style.innerHTML = require('raw!./assets/styles.css');
@@ -159,7 +159,7 @@ Widget.prototype = {
    *
    * @private
    */
-  setupElements() {
+  setupElements () {
     this.rsWidget = document.querySelector('.rs-widget');
     this.rsInitial = document.querySelector('.rs-box-initial');
     this.rsChoose = document.querySelector('.rs-box-choose');
@@ -196,7 +196,7 @@ Widget.prototype = {
    *
    * @private
    */
-  setupHandlers() {
+  setupHandlers () {
     this.rs.on('connected', () => this.eventHandler('connected'));
     this.rs.on('ready', () => this.eventHandler('ready'));
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
@@ -216,7 +216,7 @@ Widget.prototype = {
    *
    * @param  {String} [elementId] - Widget's parent
    */
-  attach(elementId) {
+  attach (elementId) {
     const domElement = this.createHtmlTemplate();
 
     if (elementId) {
@@ -233,7 +233,7 @@ Widget.prototype = {
     this.setupHandlers();
   },
 
-  setEventListeners() {
+  setEventListeners () {
     // Sign-in form
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -242,16 +242,25 @@ Widget.prototype = {
     });
   },
 
-  setClickHandlers() {
+  /**
+   * Show the screen for choosing a backend if there is more than one backend
+   * to choose from. Otherwise it directly shows the remoteStorage connect
+   * screen.
+   *
+   * @private
+   */
+  showChooseOrSignIn () {
+    // choose backend only if some providers are declared
+    if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
+      this.setState('choose');
+    } else {
+      this.setState('sign-in');
+    }
+  },
+
+  setClickHandlers () {
     // Initial button
-    this.rsInitial.addEventListener('click', () => {
-      // choose backend only if some providers are declared
-      if (this.rs.apiKeys) {
-        this.setState('choose');
-      } else {
-        this.setState('sign-in');
-      }
-    });
+    this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn() );
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
@@ -284,17 +293,41 @@ Widget.prototype = {
     // Clicks on the widget stop the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
-    // Click on the logo to bring the full widget back
-    this.rsLogo.addEventListener('click', () => this.openWidget());
+    // Click on the logo to toggle the widget's open/close state
+    this.rsLogo.addEventListener('click', () => this.toggleWidget() );
   },
 
-  openWidget() {
+  /**
+   * Toggle between the widget's open/close state.
+   *
+   * When then widget is open and in initial state, it will show the backend
+   * chooser screen.
+   */
+  toggleWidget () {
+    if (this.closed) {
+      this.openWidget();
+    } else {
+      if (this.state === 'initial') {
+        this.showChooseOrSignIn();
+      } else {
+        this.closeWidget();
+      }
+    }
+  },
+
+  openWidget () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
   },
 
-  closeWidget() {
-    if (!this.leaveOpen) {
+  /**
+   * Close the widget to only show the icon.
+   *
+   * If the ``leaveOpen`` config is true or there is no storage connected,
+   * the widget will not close.
+   */
+  closeWidget () {
+    if (!this.leaveOpen && this.active) {
       this.setState('close');
       this.closed = true;
     } else {
@@ -302,29 +335,29 @@ Widget.prototype = {
     }
   },
 
-  showErrorBox(errorMsg) {
+  showErrorBox (errorMsg) {
     this.rsErrorBox.innerHTML = errorMsg;
     this.setState('error');
   },
 
-  hideErrorBox() {
+  hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
     this.setState('close');
   },
 
-  handleDiscoveryError(error) {
+  handleDiscoveryError (error) {
     let msgContainer = document.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('hidden');
     msgContainer.classList.add('visible');
   },
 
-  handleSyncError(/* error */) {
+  handleSyncError (/* error */) {
     // console.debug('Encountered SyncError', error);
     this.showErrorBox('App sync error');
   },
 
-  handleUnauthorized() {
+  handleUnauthorized () {
     // console.debug('RS UNAUTHORIZED');
     // console.debug('Bearer token not valid anymore');
     // this.rs.stopSync();
@@ -335,7 +368,7 @@ Widget.prototype = {
     // }, 5000);
   },
 
-  updateLastSyncedOutput() {
+  updateLastSyncedOutput () {
     let now = new Date();
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
