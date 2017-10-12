@@ -1,28 +1,25 @@
-# remotestorage-widget [WORK IN PROGRESS]
+# remotestorage-widget
 
-Provides a connect-widget as add-on library for
+A ready-to-use connect/sync widget, as add-on library for
 [remoteStorage.js](https://github.com/remotestorage/remotestorage.js/).
 
 ## Usage
 
 ```js
-import RemoteStorage from 'npm:remotestoragejs';
-import Widget from 'npm:remotestorage-widget';
+import RemoteStorage from 'remotestoragejs';
+import Widget from 'remotestorage-widget';
 
 // ...
 
-let remoteStorage = new RemoteStorage(/* options */);
+const remoteStorage = new RemoteStorage(/* options */);
 
 remoteStorage.access.claim('bookmarks', 'rw');
 
-let widget = new Widget(remoteStorage);
+const widget = new Widget(remoteStorage);
 widget.attach();
 
 // ...
 ```
-
-(This example is from an Ember.js app, using ember-browserify. But other than
-the imports, the usage is the same in all scenarios.)
 
 ## Development / Customization
 
@@ -30,6 +27,8 @@ Install deps:
 
     npm install
 
-Build, run, watch and open test app:
+Build, run and watch demo/test app:
 
     npm run dev
+
+The demo app will then be served at http://localhost:8008
