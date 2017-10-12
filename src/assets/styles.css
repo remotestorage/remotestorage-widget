@@ -253,6 +253,10 @@ polygon.rs-logo-shape {
 }
 .rs-box-connected .rs-user {
   font-weight: bold;
+  max-width: 210px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: keep-all;
 }
 .rs-connected-buttons {
   float: right;
