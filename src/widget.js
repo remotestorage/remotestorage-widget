@@ -242,16 +242,25 @@ Widget.prototype = {
     });
   },
 
+  /**
+   * Show the screen for choosing a backend if there is more than one backend
+   * to choose from. Otherwise it directly shows the remoteStorage connect
+   * screen.
+   *
+   * @private
+   */
+  showChooseOrSignIn () {
+    // choose backend only if some providers are declared
+    if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
+      this.setState('choose');
+    } else {
+      this.setState('sign-in');
+    }
+  },
+
   setClickHandlers() {
     // Initial button
-    this.rsInitial.addEventListener('click', () => {
-      // choose backend only if some providers are declared
-      if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
-        this.setState('choose');
-      } else {
-        this.setState('sign-in');
-      }
-    });
+    this.rsInitial.addEventListener('click', () => { this.showChooseOrSignIn() });
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
@@ -284,8 +293,26 @@ Widget.prototype = {
     // Clicks on the widget stop the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
-    // Click on the logo to bring the full widget back
-    this.rsLogo.addEventListener('click', () => this.openWidget());
+    // Click on the logo to toggle the widget's open/close state
+    this.rsLogo.addEventListener('click', () => this.toggleWidget());
+  },
+
+  /**
+   * Toggle between the widget's open/close state.
+   *
+   * When then widget is open and in initial state, it will show the backend
+   * chooser screen.
+   */
+  toggleWidget () {
+    if (this.closed) {
+      this.openWidget();
+    } else {
+      if (this.state === 'initial') {
+        this.showChooseOrSignIn();
+      } else {
+        this.closeWidget();
+      }
+    }
   },
 
   openWidget() {
