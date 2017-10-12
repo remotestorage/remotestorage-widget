@@ -142,7 +142,7 @@ Widget.prototype = {
    *
    * @private
    */
-  createHtmlTemplate() {
+  createHtmlTemplate () {
     const element = document.createElement('div');
     const style = document.createElement('style');
     style.innerHTML = require('raw!./assets/styles.css');
@@ -159,7 +159,7 @@ Widget.prototype = {
    *
    * @private
    */
-  setupElements() {
+  setupElements () {
     this.rsWidget = document.querySelector('.rs-widget');
     this.rsInitial = document.querySelector('.rs-box-initial');
     this.rsChoose = document.querySelector('.rs-box-choose');
@@ -196,7 +196,7 @@ Widget.prototype = {
    *
    * @private
    */
-  setupHandlers() {
+  setupHandlers () {
     this.rs.on('connected', () => this.eventHandler('connected'));
     this.rs.on('ready', () => this.eventHandler('ready'));
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
@@ -216,7 +216,7 @@ Widget.prototype = {
    *
    * @param  {String} [elementId] - Widget's parent
    */
-  attach(elementId) {
+  attach (elementId) {
     const domElement = this.createHtmlTemplate();
 
     if (elementId) {
@@ -233,7 +233,7 @@ Widget.prototype = {
     this.setupHandlers();
   },
 
-  setEventListeners() {
+  setEventListeners () {
     // Sign-in form
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -258,7 +258,7 @@ Widget.prototype = {
     }
   },
 
-  setClickHandlers() {
+  setClickHandlers () {
     // Initial button
     this.rsInitial.addEventListener('click', () => { this.showChooseOrSignIn() });
 
@@ -315,7 +315,7 @@ Widget.prototype = {
     }
   },
 
-  openWidget() {
+  openWidget () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
   },
@@ -335,29 +335,29 @@ Widget.prototype = {
     }
   },
 
-  showErrorBox(errorMsg) {
+  showErrorBox (errorMsg) {
     this.rsErrorBox.innerHTML = errorMsg;
     this.setState('error');
   },
 
-  hideErrorBox() {
+  hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
     this.setState('close');
   },
 
-  handleDiscoveryError(error) {
+  handleDiscoveryError (error) {
     let msgContainer = document.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('hidden');
     msgContainer.classList.add('visible');
   },
 
-  handleSyncError(/* error */) {
+  handleSyncError (/* error */) {
     // console.debug('Encountered SyncError', error);
     this.showErrorBox('App sync error');
   },
 
-  handleUnauthorized() {
+  handleUnauthorized () {
     // console.debug('RS UNAUTHORIZED');
     // console.debug('Bearer token not valid anymore');
     // this.rs.stopSync();
@@ -368,7 +368,7 @@ Widget.prototype = {
     // }, 5000);
   },
 
-  updateLastSyncedOutput() {
+  updateLastSyncedOutput () {
     let now = new Date();
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
