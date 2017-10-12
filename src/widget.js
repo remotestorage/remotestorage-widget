@@ -1,10 +1,11 @@
 /**
  * RemoteStorage connect widget
  * @constructor
+ *
  * @param {object} remoteStorage - remoteStorage instance
  * @param {object} options - Widget options
- *     leaveOpen: bool (default: false) do not minimize widget when user click outside of it
- *     domID: DOM element to attach widget to
+ * @param {boolean} options.leaveOpen - Do not minimize widget when user clicks
+ *                                      outside of it (default: false)
  */
 let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
@@ -20,54 +21,10 @@ let Widget = function(remoteStorage, options={}) {
   // widget is minimized ?
   this.closed = false;
 
-  // logo will be gray when (active && !online)
-
-
-  this.insertHtmlTemplate(options.domID);
   this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
-
-  remoteStorage.on('connected', () => this.eventHandler('connected'));
-  remoteStorage.on('ready', () => this.eventHandler('ready'));
-  remoteStorage.on('disconnected', () => this.eventHandler('disconnected'));
-  remoteStorage.on('network-online', () => this.eventHandler('network-online'));
-  remoteStorage.on('network-offline', () => this.eventHandler('network-offline'));
-  remoteStorage.on('error', (error) => this.eventHandler('error', error));
-
-  this.rsWidget = document.querySelector('.rs-widget');
-  this.rsInitial = document.querySelector('.rs-box-initial');
-  this.rsChoose = document.querySelector('.rs-box-choose');
-  this.rsConnected = document.querySelector('.rs-box-connected');
-  this.rsSignIn = document.querySelector('.rs-box-sign-in');
-
-  this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline')
-  this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
-  this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
-  this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
-  this.rsErrorBox = document.querySelector('.rs-box-error');
-
-  // check if apyKeys is set for Dropbox or Google [googledrive, dropbox]
-  // to show/hide relative buttons only if needed
-  if (! remoteStorage.apiKeys.hasOwnProperty('googledrive')) {
-    this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton);
-  }
-
-  if (! remoteStorage.apiKeys.hasOwnProperty('dropbox')) {
-    this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
-  }
-
-  this.rsSignInForm = document.querySelector('.rs-sign-in-form');
-
-  this.rsDisconnectButton = document.querySelector('.rs-disconnect');
-  this.rsSyncButton = document.querySelector('.rs-sync');
-  this.rsLogo = document.querySelector('.rs-main-logo');
-
-  this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
 
   this.lastSynced = null;
   this.lastSyncedUpdateLoop = null;
-
-  this.setEventListeners();
-  this.setClickHandlers();
 };
 
 
@@ -143,11 +100,9 @@ Widget.prototype = {
         }
         break;
     }
-
   },
 
   setState (state) {
-
     if (state) {
       this.log('Setting state ', state);
       let lastSelected = document.querySelector('.rs-box.selected');
@@ -160,7 +115,7 @@ Widget.prototype = {
         toSelect.classList.add('selected');
       }
 
-      let currentStateClass = this.rsWidget.className.match(/rs-state-(.+)(\s|$)/)[0];
+      let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
       this.rsWidget.classList.remove(currentStateClass);
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
       if (this.closed && state !== 'close') {
@@ -178,14 +133,16 @@ Widget.prototype = {
       this.rsConnectedLabel.textContent = 'Connected';
       this.rsWidget.classList.remove('rs-state-offline');
     }
-
   },
 
   /**
-   * append widget to document DOM (inside specified elementId if specified)
-   * @param  {String} elementId - widget's parent
+   * Create the widget element and add styling.
+   *
+   * @returns {object} The widget's DOM element
+   *
+   * @private
    */
-  insertHtmlTemplate(elementId=null) {
+  createHtmlTemplate() {
     const element = document.createElement('div');
     const style = document.createElement('style');
     style.innerHTML = require('raw!./assets/styles.css');
@@ -194,15 +151,86 @@ Widget.prototype = {
     element.innerHTML = require('html!./assets/widget.html');
     element.appendChild(style);
 
+    return element;
+  },
+
+  /**
+   * Save all interactive DOM elements as variables for later access.
+   *
+   * @private
+   */
+  setupElements() {
+    this.rsWidget = document.querySelector('.rs-widget');
+    this.rsInitial = document.querySelector('.rs-box-initial');
+    this.rsChoose = document.querySelector('.rs-box-choose');
+    this.rsConnected = document.querySelector('.rs-box-connected');
+    this.rsSignIn = document.querySelector('.rs-box-sign-in');
+
+    this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline')
+    this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
+    this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
+    this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-gdrive');
+    this.rsErrorBox = document.querySelector('.rs-box-error');
+
+    // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
+    // to show/hide relative buttons only if needed
+    if (! this.rs.apiKeys.hasOwnProperty('googledrive')) {
+      this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton);
+    }
+
+    if (! this.rs.apiKeys.hasOwnProperty('dropbox')) {
+      this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
+    }
+
+    this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+
+    this.rsDisconnectButton = document.querySelector('.rs-disconnect');
+    this.rsSyncButton = document.querySelector('.rs-sync');
+    this.rsLogo = document.querySelector('.rs-main-logo');
+
+    this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
+  },
+
+  /**
+   * Setup all event handlers
+   *
+   * @private
+   */
+  setupHandlers() {
+    this.rs.on('connected', () => this.eventHandler('connected'));
+    this.rs.on('ready', () => this.eventHandler('ready'));
+    this.rs.on('disconnected', () => this.eventHandler('disconnected'));
+    this.rs.on('network-online', () => this.eventHandler('network-online'));
+    this.rs.on('network-offline', () => this.eventHandler('network-offline'));
+    this.rs.on('error', (error) => this.eventHandler('error', error));
+
+    this.setEventListeners();
+    this.setClickHandlers();
+  },
+
+  /**
+   * Append widget to the DOM.
+   *
+   * If an elementId is specified, it will be appended to that element,
+   * otherwise it will be appended to the document's body.
+   *
+   * @param  {String} [elementId] - Widget's parent
+   */
+  attach(elementId) {
+    const domElement = this.createHtmlTemplate();
+
     if (elementId) {
       const parent = document.getElementById(elementId);
       if (!parent) {
         throw "Failed to find target DOM element with id=\"" + elementId + "\"";
       }
-      parent.appendChild(element);
+      parent.appendChild(domElement);
     } else {
-      document.body.appendChild(element);
+      document.body.appendChild(domElement);
     }
+
+    this.setupElements();
+    this.setupHandlers();
   },
 
   setEventListeners() {
@@ -215,7 +243,6 @@ Widget.prototype = {
   },
 
   setClickHandlers() {
-
     // Initial button
     this.rsInitial.addEventListener('click', () => {
       // choose backend only if some providers are declared
@@ -232,7 +259,7 @@ Widget.prototype = {
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
 
-    // Choose Google drive button
+    // Choose Google Drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
 
     // Disconnect button
@@ -254,7 +281,7 @@ Widget.prototype = {
     // Reduce to icon only if connected and clicked outside of widget
     document.addEventListener('click', () => this.closeWidget() );
 
-    // clicks on the widget stops the above event
+    // Clicks on the widget stop the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to bring the full widget back
