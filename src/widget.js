@@ -175,7 +175,7 @@ Widget.prototype = {
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
-    this.rsErrorBox = document.querySelector('.rs-box-error');
+    this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
@@ -192,6 +192,9 @@ Widget.prototype = {
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
     this.rsSyncButton = document.querySelector('.rs-sync');
     this.rsLogo = document.querySelector('.rs-widget-icon');
+
+    this.rsErrorReconnectButton = document.querySelector('.rs-box-error button.rs-sync');
+    this.rsErrorDisconnectButton = document.querySelector('.rs-box-error button.rs-disconnect');
 
     this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
   },
@@ -278,6 +281,9 @@ Widget.prototype = {
 
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+
+    this.rsErrorReconnectButton.addEventListener('click', () => this.rs.reconnect()  );
+    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
     // Sync button
     if (this.rs.hasFeature('Sync')) {
@@ -391,7 +397,7 @@ Widget.prototype = {
     // console.debug('Bearer token not valid anymore');
     // this.rs.stopSync();
     // this.rsWidget.classList.add('rs-state-unauthorized');
-    this.showErrorBox('App authorization expired or revoked');
+    this.showErrorBox('App authorization expired or revoked.');
     // this.lastSyncedUpdateLoop = setInterval(() => {
     // this.updateLastSyncedOutput();
     // }, 5000);
