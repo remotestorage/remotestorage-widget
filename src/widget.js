@@ -64,9 +64,7 @@ Widget.prototype = {
       case 'disconnected':
         this.active = false;
         this.online = false;
-        this.rsWidget.classList.remove('rs-backend-remotestorage');
-        this.rsWidget.classList.remove('rs-backend-dropbox');
-        this.rsWidget.classList.remove('rs-backend-googledrive');
+        this.setBackendClass(); // removes all backend CSS classes
         this.setState('initial');
         break;
       case 'connected':
@@ -80,7 +78,7 @@ Widget.prototype = {
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
-        this.rsWidget.classList.add(`rs-backend-${this.rs.backend}`);
+        this.setBackendClass(this.rs.backend);
         this.setState('connected');
         break;
       case 'network-offline':
@@ -94,6 +92,8 @@ Widget.prototype = {
         this.setState();
         break;
       case 'error':
+        this.setBackendClass(this.rs.backend);
+
         if (msg.name === 'DiscoveryError') {
           this.handleDiscoveryError(msg);
         } else if (msg.name === 'SyncError') {
@@ -341,6 +341,24 @@ Widget.prototype = {
       this.closed = true;
     } else {
       this.setState(this.active ? 'connected' : 'initial');
+    }
+  },
+
+  /**
+   * Set the remoteStorage backend type to show the appropriate icon.
+   * If no backend is given, all existing backend CSS classes will be removed.
+   *
+   * @param {string} [backend]
+   *
+   * @private
+   */
+  setBackendClass (backend) {
+    this.rsWidget.classList.remove('rs-backend-remotestorage');
+    this.rsWidget.classList.remove('rs-backend-dropbox');
+    this.rsWidget.classList.remove('rs-backend-googledrive');
+
+    if (backend) {
+      this.rsWidget.classList.add(`rs-backend-${backend}`);
     }
   },
 
