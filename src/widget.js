@@ -323,7 +323,7 @@ Widget.prototype = {
   openWidget () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
-    this.shouldCloseWhenSyncDone = false;
+    this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
   },
 
   /**
@@ -333,6 +333,9 @@ Widget.prototype = {
    * the widget will not close.
    */
   closeWidget () {
+    // don't do anything when we have an error
+    if (this.state === 'error') { return; }
+
     if (!this.leaveOpen && this.active) {
       this.setState('close');
       this.closed = true;
@@ -360,10 +363,12 @@ Widget.prototype = {
 
   handleSyncError (/* error */) {
     // console.debug('Encountered SyncError', error);
+    this.openWidget();
     this.showErrorBox('App sync error');
   },
 
   handleUnauthorized () {
+    this.openWidget();
     // console.debug('RS UNAUTHORIZED');
     // console.debug('Bearer token not valid anymore');
     // this.rs.stopSync();
