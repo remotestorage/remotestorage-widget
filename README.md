@@ -21,6 +21,19 @@ widget.attach();
 // ...
 ```
 
+## Configuration
+
+The widget has some configuration options to customize the behavior:
+
+| Option | Description | Type | Default |
+|---|---|---|---|
+| `leaveOpen` | Keep the widget open when user clicks outside of it | Boolean | false |
+| `autoCloseAfter` | Timeout after which the widget closes automatically (in milliseconds). The widget only closes when a storage is connected. | Number | 1500 |
+
+Example:
+
+    const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
+
 ## Development / Customization
 
 Install deps:
