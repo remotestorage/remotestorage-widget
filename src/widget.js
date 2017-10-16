@@ -80,7 +80,7 @@ Widget.prototype = {
           this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
           this.rs.sync.on('done', () => this.eventHandler('done'));
         } else {
-          this.rsSyncButton.classList.add('hidden');
+          this.rsSyncButton.classList.add('rs-hidden');
           setTimeout(this.closeWidget.bind(this), this.autoCloseAfter);
         }
         let connectedUser = this.rs.remote.userAddress;
@@ -115,14 +115,14 @@ Widget.prototype = {
   setState (state) {
     if (state) {
       this.log('Setting state ', state);
-      let lastSelected = document.querySelector('.rs-box.selected');
+      let lastSelected = document.querySelector('.rs-box.rs-selected');
       if (lastSelected) {
-        lastSelected.classList.remove('selected');
+        lastSelected.classList.remove('rs-selected');
       }
 
       let toSelect = document.querySelector('.rs-box.rs-box-'+state);
       if (toSelect) {
-        toSelect.classList.add('selected');
+        toSelect.classList.add('rs-selected');
       }
 
       let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
@@ -359,8 +359,8 @@ Widget.prototype = {
   handleDiscoveryError (error) {
     let msgContainer = document.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
-    msgContainer.classList.remove('hidden');
-    msgContainer.classList.add('visible');
+    msgContainer.classList.remove('rs-hidden');
+    msgContainer.classList.add('rs-visible');
   },
 
   handleSyncError (/* error */) {
