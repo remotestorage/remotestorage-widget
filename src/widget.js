@@ -6,6 +6,8 @@
  * @param {object} options - Widget options
  * @param {boolean} options.leaveOpen - Do not minimize widget when user clicks
  *                                      outside of it (default: false)
+ * @param {number} options.autoCloseAfter - Time after which the widget closes
+ *                                          automatically in ms (default: 1500)
  */
 let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
@@ -22,6 +24,8 @@ let Widget = function(remoteStorage, options={}) {
   this.closed = false;
 
   this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
+
+  this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
 
   this.lastSynced = null;
   this.lastSyncedUpdateLoop = null;
@@ -57,7 +61,7 @@ Widget.prototype = {
         }
 
         if (!this.closed && this.shouldCloseWhenSyncDone) {
-          setTimeout(this.closeWidget.bind(this), 1500);
+          setTimeout(this.closeWidget.bind(this), this.autoCloseAfter);
         }
         break;
       case 'disconnected':
@@ -77,7 +81,7 @@ Widget.prototype = {
           this.rs.sync.on('done', () => this.eventHandler('done'));
         } else {
           this.rsSyncButton.classList.add('hidden');
-          setTimeout(this.closeWidget.bind(this), 1500);
+          setTimeout(this.closeWidget.bind(this), this.autoCloseAfter);
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
