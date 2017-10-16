@@ -190,7 +190,6 @@ polygon.rs-logo-shape {
   float: none;
 }
 
-
 .rs-sign-in-form input[type=text] {
   padding: 15px 10px;
   display: block;
@@ -245,6 +244,7 @@ polygon.rs-logo-shape {
 .rs-box-choose p {
   margin-top: 0;
   margin-bottom: 20px;
+  line-height: 1.4em;
 }
 
 /*Connected box */
