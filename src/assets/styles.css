@@ -79,7 +79,7 @@ polygon.rs-logo-shape {
 
 /* Hide everything except logo when connected and clicked outside of box */
 .rs-state-close {
-  max-width: 55px;
+  max-width: 36px;
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
