@@ -83,7 +83,7 @@ polygon.rs-logo-shape {
 
 /* Hide everything except logo when connected and clicked outside of box */
 .rs-state-close {
-  max-width: 55px;
+  max-width: 36px;
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
@@ -96,7 +96,10 @@ polygon.rs-logo-shape {
   opacity: 1;
 }
 
-/* Initial Connect remote storage box */
+.rs-box-initial {
+  transition-duration: 0ms;
+}
+
 .rs-box-initial:hover {
   cursor: pointer;
 }
@@ -191,7 +194,6 @@ polygon.rs-logo-shape {
   float: none;
 }
 
-
 .rs-sign-in-form input[type=text] {
   padding: 15px 10px;
   display: block;
@@ -246,11 +248,13 @@ polygon.rs-logo-shape {
 .rs-box-choose p {
   margin-top: 0;
   margin-bottom: 20px;
+  line-height: 1.4em;
 }
 
 /*Connected box */
 .rs-box-connected {
   height: 40px;
+  transition: height 0s;
 }
 .rs-connected-text {
   float: left;
