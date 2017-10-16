@@ -1,6 +1,6 @@
 {
   "name": "remotestorage-widget",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "remoteStorage.js connect widget",
   "main": "build/widget.js",
   "scripts": {
