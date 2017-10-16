@@ -393,14 +393,7 @@ Widget.prototype = {
 
   handleUnauthorized () {
     this.openWidget();
-    // console.debug('RS UNAUTHORIZED');
-    // console.debug('Bearer token not valid anymore');
-    // this.rs.stopSync();
-    // this.rsWidget.classList.add('rs-state-unauthorized');
     this.showErrorBox('App authorization expired or revoked.');
-    // this.lastSyncedUpdateLoop = setInterval(() => {
-    // this.updateLastSyncedOutput();
-    // }, 5000);
   },
 
   updateLastSyncedOutput () {
