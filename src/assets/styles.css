@@ -92,7 +92,10 @@ polygon.rs-logo-shape {
   opacity: 1;
 }
 
-/* Initial Connect remote storage box */
+.rs-box-initial {
+  transition-duration: 0ms;
+}
+
 .rs-box-initial:hover {
   cursor: pointer;
 }
