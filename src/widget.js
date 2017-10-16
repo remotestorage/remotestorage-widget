@@ -40,7 +40,6 @@ Widget.prototype = {
     switch (event) {
       case 'ready':
         this.setState(this.state);
-        this.shouldCloseWhenSyncDone = true;
         break;
       case 'req-done':
         this.rsSyncButton.classList.add("rs-rotate");
@@ -73,10 +72,12 @@ Widget.prototype = {
         this.active = true;
         this.online = true;
         if (this.rs.hasFeature('Sync')) {
+          this.shouldCloseWhenSyncDone = true;
           this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
           this.rs.sync.on('done', () => this.eventHandler('done'));
         } else {
           this.rsSyncButton.classList.add('hidden');
+          setTimeout(this.closeWidget.bind(this), 1500);
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
