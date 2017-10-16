@@ -250,6 +250,7 @@ polygon.rs-logo-shape {
 /*Connected box */
 .rs-box-connected {
   height: 40px;
+  transition: height 0s;
 }
 .rs-connected-text {
   float: left;
