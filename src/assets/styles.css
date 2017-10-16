@@ -20,6 +20,10 @@
   transition-duration: 300ms;
 }
 
+.rs-widget .hidden {
+  display: none;
+}
+
 .rs-box {
   overflow: hidden;
   will-change: height;
