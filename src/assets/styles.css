@@ -20,7 +20,7 @@
   transition-duration: 300ms;
 }
 
-.rs-widget .hidden {
+.rs-widget .rs-hidden {
   display: none;
 }
 
@@ -34,7 +34,7 @@
   max-height: 0px;
 }
 
-.rs-box.selected {
+.rs-box.rs-selected {
   opacity: 1;
   max-height: 380px;
 }
@@ -221,13 +221,13 @@ polygon.rs-logo-shape {
   background-color: #3fb34f;
 }
 
-.rs-sign-in-error.hidden,
-.rs-box-error.hidden {
+.rs-sign-in-error.rs-hidden,
+.rs-box-error.rs-hidden {
   height: 0;
 }
 
-.rs-sign-in-error.visible,
-.rs-box-error.visible {
+.rs-sign-in-error.rs-visible,
+.rs-box-error.rs-visible {
   height: auto;
   border-radius: 3px;
   padding: 0.5em 0.5em;
