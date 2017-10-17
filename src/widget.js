@@ -393,11 +393,7 @@ Widget.prototype = {
 
   handleUnauthorized (error) {
     this.openWidget();
-    if (error.message.length > 0) {
-      this.showErrorBox(error.message);
-    } else {
-      this.showErrorBox('App authorization expired or revoked.');
-    }
+    this.showErrorBox(error.message);
   },
 
   updateLastSyncedOutput () {
