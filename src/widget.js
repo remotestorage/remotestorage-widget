@@ -391,9 +391,13 @@ Widget.prototype = {
     this.showErrorBox('App sync error');
   },
 
-  handleUnauthorized () {
+  handleUnauthorized (error) {
     this.openWidget();
-    this.showErrorBox('App authorization expired or revoked.');
+    if (error.message.length > 0) {
+      this.showErrorBox(error.message);
+    } else {
+      this.showErrorBox('App authorization expired or revoked.');
+    }
   },
 
   updateLastSyncedOutput () {
