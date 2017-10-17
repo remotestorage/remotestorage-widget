@@ -235,7 +235,7 @@ polygon.rs-logo-shape {
 
 .rs-box-error .rs-error-message {
   float: left;
-  max-width: 210px;
+  max-width: 260px;
 }
 
  /*Choose provider box */
@@ -263,7 +263,7 @@ polygon.rs-logo-shape {
   overflow: hidden;
   word-break: keep-all;
 }
-.rs-connected-buttons {
+.rs-connected-buttons, .rs-error-buttons {
   float: right;
 }
 .rs-disconnect:hover {

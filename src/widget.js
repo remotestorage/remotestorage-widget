@@ -193,7 +193,7 @@ Widget.prototype = {
     this.rsSyncButton = document.querySelector('.rs-sync');
     this.rsLogo = document.querySelector('.rs-widget-icon');
 
-    this.rsErrorReconnectButton = document.querySelector('.rs-box-error button.rs-sync');
+    this.rsErrorReconnectLink = document.querySelector('.rs-box-error a.rs-reconnect');
     this.rsErrorDisconnectButton = document.querySelector('.rs-box-error button.rs-disconnect');
 
     this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
@@ -282,7 +282,7 @@ Widget.prototype = {
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
-    this.rsErrorReconnectButton.addEventListener('click', () => this.rs.reconnect()  );
+    this.rsErrorReconnectLink.addEventListener('click', () => this.rs.reconnect() );
     this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
     // Sync button
@@ -393,7 +393,9 @@ Widget.prototype = {
 
   handleUnauthorized (error) {
     this.openWidget();
-    this.showErrorBox(error.message);
+    this.showErrorBox(error.message + " ");
+    this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
+    this.rsErrorReconnectLink.classList.remove('hidden');
   },
 
   updateLastSyncedOutput () {
