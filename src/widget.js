@@ -67,9 +67,7 @@ Widget.prototype = {
       case 'disconnected':
         this.active = false;
         this.online = false;
-        this.rsWidget.classList.remove('rs-backend-remotestorage');
-        this.rsWidget.classList.remove('rs-backend-dropbox');
-        this.rsWidget.classList.remove('rs-backend-googledrive');
+        this.setBackendClass(); // removes all backend CSS classes
         this.setState('initial');
         break;
       case 'connected':
@@ -85,7 +83,7 @@ Widget.prototype = {
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
-        this.rsWidget.classList.add(`rs-backend-${this.rs.backend}`);
+        this.setBackendClass(this.rs.backend);
         this.setState('connected');
         break;
       case 'network-offline':
@@ -99,6 +97,8 @@ Widget.prototype = {
         this.setState();
         break;
       case 'error':
+        this.setBackendClass(this.rs.backend);
+
         if (msg.name === 'DiscoveryError') {
           this.handleDiscoveryError(msg);
         } else if (msg.name === 'SyncError') {
@@ -180,7 +180,7 @@ Widget.prototype = {
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
-    this.rsErrorBox = document.querySelector('.rs-box-error');
+    this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
@@ -197,6 +197,9 @@ Widget.prototype = {
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
     this.rsSyncButton = document.querySelector('.rs-sync');
     this.rsLogo = document.querySelector('.rs-widget-icon');
+
+    this.rsErrorReconnectLink = document.querySelector('.rs-box-error a.rs-reconnect');
+    this.rsErrorDisconnectButton = document.querySelector('.rs-box-error button.rs-disconnect');
 
     this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
   },
@@ -284,6 +287,9 @@ Widget.prototype = {
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
 
+    this.rsErrorReconnectLink.addEventListener('click', () => this.rs.reconnect() );
+    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+
     // Sync button
     if (this.rs.hasFeature('Sync')) {
       this.rsSyncButton.addEventListener('click', () => {
@@ -328,7 +334,7 @@ Widget.prototype = {
   openWidget () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
-    this.shouldCloseWhenSyncDone = false;
+    this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
   },
 
   /**
@@ -338,11 +344,32 @@ Widget.prototype = {
    * the widget will not close.
    */
   closeWidget () {
+    // don't do anything when we have an error
+    if (this.state === 'error') { return; }
+
     if (!this.leaveOpen && this.active) {
       this.setState('close');
       this.closed = true;
     } else {
       this.setState(this.active ? 'connected' : 'initial');
+    }
+  },
+
+  /**
+   * Set the remoteStorage backend type to show the appropriate icon.
+   * If no backend is given, all existing backend CSS classes will be removed.
+   *
+   * @param {string} [backend]
+   *
+   * @private
+   */
+  setBackendClass (backend) {
+    this.rsWidget.classList.remove('rs-backend-remotestorage');
+    this.rsWidget.classList.remove('rs-backend-dropbox');
+    this.rsWidget.classList.remove('rs-backend-googledrive');
+
+    if (backend) {
+      this.rsWidget.classList.add(`rs-backend-${backend}`);
     }
   },
 
@@ -365,18 +392,15 @@ Widget.prototype = {
 
   handleSyncError (/* error */) {
     // console.debug('Encountered SyncError', error);
+    this.openWidget();
     this.showErrorBox('App sync error');
   },
 
-  handleUnauthorized () {
-    // console.debug('RS UNAUTHORIZED');
-    // console.debug('Bearer token not valid anymore');
-    // this.rs.stopSync();
-    // this.rsWidget.classList.add('rs-state-unauthorized');
-    this.showErrorBox('App authorization expired or revoked');
-    // this.lastSyncedUpdateLoop = setInterval(() => {
-    // this.updateLastSyncedOutput();
-    // }, 5000);
+  handleUnauthorized (error) {
+    this.openWidget();
+    this.showErrorBox(error.message + " ");
+    this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
+    this.rsErrorReconnectLink.classList.remove('hidden');
   },
 
   updateLastSyncedOutput () {
