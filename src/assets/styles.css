@@ -204,6 +204,7 @@ polygon.rs-logo-shape {
   height: 52px;
   border: 1px solid #aaa;
   border-radius: 0;
+  box-shadow: none;
 }
 .rs-sign-in-form input[type=submit] {
   padding: 15px 10px;
