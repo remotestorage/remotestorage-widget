@@ -42,6 +42,6 @@ Install deps:
 
 Build, run and watch demo/test app:
 
-    npm run dev
+    npm start
 
 The demo app will then be served at http://localhost:8008
