@@ -397,10 +397,14 @@ Widget.prototype = {
   },
 
   handleUnauthorized (error) {
-    this.openWidget();
-    this.showErrorBox(error.message + " ");
-    this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
-    this.rsErrorReconnectLink.classList.remove('hidden');
+    if (error.code && error.code === 'access_denied') {
+      this.rs.disconnect();
+    } else {
+      this.openWidget();
+      this.showErrorBox(error.message + " ");
+      this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
+      this.rsErrorReconnectLink.classList.remove('hidden');
+    }
   },
 
   updateLastSyncedOutput () {
