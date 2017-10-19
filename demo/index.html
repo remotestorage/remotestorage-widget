@@ -19,11 +19,9 @@
   <script>
     var remoteStorage = new RemoteStorage();
 
-    remoteStorage.setApiKeys('dropbox', {
-      appKey: '6sa61p53d6qa88q'
-    });
-    remoteStorage.setApiKeys('googledrive', {
-      clientId: '626692989184-4qj0epv5gcra69l8kvv3aj6nnahq7rrk.apps.googleusercontent.com'
+    remoteStorage.setApiKeys({
+      dropbox: '6sa61p53d6qa88q',
+      googledrive: '626692989184-4qj0epv5gcra69l8kvv3aj6nnahq7rrk.apps.googleusercontent.com'
     });
 
     remoteStorage.access.claim('bookmarks', 'rw');
