@@ -44,7 +44,7 @@
 .rs-main-logo {
   float: left;
   height: 36px;
-  width: auto;
+  width: 36px;
   margin-top: 1px;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
@@ -57,13 +57,13 @@
 .rs-widget[class*="rs-backend-"]:not(.rs-backend-remotestorage) svg#rs-main-logo-remotestorage {
   display: none;
 }
-.rs-widget .rs-backend-dropbox svg#rs-main-logo-dropbox {
+.rs-widget.rs-backend-dropbox svg#rs-main-logo-dropbox {
   display: normal;
 }
 .rs-widget:not(.rs-backend-dropbox) svg#rs-main-logo-dropbox {
   display: none;
 }
-.rs-widget .rs-backend-googledrive svg#rs-main-logo-googledrive {
+.rs-widget.rs-backend-googledrive svg#rs-main-logo-googledrive {
   display: normal;
 }
 .rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive {
