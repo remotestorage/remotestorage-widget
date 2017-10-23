@@ -40,6 +40,10 @@ Example:
 use an optional element ID that the widget should be attached to.
 Otherwise it will be attached to the body.
 
+While the `attach()` method is required for the widget to be actually
+shown, the following functions are usually not needed. They allow for
+fine-tuning the experience.
+
 `close()` - Close/minimize the widget to only show the icon.
 
 `open()` - Open the widget when it's minimized.
