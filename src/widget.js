@@ -403,7 +403,7 @@ Widget.prototype = {
       this.openWidget();
       this.showErrorBox(error.message + " ");
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
-      this.rsErrorReconnectLink.classList.remove('hidden');
+      this.rsErrorReconnectLink.classList.remove('rs-hidden');
     }
   },
 
