@@ -61,7 +61,7 @@ Widget.prototype = {
         }
 
         if (!this.closed && this.shouldCloseWhenSyncDone) {
-          setTimeout(this.closeWidget.bind(this), this.autoCloseAfter);
+          setTimeout(this.close.bind(this), this.autoCloseAfter);
         }
         break;
       case 'disconnected':
@@ -79,7 +79,7 @@ Widget.prototype = {
           this.rs.sync.on('done', () => this.eventHandler('done'));
         } else {
           this.rsSyncButton.classList.add('rs-hidden');
-          setTimeout(this.closeWidget.bind(this), this.autoCloseAfter);
+          setTimeout(this.close.bind(this), this.autoCloseAfter);
         }
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
@@ -304,13 +304,13 @@ Widget.prototype = {
     }
 
     // Reduce to icon only if connected and clicked outside of widget
-    document.addEventListener('click', () => this.closeWidget() );
+    document.addEventListener('click', () => this.close() );
 
     // Clicks on the widget stop the above event
     this.rsWidget.addEventListener('click', e => e.stopPropagation() );
 
     // Click on the logo to toggle the widget's open/close state
-    this.rsLogo.addEventListener('click', () => this.toggleWidget() );
+    this.rsLogo.addEventListener('click', () => this.toggle() );
   },
 
   /**
@@ -319,19 +319,22 @@ Widget.prototype = {
    * When then widget is open and in initial state, it will show the backend
    * chooser screen.
    */
-  toggleWidget () {
+  toggle () {
     if (this.closed) {
-      this.openWidget();
+      this.open();
     } else {
       if (this.state === 'initial') {
         this.showChooseOrSignIn();
       } else {
-        this.closeWidget();
+        this.close();
       }
     }
   },
 
-  openWidget () {
+  /**
+   * Open the widget.
+   */
+  open () {
     this.closed = false;
     this.setState(this.active ? 'connected' : 'initial');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
@@ -343,7 +346,7 @@ Widget.prototype = {
    * If the ``leaveOpen`` config is true or there is no storage connected,
    * the widget will not close.
    */
-  closeWidget () {
+  close () {
     // don't do anything when we have an error
     if (this.state === 'error') { return; }
 
@@ -392,7 +395,7 @@ Widget.prototype = {
 
   handleSyncError (/* error */) {
     // console.debug('Encountered SyncError', error);
-    this.openWidget();
+    this.open();
     this.showErrorBox('App sync error');
   },
 
@@ -400,7 +403,7 @@ Widget.prototype = {
     if (error.code && error.code === 'access_denied') {
       this.rs.disconnect();
     } else {
-      this.openWidget();
+      this.open();
       this.showErrorBox(error.message + " ");
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
       this.rsErrorReconnectLink.classList.remove('rs-hidden');
