@@ -32,7 +32,9 @@ The widget has some configuration options to customize the behavior:
 
 Example:
 
-    const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
+```js
+const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
+```
 
 ## Available Functions
 
