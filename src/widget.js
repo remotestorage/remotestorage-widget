@@ -45,10 +45,10 @@ Widget.prototype = {
       case 'ready':
         this.setState(this.state);
         break;
-      case 'req-done':
+      case 'sync-req-done':
         this.rsSyncButton.classList.add("rs-rotate");
         break;
-      case 'done':
+      case 'sync-done':
         this.rsSyncButton.classList.remove("rs-rotate");
 
         if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
@@ -75,8 +75,8 @@ Widget.prototype = {
         this.online = true;
         if (this.rs.hasFeature('Sync')) {
           this.shouldCloseWhenSyncDone = true;
-          this.rs.sync.on('req-done', () => this.eventHandler('req-done'));
-          this.rs.sync.on('done', () => this.eventHandler('done'));
+          this.rs.on('sync-req-done', () => this.eventHandler('sync-req-done'));
+          this.rs.on('sync-done', () => this.eventHandler('sync-done'));
         } else {
           this.rsSyncButton.classList.add('rs-hidden');
           setTimeout(this.close.bind(this), this.autoCloseAfter);
