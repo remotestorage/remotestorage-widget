@@ -29,6 +29,7 @@ The widget has some configuration options to customize the behavior:
 |---|---|---|---|
 | `leaveOpen` | Keep the widget open when user clicks outside of it | Boolean | false |
 | `autoCloseAfter` | Timeout after which the widget closes automatically (in milliseconds). The widget only closes when a storage is connected. | Number | 1500 |
+| `logging` | Enable logging for debugging purposes | Boolean | false |
 
 Example:
 
