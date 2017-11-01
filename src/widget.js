@@ -8,6 +8,7 @@
  *                                      outside of it (default: false)
  * @param {number} options.autoCloseAfter - Time after which the widget closes
  *                                          automatically in ms (default: 1500)
+ * @param {boolean} options.logging - Enable logging (default: false)
  */
 let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
@@ -25,6 +26,8 @@ let Widget = function(remoteStorage, options={}) {
 
   this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
 
+  this.logging = typeof options.logging === 'boolean' ? options.logging : false;
+
   this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
 
   this.lastSynced = null;
@@ -35,7 +38,9 @@ let Widget = function(remoteStorage, options={}) {
 Widget.prototype = {
 
   log (...msg) {
-    console.debug('[RS-WIDGET] ', ...msg);
+    if (this.logging) {
+      console.debug('[RS-WIDGET] ', ...msg);
+    }
   },
 
   // handle events !
