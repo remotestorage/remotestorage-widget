@@ -1,24 +1,25 @@
 /* RemoteStorage widget styles */
 
-.rs-widget * {
-  box-sizing: border-box;
-}
-
 .rs-widget {
-  font-family: arial, sans-serif;
-  font-size: 16px;
+  box-sizing: border-box;
+  z-index: 21000000; /* Make sure we're on a reasonably high visibility layer */
+  overflow: hidden;
   max-width: 350px;
-  color: #333;
-  background-color: #fff;
-  border-radius: 3px;
   padding: 10px;
   margin: 10px;
-  overflow: hidden;
-  z-index: 21000000; /* Make sure we're on a reasonably high visibility layer */
+  border-radius: 3px;
+  background-color: #fff;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
+  font-family: arial, sans-serif;
+  font-size: 16px;
+  color: #333;
   will-change: max-height, height, width, opacity, max-width, background, box-shadow;
   transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
   transition-duration: 300ms;
+}
+
+.rs-widget * {
+  box-sizing: border-box;
 }
 
 .rs-widget .rs-hidden {
@@ -84,7 +85,7 @@ polygon.rs-logo-shape {
 
 /* Hide everything except logo when connected and clicked outside of box */
 .rs-state-close {
-  max-width: 36px;
+  max-width: 56px;
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
