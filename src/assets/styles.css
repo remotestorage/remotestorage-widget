@@ -321,6 +321,9 @@ polygon.rs-logo-shape {
     top: auto;
     right: auto
   }
+  .rs-state-close {
+    max-width: 56px;
+  }
   .rs-state-choose,
   .rs-state-sign-in {
     position: fixed;
