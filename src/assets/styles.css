@@ -347,3 +347,9 @@ polygon.rs-logo-shape {
 .rs-widget input[type="submit"]::-moz-focus-inner {
   border:0;
 }
+
+/* prevent rounded buttons on mobile Safari */
+.rs-widget input[type="button"],
+.rs-widget input[type="submit"] {
+  -webkit-appearance: none;
+}
