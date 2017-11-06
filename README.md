@@ -1,3 +1,5 @@
+<img src="https://remotestorage.io/img/widget-demo.gif" width="364" height="468">
+
 # remotestorage-widget
 
 A ready-to-use connect/sync widget, as add-on library for
