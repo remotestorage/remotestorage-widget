@@ -135,6 +135,8 @@ Widget.prototype = {
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
       if (this.closed && state !== 'close') {
         this.rsWidget.classList.add('rs-state-close');
+      } else if (!this.closed) {
+        this.rsWidget.classList.remove('rs-state-close');
       }
 
       this.state = state;
@@ -355,8 +357,8 @@ Widget.prototype = {
     if (this.state === 'error') { return; }
 
     if (!this.leaveOpen && this.active) {
-      this.setState('close');
       this.closed = true;
+      this.setState('close');
     } else {
       this.setState(this.active ? 'connected' : 'initial');
     }
