@@ -142,8 +142,7 @@ Widget.prototype = {
 
     if (!this.online && this.active) {
       this.rsWidget.classList.add('rs-state-offline');
-      // TODO offline is not the same as "not connected"
-      this.rsConnectedLabel.textContent = 'Not Connected';
+      this.rsConnectedLabel.textContent = 'Offline';
     } else {
       this.rsConnectedLabel.textContent = 'Connected';
       this.rsWidget.classList.remove('rs-state-offline');
