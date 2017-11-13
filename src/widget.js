@@ -133,11 +133,6 @@ Widget.prototype = {
       let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
       this.rsWidget.classList.remove(currentStateClass);
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
-      if (this.closed && state !== 'close') {
-        this.rsWidget.classList.add('rs-state-close');
-      } else if (!this.closed) {
-        this.rsWidget.classList.remove('rs-state-close');
-      }
 
       this.state = state;
     }
@@ -342,7 +337,7 @@ Widget.prototype = {
    */
   open () {
     this.closed = false;
-    this.setState(this.active ? 'connected' : 'initial');
+    this.rsWidget.classList.remove('rs-closed');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
   },
 
@@ -358,7 +353,7 @@ Widget.prototype = {
 
     if (!this.leaveOpen && this.active) {
       this.closed = true;
-      this.setState('close');
+      this.rsWidget.classList.add('rs-closed');
     } else {
       this.setState(this.active ? 'connected' : 'initial');
     }
@@ -389,7 +384,7 @@ Widget.prototype = {
 
   hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
-    this.setState('close');
+    this.close();
   },
 
   handleDiscoveryError (error) {
