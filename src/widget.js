@@ -71,7 +71,7 @@ Widget.prototype = {
         break;
       case 'disconnected':
         this.active = false;
-        this.online = false;
+        this.setOnline();
         this.setBackendClass(); // removes all backend CSS classes
         this.setState('initial');
         break;
@@ -89,17 +89,14 @@ Widget.prototype = {
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
         this.setBackendClass(this.rs.backend);
+        this.rsConnectedLabel.textContent = 'Connected';
         this.setState('connected');
         break;
       case 'network-offline':
-        this.online = false;
-        // this.active = false;
-        this.setState();
+        this.setOffline();
         break;
       case 'network-online':
-        this.online = true;
-        this.active = true;
-        this.setState();
+        this.setOnline();
         break;
       case 'error':
         this.setBackendClass(this.rs.backend);
@@ -135,14 +132,6 @@ Widget.prototype = {
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
 
       this.state = state;
-    }
-
-    if (!this.online && this.active) {
-      this.rsWidget.classList.add('rs-state-offline');
-      this.rsConnectedLabel.textContent = 'Offline';
-    } else {
-      this.rsConnectedLabel.textContent = 'Connected';
-      this.rsWidget.classList.remove('rs-state-offline');
     }
   },
 
@@ -357,6 +346,37 @@ Widget.prototype = {
     } else {
       this.setState(this.active ? 'connected' : 'initial');
     }
+  },
+
+
+  /**
+   * Mark the widget as offline.
+   *
+   * This will not do anything when no account is connected.
+   *
+   * @private
+   */
+  setOffline () {
+    if (this.online) {
+      this.rsWidget.classList.add('rs-offline');
+      this.rsConnectedLabel.textContent = 'Offline';
+      this.online = false;
+    }
+  },
+
+  /**
+   * Mark the widget as online.
+   *
+   * @private
+   */
+  setOnline () {
+    if (!this.online) {
+      this.rsWidget.classList.remove('rs-offline');
+      if (this.active) {
+        this.rsConnectedLabel.textContent = 'Connected';
+      }
+    }
+    this.online = true;
   },
 
   /**
