@@ -42,7 +42,7 @@
     "inline-svg-loader": "0.0.1",
     "opener": "^1.4.1",
     "raw-loader": "^0.5.1",
-    "remotestoragejs": "1.0.0-rc5",
+    "remotestoragejs": "1.0.1",
     "rimraf": "^2.4.3",
     "svg-inline-loader": "^0.7.1",
     "url-loader": "^0.5.7",
