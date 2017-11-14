@@ -73,18 +73,25 @@
 
 polygon.rs-logo-shape {
   fill: #FF4B03;
+}
+
+polygon.rs-logo-shape,
+#rs-main-logo-dropbox path,
+#rs-main-logo-googledrive path {
   transition-property: fill;
   transition-duration: 0.5s;
 }
 
-.rs-state-offline polygon.rs-logo-shape {
+.rs-offline polygon.rs-logo-shape,
+.rs-offline #rs-main-logo-dropbox path,
+.rs-offline #rs-main-logo-googledrive path {
   fill: #888;
   transition-property: fill;
   transition-duration: 0.5s;
 }
 
 /* Hide everything except logo when connected and clicked outside of box */
-.rs-state-close {
+.rs-closed {
   max-width: 56px;
   background-color: transparent;
   box-shadow: none;
@@ -93,7 +100,7 @@ polygon.rs-logo-shape {
   transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
 }
 
-.rs-state-close:hover {
+.rs-closed:hover {
   cursor: pointer;
   opacity: 1;
 }
@@ -321,7 +328,7 @@ polygon.rs-logo-shape {
     top: auto;
     right: auto
   }
-  .rs-state-close {
+  .rs-closed {
     max-width: 56px;
   }
   .rs-state-choose,

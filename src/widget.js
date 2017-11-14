@@ -71,7 +71,7 @@ Widget.prototype = {
         break;
       case 'disconnected':
         this.active = false;
-        this.online = false;
+        this.setOnline();
         this.setBackendClass(); // removes all backend CSS classes
         this.setState('initial');
         break;
@@ -89,17 +89,14 @@ Widget.prototype = {
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
         this.setBackendClass(this.rs.backend);
+        this.rsConnectedLabel.textContent = 'Connected';
         this.setState('connected');
         break;
       case 'network-offline':
-        this.online = false;
-        // this.active = false;
-        this.setState();
+        this.setOffline();
         break;
       case 'network-online':
-        this.online = true;
-        this.active = true;
-        this.setState();
+        this.setOnline();
         break;
       case 'error':
         this.setBackendClass(this.rs.backend);
@@ -133,20 +130,8 @@ Widget.prototype = {
       let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
       this.rsWidget.classList.remove(currentStateClass);
       this.rsWidget.classList.add(`rs-state-${state || this.state}`);
-      if (this.closed && state !== 'close') {
-        this.rsWidget.classList.add('rs-state-close');
-      }
 
       this.state = state;
-    }
-
-    if (!this.online && this.active) {
-      this.rsWidget.classList.add('rs-state-offline');
-      // TODO offline is not the same as "not connected"
-      this.rsConnectedLabel.textContent = 'Not Connected';
-    } else {
-      this.rsConnectedLabel.textContent = 'Connected';
-      this.rsWidget.classList.remove('rs-state-offline');
     }
   },
 
@@ -341,7 +326,7 @@ Widget.prototype = {
    */
   open () {
     this.closed = false;
-    this.setState(this.active ? 'connected' : 'initial');
+    this.rsWidget.classList.remove('rs-closed');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
   },
 
@@ -356,11 +341,42 @@ Widget.prototype = {
     if (this.state === 'error') { return; }
 
     if (!this.leaveOpen && this.active) {
-      this.setState('close');
       this.closed = true;
+      this.rsWidget.classList.add('rs-closed');
     } else {
       this.setState(this.active ? 'connected' : 'initial');
     }
+  },
+
+
+  /**
+   * Mark the widget as offline.
+   *
+   * This will not do anything when no account is connected.
+   *
+   * @private
+   */
+  setOffline () {
+    if (this.online) {
+      this.rsWidget.classList.add('rs-offline');
+      this.rsConnectedLabel.textContent = 'Offline';
+      this.online = false;
+    }
+  },
+
+  /**
+   * Mark the widget as online.
+   *
+   * @private
+   */
+  setOnline () {
+    if (!this.online) {
+      this.rsWidget.classList.remove('rs-offline');
+      if (this.active) {
+        this.rsConnectedLabel.textContent = 'Connected';
+      }
+    }
+    this.online = true;
   },
 
   /**
@@ -388,7 +404,7 @@ Widget.prototype = {
 
   hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
-    this.setState('close');
+    this.close();
   },
 
   handleDiscoveryError (error) {
