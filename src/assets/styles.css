@@ -254,6 +254,7 @@ polygon.rs-logo-shape,
 
 .rs-box-error {
   display: flex;
+  flex-direction: row;
 }
 
 .rs-box-error .rs-error-message {
@@ -275,6 +276,7 @@ polygon.rs-logo-shape,
 /*Connected box */
 .rs-box-connected {
   display: flex;
+  flex-direction: row;
   height: 40px;
   transition: height 0s;
 }
