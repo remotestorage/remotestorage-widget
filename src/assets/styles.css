@@ -252,9 +252,13 @@ polygon.rs-logo-shape,
   color: darkred;
 }
 
+.rs-box-error {
+  display: flex;
+  flex-direction: row;
+}
+
 .rs-box-error .rs-error-message {
-  float: left;
-  max-width: 242px;
+  flex: auto;
 }
 
  /*Choose provider box */
@@ -271,21 +275,23 @@ polygon.rs-logo-shape,
 
 /*Connected box */
 .rs-box-connected {
+  display: flex;
+  flex-direction: row;
   height: 40px;
   transition: height 0s;
 }
 .rs-connected-text {
-  float: left;
+  flex: auto;
+  min-width: 0;
 }
 .rs-box-connected .rs-user {
   font-weight: bold;
-  max-width: 210px;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: keep-all;
 }
 .rs-connected-buttons, .rs-error-buttons {
-  float: right;
+  flex: none;
 }
 .rs-disconnect:hover {
   border-color: #FF2D2D;
