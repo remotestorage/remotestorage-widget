@@ -432,6 +432,7 @@ Widget.prototype = {
   },
 
   updateLastSyncedOutput () {
+    if (!this.lastSynced) { return } // don't do anything when we've never synced yet
     let now = new Date();
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
