@@ -70,9 +70,11 @@ Widget.prototype = {
         }
         break;
       case 'disconnected':
+        console.log('disconnected event handler');
         this.active = false;
         this.setOnline();
         this.setBackendClass(); // removes all backend CSS classes
+        this.open();
         this.setState('initial');
         break;
       case 'connected':
