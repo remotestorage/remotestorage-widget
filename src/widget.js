@@ -2,18 +2,23 @@
  * RemoteStorage connect widget
  * @constructor
  *
- * @param {object} remoteStorage - remoteStorage instance
- * @param {object} options - Widget options
- * @param {boolean} options.leaveOpen - Do not minimize widget when user clicks
- *                                      outside of it (default: false)
- * @param {number} options.autoCloseAfter - Time after which the widget closes
- *                                          automatically in ms (default: 1500)
- * @param {boolean} options.logging - Enable logging (default: false)
+ * @param {object}  remoteStorage          - remoteStorage instance
+ * @param {object}  options                - Widget options
+ * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks
+ *                                           outside of it (default: false)
+ * @param {number}  options.autoCloseAfter - Time after which the widget closes
+ *                                           automatically in ms (default: 1500)
+ * @param {boolean} options.skipInitial    - Don't show the initial connect hint,
+ *                                           but show sign-in screen directly instead
+ * @param {boolean} options.logging        - Enable logging (default: false)
  */
 let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
 
-  this.state = 'initial';
+  this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
+  this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
+  this.skipInitial    = options.skipInitial ? options.skipInitial : false;
+  this.logging        = options.logging ? options.logging : false;
 
   // true if we have remoteStorage connection's info
   this.active = false;
@@ -24,16 +29,9 @@ let Widget = function(remoteStorage, options={}) {
   // widget is minimized ?
   this.closed = false;
 
-  this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
-
-  this.logging = typeof options.logging === 'boolean' ? options.logging : false;
-
-  this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
-
   this.lastSynced = null;
   this.lastSyncedUpdateLoop = null;
 };
-
 
 Widget.prototype = {
 
@@ -73,7 +71,7 @@ Widget.prototype = {
         this.active = false;
         this.setOnline();
         this.setBackendClass(); // removes all backend CSS classes
-        this.setState('initial');
+        this.setInitialState();
         break;
       case 'connected':
         this.active = true;
@@ -135,6 +133,20 @@ Widget.prototype = {
     }
   },
 
+
+  /**
+   * Set widget to its inital state
+   *
+   * @private
+   */
+  setInitialState () {
+    if (this.skipInitial) {
+      this.showChooseOrSignIn();
+    } else {
+      this.setState('initial');
+    }
+  },
+
   /**
    * Create the widget element and add styling.
    *
@@ -166,7 +178,7 @@ Widget.prototype = {
     this.rsConnected = document.querySelector('.rs-box-connected');
     this.rsSignIn = document.querySelector('.rs-box-sign-in');
 
-    this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline')
+    this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline');
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
@@ -234,6 +246,7 @@ Widget.prototype = {
 
     this.setupElements();
     this.setupHandlers();
+    this.setInitialState();
   },
 
   setEventListeners () {
@@ -343,11 +356,12 @@ Widget.prototype = {
     if (!this.leaveOpen && this.active) {
       this.closed = true;
       this.rsWidget.classList.add('rs-closed');
+    } else if (this.active) {
+      this.setState('connected');
     } else {
-      this.setState(this.active ? 'connected' : 'initial');
+      this.setInitialState();
     }
   },
-
 
   /**
    * Mark the widget as offline.
@@ -432,7 +446,7 @@ Widget.prototype = {
   },
 
   updateLastSyncedOutput () {
-    if (!this.lastSynced) { return } // don't do anything when we've never synced yet
+    if (!this.lastSynced) { return; } // don't do anything when we've never synced yet
     let now = new Date();
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
