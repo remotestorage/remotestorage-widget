@@ -27,7 +27,12 @@
     remoteStorage.access.claim('bookmarks', 'rw');
     remoteStorage.caching.enable('/bookmarks/');
 
-    var widget = new Widget(remoteStorage, { logging: true });
+    var widget = new Widget(remoteStorage, {
+      //leaveOpen: true,
+      //autoCloseAfter: 2000,
+      // skipInitial: true,
+      logging: true
+    });
     widget.attach();
   </script>
 </body>
