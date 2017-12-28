@@ -10,6 +10,7 @@
  *                                           automatically in ms (default: 1500)
  * @param {boolean} options.skipInitial    - Don't show the initial connect hint,
  *                                           but show sign-in screen directly instead
+ *                                           (default: false)
  * @param {boolean} options.logging        - Enable logging (default: false)
  */
 let Widget = function(remoteStorage, options={}) {
