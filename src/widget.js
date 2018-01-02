@@ -72,6 +72,7 @@ Widget.prototype = {
         this.active = false;
         this.setOnline();
         this.setBackendClass(); // removes all backend CSS classes
+        this.open();
         this.setInitialState();
         break;
       case 'connected':
