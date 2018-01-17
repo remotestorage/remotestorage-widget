@@ -1,10 +1,11 @@
 /* global __dirname */
-var webpack = require('webpack');
-var isProd = (process.env.NODE_ENV === 'production');
-var path = require('path');
+const webpack = require('webpack');
+const isProd = (process.env.NODE_ENV === 'production');
+const path = require('path');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 // minimize only in production
-var plugins = isProd ? [new webpack.optimize.UglifyJsPlugin({minimize: true})] : [];
+const plugins = isProd ? [new UglifyJSPlugin()] : [];
 
 module.exports = {
   entry: ["./src/widget.js"],
@@ -29,7 +30,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets=es2015' },
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?presets=es2015' },
     ]
   },
   plugins: plugins

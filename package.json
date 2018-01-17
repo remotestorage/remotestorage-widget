@@ -34,21 +34,21 @@
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-core": "^6.18.0",
-    "babel-loader": "^6.2.7",
+    "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.18.0",
-    "file-loader": "^0.9.0",
-    "html-loader": "^0.4.4",
-    "http-server": "^0.8.5",
+    "file-loader": "^1.1.6",
+    "html-loader": "^0.5.5",
+    "http-server": "^0.11.1",
     "inline-loader": "^0.1.1",
-    "inline-svg-loader": "0.0.1",
     "opener": "^1.4.1",
     "raw-loader": "^0.5.1",
     "remotestoragejs": "1.0.2",
     "rimraf": "^2.4.3",
-    "svg-inline-loader": "^0.7.1",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "svg-inline-loader": "^0.8.0",
+    "uglifyjs-webpack-plugin": "^1.1.6",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.0"
   },
   "babel": {
     "presets": [
