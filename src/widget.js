@@ -197,6 +197,7 @@ Widget.prototype = {
     }
 
     this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+    this.rsConnectButton = document.querySelector('.rs-connect');
 
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
     this.rsSyncButton = document.querySelector('.rs-sync');
@@ -256,6 +257,7 @@ Widget.prototype = {
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
       let userAddress = document.querySelector('input[name=rs-user-address]').value;
+      this.rsConnectButton.disabled = true;
       this.rs.connect(userAddress);
     });
   },
@@ -428,6 +430,7 @@ Widget.prototype = {
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
+    this.rsConnectButton.disabled = false;
   },
 
   handleSyncError (/* error */) {

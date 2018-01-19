@@ -235,6 +235,10 @@ polygon.rs-logo-shape,
 .rs-sign-in-form input[type=submit]:active {
   background-color: #3fb34f;
 }
+.rs-sign-in-form input[type=submit]:disabled,
+.rs-sign-in-form input[type=submit]:disabled:hover {
+  background-color: #aaa;
+}
 
 .rs-sign-in-error.rs-hidden,
 .rs-box-error.rs-hidden {
