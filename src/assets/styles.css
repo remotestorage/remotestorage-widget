@@ -96,6 +96,7 @@ polygon.rs-logo-shape,
   background-color: transparent;
   box-shadow: none;
   opacity: 0.5;
+  display: none;
 
   transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
 }
