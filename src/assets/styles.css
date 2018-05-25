@@ -97,7 +97,7 @@ polygon.rs-logo-shape,
   box-shadow: none;
   opacity: 0.5;
 
-  transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms; 
+  transition: max-height 100ms ease-out 0ms, max-width 300ms ease-out 300ms, background 300ms ease-in 200ms, opacity 300ms ease 200ms;
 }
 
 .rs-closed:hover {
@@ -359,7 +359,7 @@ polygon.rs-logo-shape,
 .rs-widget input:focus {
   outline:none;
 }
-.rs-widget button::-moz-focus-inner, 
+.rs-widget button::-moz-focus-inner,
 .rs-widget input[type="button"]::-moz-focus-inner,
 .rs-widget input[type="submit"]::-moz-focus-inner {
   border:0;

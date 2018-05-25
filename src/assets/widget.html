@@ -11,8 +11,7 @@
   rs-modal           - TODO - will make it a modal window
 -->
 
-<!-- RS WIDGET, a class named rs-state-<state> indicate
- its current state -->
+<!-- RS WIDGET, a class named rs-state-<state> indicates its current state -->
 <div class="rs-widget rs-state-initial">
 
   <div class="rs-widget-icon">
@@ -211,12 +210,12 @@
     </svg>
   </div>
 
-  <div class="rs-box rs-box-initial">
+  <div class="rs-box rs-box-initial" aria-hidden="false">
     <h3 class="rs-small-headline">Connect your storage</h3>
     <span class="rs-sub-headline">To sync data with your account</span>
   </div>
 
-  <div class="rs-box rs-box-connected">
+  <div class="rs-box rs-box-connected" aria-hidden="true">
     <div class="rs-connected-text">
       <h1 class="rs-user rs-small-headline">user@provider.com</h1>
       <span class="rs-sub-headline">Connected</span>
@@ -241,7 +240,7 @@
     </div>
   </div>
 
-  <div class="rs-box rs-box-error">
+  <div class="rs-box rs-box-error" aria-hidden="true">
     <div class="rs-error-message"></div>
     <div class="rs-error-buttons">
       <a href="#" class="rs-reconnect rs-hidden">Renew</a>
@@ -256,7 +255,7 @@
     </div>
   </div>
 
-  <div class="rs-box rs-box-choose">
+  <div class="rs-box rs-box-choose" aria-hidden="true">
     <div class="rs-content">
       <h1 class="rs-big-headline">Connect your storage</h1>
       <p class="rs-short-desc">
@@ -469,7 +468,7 @@
     </div>
   </div>
 
-  <div class="rs-box rs-box-sign-in">
+  <div class="rs-box rs-box-sign-in" aria-hidden="true">
     <div class="rs-content">
       <form name="rs-sign-in-form" class="rs-sign-in-form">
         <h1 class="rs-big-headline">Connect your storage</h1>
