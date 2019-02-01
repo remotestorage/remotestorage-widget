@@ -15,6 +15,7 @@ module.exports = {
     library: 'Widget',
     libraryTarget: 'umd'
   },
+  mode: isProd ? 'production' : 'development',
   devtool: isProd ? '#source-map' : '#eval-source-map',
   externals: {
       // require("remotestoragejs") is external and available
@@ -29,8 +30,12 @@ module.exports = {
       }
   },
   module: {
-    loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?presets=es2015' },
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader?presets=es2015'
+      }
     ]
   },
   plugins: plugins
