@@ -5,7 +5,7 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 // minimize only in production
-const plugins = isProd ? [new UglifyJSPlugin()] : [];
+const plugins = isProd ? [new UglifyJSPlugin({ sourceMap: true })] : [];
 
 module.exports = {
   entry: ["./src/widget.js"],

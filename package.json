@@ -7,7 +7,7 @@
     "start": "npm run dev",
     "clean": "rimraf build/*",
     "prebuild": "npm run clean -s",
-    "build": "NODE_ENV=production webpack -p",
+    "build": "NODE_ENV=production webpack",
     "dev": "webpack-dev-server --inline --hot --content-base demo --port 8008",
     "open": "opener http://localhost:8008",
     "version": "npm run build && git add build/ && npm run update-bower-version && git add bower.json",
