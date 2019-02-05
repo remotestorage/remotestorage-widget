@@ -4,14 +4,11 @@
  *
  * @param {object}  remoteStorage          - remoteStorage instance
  * @param {object}  options                - Widget options
- * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks
- *                                           outside of it (default: false)
- * @param {number}  options.autoCloseAfter - Time after which the widget closes
- *                                           automatically in ms (default: 1500)
- * @param {boolean} options.skipInitial    - Don't show the initial connect hint,
- *                                           but show sign-in screen directly instead
- *                                           (default: false)
+ * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks outside of it (default: false)
+ * @param {number}  options.autoCloseAfter - Time after which the widget closes  automatically in ms (default: 1500)
+ * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
  * @param {boolean} options.logging        - Enable logging (default: false)
+ * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
 let Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
@@ -20,6 +17,15 @@ let Widget = function(remoteStorage, options={}) {
   this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
   this.skipInitial    = options.skipInitial ? options.skipInitial : false;
   this.logging        = options.logging ? options.logging : false;
+
+  if (options.hasOwnProperty('modalBackdrop')) {
+    if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
+      throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
+    }
+    this.modalBackdrop  = options.modalBackdrop;
+  } else {
+    this.modalBackdrop  = 'onlySmallScreens';
+  }
 
   // true if we have remoteStorage connection's info
   this.active = false;
@@ -169,12 +175,41 @@ Widget.prototype = {
   },
 
   /**
+   * Create the widget's modal backdrop element, add
+   * styling, and append to DOM
+   *
+   * @private
+   */
+  createBackdropHtml () {
+    const backdropEl = document.createElement('div');
+    backdropEl.classList.add('remotestorage-widget-modal-backdrop');
+    document.body.appendChild(backdropEl);
+  },
+
+  /**
+   * Sets the `rs-modal` class on the widget element.
+   * Done by default for small screens (max-width 420px).
+   *
+   * @private
+   */
+  setModalClass () {
+    if (this.modalBackdrop) {
+      if (this.modalBackdrop === 'onlySmallScreens'
+          && !this.isSmallScreen()) {
+        return;
+      }
+      this.rsWidget.classList.add('rs-modal');
+    }
+  },
+
+  /**
    * Save all interactive DOM elements as variables for later access.
    *
    * @private
    */
   setupElements () {
     this.rsWidget = document.querySelector('.rs-widget');
+    this.rsBackdrop = document.querySelector('.remotestorage-widget-modal-backdrop');
     this.rsInitial = document.querySelector('.rs-box-initial');
     this.rsChoose = document.querySelector('.rs-box-choose');
     this.rsConnected = document.querySelector('.rs-box-connected');
@@ -235,21 +270,25 @@ Widget.prototype = {
    * @param  {String} [elementId] - Widget's parent
    */
   attach (elementId) {
+    this.createBackdropHtml()
     const domElement = this.createHtmlTemplate();
 
+    let parentContainerEl;
+
     if (elementId) {
-      const parent = document.getElementById(elementId);
+      parentContainerEl = document.getElementById(elementId);
       if (!parent) {
         throw "Failed to find target DOM element with id=\"" + elementId + "\"";
       }
-      parent.appendChild(domElement);
     } else {
-      document.body.appendChild(domElement);
+      parentContainerEl = document.body;
     }
+    parentContainerEl.appendChild(domElement);
 
     this.setupElements();
     this.setupHandlers();
     this.setInitialState();
+    this.setModalClass();
   },
 
   setEventListeners () {
@@ -270,6 +309,10 @@ Widget.prototype = {
    * @private
    */
   showChooseOrSignIn () {
+    if (this.rsWidget.classList.contains('rs-modal')) {
+      this.rsBackdrop.style.display = 'block';
+      this.rsBackdrop.classList.add('visible');
+    }
     // choose backend only if some providers are declared
     if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
       this.setState('choose');
@@ -365,6 +408,13 @@ Widget.prototype = {
     } else {
       this.setInitialState();
     }
+
+    if (this.rsWidget.classList.contains('rs-modal')) {
+      this.rsBackdrop.classList.remove('visible');
+      setTimeout(() => {
+        this.rsBackdrop.style.display = 'none';
+      }, 300);
+    }
   },
 
   /**
@@ -456,6 +506,10 @@ Widget.prototype = {
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
     subHeadlineEl.innerHTML = `Synced ${secondsSinceLastSync} seconds ago`;
+  },
+
+  isSmallScreen () {
+    return window.innerWidth < 421;
   }
 };
 
