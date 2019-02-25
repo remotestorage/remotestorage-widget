@@ -318,6 +318,7 @@ Widget.prototype = {
       this.setState('choose');
     } else {
       this.setState('sign-in');
+      document.querySelector('.rs-sign-in-form input[name="rs-user-address"]').focus();
     }
   },
 
