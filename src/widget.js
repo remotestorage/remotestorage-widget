@@ -228,6 +228,7 @@ Widget.prototype = {
     }
 
     this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+    this.rsAddressInput = this.rsSignInForm.querySelector('input[name=rs-user-address]');
     this.rsConnectButton = document.querySelector('.rs-connect');
 
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
@@ -322,7 +323,10 @@ Widget.prototype = {
     this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn() );
 
     // Choose RS button
-    this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
+    this.rsChooseRemoteStorageButton.addEventListener('click', () => {
+      this.setState('sign-in');
+      this.rsAddressInput.focus();
+    });
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
