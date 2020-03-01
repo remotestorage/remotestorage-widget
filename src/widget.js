@@ -483,10 +483,9 @@ Widget.prototype = {
     this.rsConnectButton.disabled = false;
   },
 
-  handleSyncError (/* error */) {
-    // console.debug('Encountered SyncError', error);
-    this.open();
-    this.showErrorBox('App sync error');
+  handleSyncError (error) {
+    console.debug('Encountered SyncError', error);
+    this.setOffline();
   },
 
   handleUnauthorized (error) {
