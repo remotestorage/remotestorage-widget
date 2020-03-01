@@ -42,7 +42,7 @@
     "inline-loader": "^0.1.1",
     "opener": "^1.4.1",
     "raw-loader": "^0.5.1",
-    "remotestoragejs": "1.2.1",
+    "remotestoragejs": "1.2.3",
     "rimraf": "^2.4.3",
     "svg-inline-loader": "^0.8.0",
     "uglifyjs-webpack-plugin": "^2.1.1",
