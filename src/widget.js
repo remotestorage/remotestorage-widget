@@ -56,9 +56,15 @@ Widget.prototype = {
         this.setState(this.state);
         break;
       case 'sync-req-done':
+        this.syncInProgress = true;
         this.rsSyncButton.classList.add("rs-rotate");
+        setTimeout(() => {
+          if (!this.syncInProgress) return;
+          this.rsConnectedLabel.textContent = 'Synchronizing';
+        }, 1000);
         break;
       case 'sync-done':
+        this.syncInProgress = false;
         this.rsSyncButton.classList.remove("rs-rotate");
 
         if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
@@ -66,8 +72,7 @@ Widget.prototype = {
           this.updateLastSyncedOutput();
         } else if (this.rs.remote.online) {
           this.lastSynced = new Date();
-          let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-          subHeadlineEl.innerHTML = 'Synced just now';
+          this.rsConnectedLabel.textContent = 'Synced just now';
         }
 
         if (!this.closed && this.shouldCloseWhenSyncDone) {
@@ -347,6 +352,7 @@ Widget.prototype = {
           this.rs.stopSync();
           this.rsSyncButton.classList.remove("rs-rotate");
         } else {
+          this.rsConnectedLabel.textContent = 'Synchronizing';
           this.rs.startSync();
           this.rsSyncButton.classList.add("rs-rotate");
         }
