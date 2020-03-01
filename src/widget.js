@@ -125,10 +125,16 @@ Widget.prototype = {
     this.log('Setting state ', state);
 
     let lastSelected = document.querySelector('.rs-box.rs-selected');
-    if (lastSelected) lastSelected.classList.remove('rs-selected');
+    if (lastSelected) {
+      lastSelected.classList.remove('rs-selected');
+      lastSelected.setAttribute('aria-hidden', 'true');
+    }
 
     let toSelect = document.querySelector('.rs-box.rs-box-'+state);
-    if (toSelect) toSelect.classList.add('rs-selected');
+    if (toSelect) {
+      toSelect.classList.add('rs-selected');
+      toSelect.setAttribute('aria-hidden', 'false');
+    }
 
     let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
     this.rsWidget.classList.remove(currentStateClass);
@@ -136,7 +142,6 @@ Widget.prototype = {
 
     this.state = state;
   },
-
 
   /**
    * Set widget to its inital state
@@ -388,6 +393,11 @@ Widget.prototype = {
     this.closed = false;
     this.rsWidget.classList.remove('rs-closed');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
+
+    let selected = document.querySelector('.rs-box.rs-selected');
+    if (selected) {
+      selected.setAttribute('aria-hidden', 'false');
+    }
   },
 
   /**
@@ -403,6 +413,10 @@ Widget.prototype = {
     if (!this.leaveOpen && this.active) {
       this.closed = true;
       this.rsWidget.classList.add('rs-closed');
+      let selected = document.querySelector('.rs-box.rs-selected');
+      if (selected) {
+        selected.setAttribute('aria-hidden', 'true');
+      }
     } else if (this.active) {
       this.setState('connected');
     } else {
