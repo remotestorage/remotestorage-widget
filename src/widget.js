@@ -121,24 +121,20 @@ Widget.prototype = {
   },
 
   setState (state) {
-    if (state) {
-      this.log('Setting state ', state);
-      let lastSelected = document.querySelector('.rs-box.rs-selected');
-      if (lastSelected) {
-        lastSelected.classList.remove('rs-selected');
-      }
+    if (!state) return;
+    this.log('Setting state ', state);
 
-      let toSelect = document.querySelector('.rs-box.rs-box-'+state);
-      if (toSelect) {
-        toSelect.classList.add('rs-selected');
-      }
+    let lastSelected = document.querySelector('.rs-box.rs-selected');
+    if (lastSelected) lastSelected.classList.remove('rs-selected');
 
-      let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
-      this.rsWidget.classList.remove(currentStateClass);
-      this.rsWidget.classList.add(`rs-state-${state || this.state}`);
+    let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+    if (toSelect) toSelect.classList.add('rs-selected');
 
-      this.state = state;
-    }
+    let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
+    this.rsWidget.classList.remove(currentStateClass);
+    this.rsWidget.classList.add(`rs-state-${state || this.state}`);
+
+    this.state = state;
   },
 
 
