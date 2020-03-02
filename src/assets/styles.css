@@ -219,7 +219,7 @@ polygon.rs-logo-shape,
   border-radius: 0;
   box-shadow: none;
 }
-.rs-sign-in-form input[type=submit] {
+.rs-sign-in-form button.rs-connect {
   padding: 15px 10px;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -232,17 +232,28 @@ polygon.rs-logo-shape,
   color: #fff;
   transition: box-shadow 200ms, background-color 200ms;
 }
-.rs-sign-in-form input[type=submit]:hover {
+
+.rs-sign-in-form button.rs-connect:hover {
   cursor: pointer;
   background-color: #4BCB5D;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
-.rs-sign-in-form input[type=submit]:active {
+
+.rs-sign-in-form button.rs-connect:active {
   background-color: #3fb34f;
 }
-.rs-sign-in-form input[type=submit]:disabled,
-.rs-sign-in-form input[type=submit]:disabled:hover {
+
+.rs-sign-in-form button.rs-connect:disabled,
+.rs-sign-in-form button.rs-connect:disabled:hover {
   background-color: #aaa;
+}
+
+.rs-sign-in-form button.rs-connecting svg {
+  height: 1em;
+  width: auto;
+  vertical-align: middle;
+  margin-left: 0.5em;
+  animation: rs-spin 1s linear infinite;
 }
 
 .rs-sign-in-error.rs-hidden,
@@ -321,7 +332,6 @@ polygon.rs-logo-shape,
   fill: #FFBB0C;
   animation: rs-spin 1s linear infinite;
 }
-@keyframes rs-spin { 100% { transform: rotate(360deg); transform:rotate(360deg); } }
 
 /* Floating widget styles (top right corner) */
 .rs-floating {
@@ -330,6 +340,12 @@ polygon.rs-logo-shape,
   right: 0;
 }
 
+@keyframes rs-spin {
+  100% {
+    transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 
 /* Small/mobile screens */
 @media screen and (max-width: 420px) {
@@ -364,14 +380,13 @@ polygon.rs-logo-shape,
   outline:none;
 }
 .rs-widget button::-moz-focus-inner,
-.rs-widget input[type="button"]::-moz-focus-inner,
-.rs-widget input[type="submit"]::-moz-focus-inner {
+.rs-widget input[type="button"]::-moz-focus-inner {
   border:0;
 }
 
 /* prevent rounded buttons on mobile Safari */
-.rs-widget input[type="button"],
-.rs-widget input[type="submit"] {
+.rs-widget button,
+.rs-widget input[type="button"] {
   -webkit-appearance: none;
 }
 
