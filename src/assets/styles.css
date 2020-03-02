@@ -156,9 +156,12 @@ polygon.rs-logo-shape,
   cursor: pointer;
 }
 .rs-button-small {
-  padding: 0.5em 0.6em;
-  margin-left: 0.3em;
+  padding: 0.6em 0.7em;
+  margin-left: 0.2em;
   transition: border-color 300ms ease-out;
+}
+.rs-button-small svg {
+  vertical-align: top;
 }
 .rs-button-wrap {
   margin-top: 10px;
