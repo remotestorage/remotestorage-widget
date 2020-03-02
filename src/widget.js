@@ -165,11 +165,11 @@ Widget.prototype = {
    */
   createHtmlTemplate () {
     const element = document.createElement('div');
-    const style = document.createElement('style');
-    style.innerHTML = require('raw-loader!./assets/styles.css');
-
     element.id = "remotestorage-widget";
     element.innerHTML = require('html-loader!./assets/widget.html');
+
+    const style = document.createElement('style');
+    style.innerHTML = require('raw-loader!./assets/styles.css').default;
     element.appendChild(style);
 
     return element;
