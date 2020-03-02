@@ -121,28 +121,27 @@ Widget.prototype = {
   },
 
   setState (state) {
-    if (state) {
-      this.log('Setting state ', state);
-      let lastSelected = document.querySelector('.rs-box.rs-selected');
-      if (lastSelected) {
-        lastSelected.classList.remove('rs-selected');
-        lastSelected.setAttribute('aria-hidden', 'true');
-      }
+    if (!state) return;
+    this.log('Setting state ', state);
 
-      let toSelect = document.querySelector('.rs-box.rs-box-'+state);
-      if (toSelect) {
-        toSelect.classList.add('rs-selected');
-        toSelect.setAttribute('aria-hidden', 'false');
-      }
-
-      let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
-      this.rsWidget.classList.remove(currentStateClass);
-      this.rsWidget.classList.add(`rs-state-${state || this.state}`);
-
-      this.state = state;
+    let lastSelected = document.querySelector('.rs-box.rs-selected');
+    if (lastSelected) {
+      lastSelected.classList.remove('rs-selected');
+      lastSelected.setAttribute('aria-hidden', 'true');
     }
-  },
 
+    let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+    if (toSelect) {
+      toSelect.classList.add('rs-selected');
+      toSelect.setAttribute('aria-hidden', 'false');
+    }
+
+    let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
+    this.rsWidget.classList.remove(currentStateClass);
+    this.rsWidget.classList.add(`rs-state-${state || this.state}`);
+
+    this.state = state;
+  },
 
   /**
    * Set widget to its inital state
@@ -234,6 +233,7 @@ Widget.prototype = {
     }
 
     this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+    this.rsAddressInput = this.rsSignInForm.querySelector('input[name=rs-user-address]');
     this.rsConnectButton = document.querySelector('.rs-connect');
 
     this.rsDisconnectButton = document.querySelector('.rs-disconnect');
@@ -328,7 +328,10 @@ Widget.prototype = {
     this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn() );
 
     // Choose RS button
-    this.rsChooseRemoteStorageButton.addEventListener('click', () => this.setState('sign-in') );
+    this.rsChooseRemoteStorageButton.addEventListener('click', () => {
+      this.setState('sign-in');
+      this.rsAddressInput.focus();
+    });
 
     // Choose Dropbox button
     this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
