@@ -299,11 +299,10 @@ Widget.prototype = {
   },
 
   setEventListeners () {
-    // Sign-in form
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
       let userAddress = document.querySelector('input[name=rs-user-address]').value;
-      this.rsConnectButton.disabled = true;
+      this.disableConnectButton();
       this.rs.connect(userAddress);
     });
   },
@@ -438,6 +437,29 @@ Widget.prototype = {
   },
 
   /**
+   * Disable the connect button and indicate connect activity
+   *
+   * @private
+   */
+  disableConnectButton () {
+    this.rsConnectButton.disabled = true;
+    this.rsConnectButton.classList.add('rs-connecting');
+    const circleSpinner = require('raw-loader!./assets/circle-open.svg').default;
+    this.rsConnectButton.innerHTML = `Connecting ${circleSpinner}`;
+  },
+
+  /**
+   * (Re)enable the connect button and reset to original state
+   *
+   * @private
+   */
+  enableConnectButton () {
+    this.rsConnectButton.disabled = false;
+    this.rsConnectButton.textContent = 'Connect';
+    this.rsConnectButton.classList.remove('rs-connecting');
+  },
+
+  /**
    * Mark the widget as offline.
    *
    * This will not do anything when no account is connected.
@@ -500,7 +522,7 @@ Widget.prototype = {
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
-    this.rsConnectButton.disabled = false;
+    this.enableConnectButton();
   },
 
   handleSyncError (error) {
