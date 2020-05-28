@@ -1,5 +1,6 @@
 #remotestorage-widget {
   z-index: 21000000;
+  position: relative;
 }
 
 .rs-widget {
