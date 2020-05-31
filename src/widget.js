@@ -1,3 +1,7 @@
+const style = document.createElement('style');
+style.innerHTML = require('raw-loader!./assets/styles.css').default;
+document.head.insertBefore(style, document.head.firstChild);
+
 /**
  * RemoteStorage connect widget
  * @constructor
@@ -172,10 +176,6 @@ Widget.prototype = {
     const element = document.createElement('div');
     element.id = "remotestorage-widget";
     element.innerHTML = require('html-loader!./assets/widget.html');
-
-    const style = document.createElement('style');
-    style.innerHTML = require('raw-loader!./assets/styles.css').default;
-    element.appendChild(style);
 
     return element;
   },
