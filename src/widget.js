@@ -175,18 +175,6 @@ Widget.prototype = {
   },
 
   /**
-   * Create the widget's modal backdrop element, add
-   * styling, and append to DOM
-   *
-   * @private
-   */
-  createBackdropHtml () {
-    const backdropEl = document.createElement('div');
-    backdropEl.classList.add('remotestorage-widget-modal-backdrop');
-    document.body.appendChild(backdropEl);
-  },
-
-  /**
    * Sets the `rs-modal` class on the widget element.
    * Done by default for small screens (max-width 420px).
    *
@@ -270,7 +258,6 @@ Widget.prototype = {
    * @param  {String} [elementId] - Widget's parent
    */
   attach (elementId) {
-    this.createBackdropHtml()
     const domElement = this.createHtmlTemplate();
 
     let parentContainerEl;
