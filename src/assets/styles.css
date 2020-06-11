@@ -391,8 +391,7 @@ polygon.rs-logo-shape,
 
 .remotestorage-widget-modal-backdrop {
   display: none;
-  z-index: 20000000;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
