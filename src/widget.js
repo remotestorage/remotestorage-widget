@@ -8,6 +8,7 @@
  * @param {number}  options.autoCloseAfter - Time after which the widget closes  automatically in ms (default: 1500)
  * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
  * @param {boolean} options.logging        - Enable logging (default: false)
+ * @param {boolean} options.preserve       - Preserve local data on disconnect (default: false)
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
 let Widget = function(remoteStorage, options={}) {
@@ -17,6 +18,7 @@ let Widget = function(remoteStorage, options={}) {
   this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
   this.skipInitial    = options.skipInitial ? options.skipInitial : false;
   this.logging        = options.logging ? options.logging : false;
+  this.preserve       = options.preserve ? options.preserve : false;
 
   if (options.hasOwnProperty('modalBackdrop')) {
     if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
@@ -375,10 +377,10 @@ Widget.prototype = {
     this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
 
     // Disconnect button
-    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect(this.preserve) );
 
     this.rsErrorReconnectLink.addEventListener('click', () => this.rs.reconnect() );
-    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect(this.preserve) );
 
     // Sync button
     if (this.rs.hasFeature('Sync')) {
