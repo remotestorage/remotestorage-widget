@@ -271,7 +271,7 @@ Widget.prototype = {
 
     if (elementId) {
       parentContainerEl = document.getElementById(elementId);
-      if (!parent) {
+      if (!parentContainerEl) {
         throw "Failed to find target DOM element with id=\"" + elementId + "\"";
       }
     } else {
