@@ -11,7 +11,7 @@
     "setTimeout",
     "clearInterval"
   ],
-  "browser": false,
+  "browser": true,
   "boss": true,
   "curly": true,
   "debug": false,
