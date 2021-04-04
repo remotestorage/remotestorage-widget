@@ -52,6 +52,7 @@ Widget.prototype = {
 
   // handle events !
   eventHandler (event, msg) {
+    if (!this.rsWidget) { return; }
     this.log('EVENT: ', event);
     switch (event) {
       case 'ready':
@@ -447,6 +448,8 @@ Widget.prototype = {
   close () {
     // don't do anything when we have an error
     if (this.state === 'error') { return; }
+    // also dont do anythign if it is unmounted
+    if (!this.rsWidget) { return; }
 
     if (!this.leaveOpen && this.active) {
       this.closed = true;
