@@ -284,6 +284,50 @@ Widget.prototype = {
     this.setModalClass();
   },
 
+  /**
+   * Removes Widget from the DOM.
+   *
+   * Sets the handles to undefined
+   */
+  detach () {
+    // from https://developer.mozilla.org/en-US/docs/Web/API/Node/removeChild
+    let node = document.getElementById("remotestorage-widget");
+    if (node.parentNode) {
+      node.parentNode.removeChild(node);
+    }
+
+    this.removeElements();
+  },
+
+  removeElements () {
+    // exact opposite of setupElements()
+    this.rsWidget = undefined;
+    this.rsBackdrop = undefined;
+    this.rsInitial = undefined;
+    this.rsChoose = undefined;
+    this.rsConnected = undefined;
+    this.rsSignIn = undefined;
+
+    this.rsConnectedLabel = undefined;
+    this.rsChooseRemoteStorageButton = undefined;
+    this.rsChooseDropboxButton = undefined;
+    this.rsChooseGoogleDriveButton = undefined;
+    this.rsErrorBox = undefined;
+
+    this.rsSignInForm = undefined;
+    this.rsAddressInput = undefined;
+    this.rsConnectButton = undefined;
+
+    this.rsDisconnectButton = undefined;
+    this.rsSyncButton = undefined;
+    this.rsLogo = undefined;
+
+    this.rsErrorReconnectLink = undefined;
+    this.rsErrorDisconnectButton = undefined;
+
+    this.rsConnectedUser = undefined;
+  },
+
   setEventListeners () {
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
