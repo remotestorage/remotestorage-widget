@@ -20,7 +20,7 @@ let Widget = function(remoteStorage, options={}) {
 
   if (options.hasOwnProperty('modalBackdrop')) {
     if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
-      throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
+      throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"';
     }
     this.modalBackdrop  = options.modalBackdrop;
   } else {
@@ -59,7 +59,7 @@ Widget.prototype = {
         this.syncInProgress = true;
         this.rsSyncButton.classList.add("rs-rotate");
         setTimeout(() => {
-          if (!this.syncInProgress) return;
+          if (!this.syncInProgress) { return; }
           this.rsConnectedLabel.textContent = 'Synchronizing';
         }, 1000);
         break;
@@ -126,7 +126,7 @@ Widget.prototype = {
   },
 
   setState (state) {
-    if (!state) return;
+    if (!state) { return; }
     this.log('Setting state ', state);
 
     let lastSelected = document.querySelector('.rs-box.rs-selected');
@@ -188,8 +188,7 @@ Widget.prototype = {
    */
   setModalClass () {
     if (this.modalBackdrop) {
-      if (this.modalBackdrop === 'onlySmallScreens'
-          && !this.isSmallScreen()) {
+      if (this.modalBackdrop === 'onlySmallScreens' && !this.isSmallScreen() ) {
         return;
       }
       this.rsWidget.classList.add('rs-modal');
