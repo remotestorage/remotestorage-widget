@@ -127,6 +127,7 @@ Widget.prototype = {
 
   setState (state) {
     if (!state) { return; }
+    if (!this.rsWidget) { return; }
     this.log('Setting state ', state);
 
     let lastSelected = document.querySelector('.rs-box.rs-selected');
