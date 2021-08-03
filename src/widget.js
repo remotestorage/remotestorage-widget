@@ -14,43 +14,42 @@ import circleOpenSvg from './assets/circle-open.svg';
  * @param {boolean} options.logging        - Enable logging (default: false)
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
-const Widget = function(remoteStorage, options={}) {
-  this.rs = remoteStorage;
+class Widget {
+  constructor (remoteStorage, options={}) {
+    this.rs = remoteStorage;
 
-  this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
-  this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
-  this.skipInitial    = options.skipInitial ? options.skipInitial : false;
-  this.logging        = options.logging ? options.logging : false;
+    this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
+    this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
+    this.skipInitial    = options.skipInitial ? options.skipInitial : false;
+    this.logging        = options.logging ? options.logging : false;
 
-  if (options.hasOwnProperty('modalBackdrop')) {
-    if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
-      throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
+    if (options.hasOwnProperty('modalBackdrop')) {
+      if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
+        throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
+      }
+      this.modalBackdrop  = options.modalBackdrop;
+    } else {
+      this.modalBackdrop  = 'onlySmallScreens';
     }
-    this.modalBackdrop  = options.modalBackdrop;
-  } else {
-    this.modalBackdrop  = 'onlySmallScreens';
+
+    // true if we have remoteStorage connection's info
+    this.active = false;
+
+    // remoteStorage is connected!
+    this.online = false;
+
+    // widget is minimized ?
+    this.closed = false;
+
+    this.lastSynced = null;
+    this.lastSyncedUpdateLoop = null;
   }
-
-  // true if we have remoteStorage connection's info
-  this.active = false;
-
-  // remoteStorage is connected!
-  this.online = false;
-
-  // widget is minimized ?
-  this.closed = false;
-
-  this.lastSynced = null;
-  this.lastSyncedUpdateLoop = null;
-};
-
-Widget.prototype = {
 
   log (...msg) {
     if (this.logging) {
       console.debug('[RS-WIDGET] ', ...msg);
     }
-  },
+  }
 
   // handle events !
   eventHandler (event, msg) {
@@ -127,7 +126,7 @@ Widget.prototype = {
         }
         break;
     }
-  },
+  }
 
   setState (state) {
     if (!state) return;
@@ -150,7 +149,7 @@ Widget.prototype = {
     this.rsWidget.classList.add(`rs-state-${state || this.state}`);
 
     this.state = state;
-  },
+  }
 
   /**
    * Set widget to its inital state
@@ -163,7 +162,7 @@ Widget.prototype = {
     } else {
       this.setState('initial');
     }
-  },
+  }
 
   /**
    * Create the widget element and add styling.
@@ -182,7 +181,7 @@ Widget.prototype = {
     element.appendChild(style);
 
     return element;
-  },
+  }
 
   /**
    * Sets the `rs-modal` class on the widget element.
@@ -198,7 +197,7 @@ Widget.prototype = {
       }
       this.rsWidget.classList.add('rs-modal');
     }
-  },
+  }
 
   /**
    * Save all interactive DOM elements as variables for later access.
@@ -241,7 +240,7 @@ Widget.prototype = {
     this.rsErrorDisconnectButton = document.querySelector('.rs-box-error button.rs-disconnect');
 
     this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
-  },
+  }
 
   /**
    * Setup all event handlers
@@ -258,7 +257,7 @@ Widget.prototype = {
 
     this.setEventListeners();
     this.setClickHandlers();
-  },
+  }
 
   /**
    * Append widget to the DOM.
@@ -287,7 +286,7 @@ Widget.prototype = {
     this.setupHandlers();
     this.setInitialState();
     this.setModalClass();
-  },
+  }
 
   setEventListeners () {
     this.rsSignInForm.addEventListener('submit', (e) => {
@@ -296,7 +295,7 @@ Widget.prototype = {
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
-  },
+  }
 
   /**
    * Show the screen for choosing a backend if there is more than one backend
@@ -316,7 +315,7 @@ Widget.prototype = {
     } else {
       this.setState('sign-in');
     }
-  },
+  }
 
   setClickHandlers () {
     // Initial button
@@ -362,7 +361,7 @@ Widget.prototype = {
 
     // Click on the logo to toggle the widget's open/close state
     this.rsLogo.addEventListener('click', () => this.toggle() );
-  },
+  }
 
   /**
    * Toggle between the widget's open/close state.
@@ -380,7 +379,7 @@ Widget.prototype = {
         this.close();
       }
     }
-  },
+  }
 
   /**
    * Open the widget.
@@ -394,7 +393,7 @@ Widget.prototype = {
     if (selected) {
       selected.setAttribute('aria-hidden', 'false');
     }
-  },
+  }
 
   /**
    * Close the widget to only show the icon.
@@ -425,7 +424,7 @@ Widget.prototype = {
         this.rsBackdrop.style.display = 'none';
       }, 300);
     }
-  },
+  }
 
   /**
    * Disable the connect button and indicate connect activity
@@ -437,7 +436,7 @@ Widget.prototype = {
     this.rsConnectButton.classList.add('rs-connecting');
     const circleSpinner = circleOpenSvg;
     this.rsConnectButton.innerHTML = `Connecting ${circleSpinner}`;
-  },
+  }
 
   /**
    * (Re)enable the connect button and reset to original state
@@ -448,7 +447,7 @@ Widget.prototype = {
     this.rsConnectButton.disabled = false;
     this.rsConnectButton.textContent = 'Connect';
     this.rsConnectButton.classList.remove('rs-connecting');
-  },
+  }
 
   /**
    * Mark the widget as offline.
@@ -463,7 +462,7 @@ Widget.prototype = {
       this.rsConnectedLabel.textContent = 'Offline';
       this.online = false;
     }
-  },
+  }
 
   /**
    * Mark the widget as online.
@@ -478,7 +477,7 @@ Widget.prototype = {
       }
     }
     this.online = true;
-  },
+  }
 
   /**
    * Set the remoteStorage backend type to show the appropriate icon.
@@ -496,17 +495,17 @@ Widget.prototype = {
     if (backend) {
       this.rsWidget.classList.add(`rs-backend-${backend}`);
     }
-  },
+  }
 
   showErrorBox (errorMsg) {
     this.rsErrorBox.innerHTML = errorMsg;
     this.setState('error');
-  },
+  }
 
   hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
     this.close();
-  },
+  }
 
   handleDiscoveryError (error) {
     let msgContainer = document.querySelector('.rs-sign-in-error');
@@ -514,12 +513,12 @@ Widget.prototype = {
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
     this.enableConnectButton();
-  },
+  }
 
   handleSyncError (error) {
     console.debug('Encountered SyncError', error);
     this.setOffline();
-  },
+  }
 
   handleUnauthorized (error) {
     if (error.code && error.code === 'access_denied') {
@@ -530,7 +529,7 @@ Widget.prototype = {
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
       this.rsErrorReconnectLink.classList.remove('rs-hidden');
     }
-  },
+  }
 
   updateLastSyncedOutput () {
     if (!this.lastSynced) { return; } // don't do anything when we've never synced yet
@@ -538,11 +537,11 @@ Widget.prototype = {
     let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
     let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
     subHeadlineEl.innerHTML = `Synced ${secondsSinceLastSync} seconds ago`;
-  },
+  }
 
   isSmallScreen () {
     return window.innerWidth < 421;
   }
-};
+}
 
 export default Widget;
