@@ -1,10 +1,6 @@
 /* global __dirname */
 const isProd = (process.env.NODE_ENV === 'production');
 const path = require('path');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-
-// minimize only in production
-const plugins = isProd ? [new UglifyJSPlugin({ sourceMap: true })] : [];
 
 module.exports = {
   entry: ["./src/widget.js"],
@@ -12,7 +8,8 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'widget.js',
     library: 'Widget',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    libraryExport: 'default'
   },
   mode: isProd ? 'production' : 'development',
   devtool: isProd ? 'source-map' : 'eval-source-map',
@@ -39,7 +36,15 @@ module.exports = {
             presets: ['@babel/preset-env']
           }
         }
-      }
+      },
+      {
+        test: /\.html$/,
+        use: "html-loader"
+      },
+      {
+        test: /\.(css|svg)/,
+        use: 'raw-loader',
+      },
     ]
   },
   devServer: {
@@ -48,5 +53,5 @@ module.exports = {
     hot: true,
     // open: true
   },
-  plugins: plugins
+  // plugins: plugins
 };
