@@ -48,10 +48,10 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, 'demo'),
+    static: path.join(__dirname, 'demo'),
     port: 8008,
     hot: true,
-    // open: true
+    open: true
   },
   // plugins: plugins
 };
