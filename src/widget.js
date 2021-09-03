@@ -1,3 +1,7 @@
+import widgetHtml from './assets/widget.html';
+import widgetCss from './assets/styles.css';
+import circleOpenSvg from './assets/circle-open.svg';
+
 /**
  * RemoteStorage connect widget
  * @constructor
@@ -10,7 +14,7 @@
  * @param {boolean} options.logging        - Enable logging (default: false)
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
-let Widget = function(remoteStorage, options={}) {
+const Widget = function(remoteStorage, options={}) {
   this.rs = remoteStorage;
 
   this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
@@ -171,10 +175,10 @@ Widget.prototype = {
   createHtmlTemplate () {
     const element = document.createElement('div');
     element.id = "remotestorage-widget";
-    element.innerHTML = require('html-loader!./assets/widget.html');
+    element.innerHTML = widgetHtml;
 
     const style = document.createElement('style');
-    style.innerHTML = require('raw-loader!./assets/styles.css').default;
+    style.innerHTML = widgetCss;
     element.appendChild(style);
 
     return element;
@@ -431,7 +435,7 @@ Widget.prototype = {
   disableConnectButton () {
     this.rsConnectButton.disabled = true;
     this.rsConnectButton.classList.add('rs-connecting');
-    const circleSpinner = require('raw-loader!./assets/circle-open.svg').default;
+    const circleSpinner = circleOpenSvg;
     this.rsConnectButton.innerHTML = `Connecting ${circleSpinner}`;
   },
 
@@ -541,4 +545,4 @@ Widget.prototype = {
   }
 };
 
-module.exports = Widget;
+export default Widget;

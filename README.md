@@ -1,7 +1,6 @@
 # remotestorage-widget
 
 [![npm](https://img.shields.io/npm/v/remotestorage-widget.svg)](https://www.npmjs.com/package/remotestorage-widget)
-[![devDependency Status](http://img.shields.io/david/dev/remotestorage/remotestorage-widget.svg?style=flat)](https://david-dm.org/remotestorage/remotestorage-widget#info=devDependencies)
 
 A ready-to-use connect/sync widget, as add-on library for
 [remoteStorage.js](https://github.com/remotestorage/remotestorage.js/).
