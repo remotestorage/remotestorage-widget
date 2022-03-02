@@ -52,21 +52,20 @@
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
   cursor: pointer;
 }
-.rs-widget .rs-backend-remotestorage svg#rs-main-logo-remotestorage,
-{
-  display: normal;
+.rs-widget .rs-backend-remotestorage svg#rs-main-logo-remotestorage {
+  display: block;
 }
 .rs-widget[class*="rs-backend-"]:not(.rs-backend-remotestorage) svg#rs-main-logo-remotestorage {
   display: none;
 }
 .rs-widget.rs-backend-dropbox svg#rs-main-logo-dropbox {
-  display: normal;
+  display: block;
 }
 .rs-widget:not(.rs-backend-dropbox) svg#rs-main-logo-dropbox {
   display: none;
 }
 .rs-widget.rs-backend-googledrive svg#rs-main-logo-googledrive {
-  display: normal;
+  display: block;
 }
 .rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive {
   display: none;
