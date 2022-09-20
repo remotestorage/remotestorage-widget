@@ -37,7 +37,7 @@
   max-height: 0px;
 }
 
-.rs-box.rs-selected {
+.rs-box.rs-selected:not([aria-hidden=true]) {
   opacity: 1;
   max-height: 420px;
 }
