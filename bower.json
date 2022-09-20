@@ -1,6 +1,6 @@
 {
     "name": "rs-widget",
-    "version": "1.5.4",
+    "version": "1.5.5",
     "description": "Connect widget for remoteStorage.js",
     "main": [
         "./build/widget.js"
