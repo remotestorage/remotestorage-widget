@@ -67,6 +67,7 @@ class Widget {
         }, 1000);
         break;
       case 'sync-done':
+        if (!msg.completed) return;
         this.syncInProgress = false;
         this.rsSyncButton.classList.remove("rs-rotate");
 
@@ -94,8 +95,8 @@ class Widget {
         this.online = true;
         if (this.rs.hasFeature('Sync')) {
           this.shouldCloseWhenSyncDone = true;
-          this.rs.on('sync-req-done', () => this.eventHandler('sync-req-done'));
-          this.rs.on('sync-done', () => this.eventHandler('sync-done'));
+          this.rs.on('sync-req-done', msg => this.eventHandler('sync-req-done', msg));
+          this.rs.on('sync-done', msg => this.eventHandler('sync-done', msg));
         } else {
           this.rsSyncButton.classList.add('rs-hidden');
           setTimeout(this.close.bind(this), this.autoCloseAfter);
