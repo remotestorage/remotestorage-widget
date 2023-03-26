@@ -123,7 +123,7 @@ class Widget {
         } else if (msg.name === 'Unauthorized') {
           this.handleUnauthorized(msg);
         } else {
-          console.debug('Encountered unhandled error', msg);
+          console.debug(`Encountered unhandled error: "${msg}"`);
         }
         break;
     }
@@ -517,7 +517,7 @@ class Widget {
   }
 
   handleSyncError (error) {
-    console.debug('Encountered SyncError', error);
+    console.debug(`Encountered SyncError: "${error.message}"`);
     this.setOffline();
   }
 
