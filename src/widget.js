@@ -67,17 +67,10 @@ class Widget {
         }, 1000);
         break;
       case 'sync-done':
+        if (this.online && !msg.completed) return;
         this.syncInProgress = false;
         this.rsSyncButton.classList.remove("rs-rotate");
-
-        if (this.rsWidget.classList.contains('rs-state-unauthorized') ||
-            !this.rs.remote.online) {
-          this.updateLastSyncedOutput();
-        } else if (this.rs.remote.online) {
-          this.lastSynced = new Date();
-          this.rsConnectedLabel.textContent = 'Synced just now';
-        }
-
+        this.updateLastSyncedStatus();
         if (!this.closed && this.shouldCloseWhenSyncDone) {
           setTimeout(this.close.bind(this), this.autoCloseAfter);
         }
@@ -94,8 +87,8 @@ class Widget {
         this.online = true;
         if (this.rs.hasFeature('Sync')) {
           this.shouldCloseWhenSyncDone = true;
-          this.rs.on('sync-req-done', () => this.eventHandler('sync-req-done'));
-          this.rs.on('sync-done', () => this.eventHandler('sync-done'));
+          this.rs.on('sync-req-done', msg => this.eventHandler('sync-req-done', msg));
+          this.rs.on('sync-done', msg => this.eventHandler('sync-done', msg));
         } else {
           this.rsSyncButton.classList.add('rs-hidden');
           setTimeout(this.close.bind(this), this.autoCloseAfter);
@@ -122,7 +115,7 @@ class Widget {
         } else if (msg.name === 'Unauthorized') {
           this.handleUnauthorized(msg);
         } else {
-          console.debug('Encountered unhandled error', msg);
+          console.debug(`Encountered unhandled error: "${msg}"`);
         }
         break;
     }
@@ -516,7 +509,7 @@ class Widget {
   }
 
   handleSyncError (error) {
-    console.debug('Encountered SyncError', error);
+    console.debug(`Encountered SyncError: "${error.message}"`);
     this.setOffline();
   }
 
@@ -531,12 +524,21 @@ class Widget {
     }
   }
 
-  updateLastSyncedOutput () {
-    if (!this.lastSynced) { return; } // don't do anything when we've never synced yet
-    let now = new Date();
-    let secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
-    let subHeadlineEl = document.querySelector('.rs-box-connected .rs-sub-headline');
-    subHeadlineEl.innerHTML = `Synced ${secondsSinceLastSync} seconds ago`;
+  updateLastSyncedStatus () {
+    const now = new Date();
+    if (this.online) {
+      this.lastSynced = now;
+      this.rsConnectedLabel.textContent = 'Synced just now';
+      return;
+    }
+    if (!this.lastSynced) {
+      if (!this.rsWidget.classList.contains('rs-state-unauthorized')) {
+        this.rsConnectedLabel.textContent = 'Offline';
+      }
+      return;
+    }
+    const secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
+    this.rsConnectedLabel.textContent = `Synced ${secondsSinceLastSync} seconds ago`;
   }
 
   isSmallScreen () {
