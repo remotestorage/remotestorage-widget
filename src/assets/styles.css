@@ -70,6 +70,12 @@
 .rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive {
   display: none;
 }
+.rs-widget.rs-backend-solid svg#rs-main-logo-solid {
+  display: block;
+}
+.rs-widget:not(.rs-backend-solid) svg#rs-main-logo-solid {
+  display: none;
+}
 
 polygon.rs-logo-shape {
   fill: #FF4B03;

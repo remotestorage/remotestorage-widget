@@ -211,12 +211,19 @@ class Widget {
     this.rsChoose = document.querySelector('.rs-box-choose');
     this.rsConnected = document.querySelector('.rs-box-connected');
     this.rsSignIn = document.querySelector('.rs-box-sign-in');
+    this.rsSolid = document.querySelector('.rs-box-solid');
 
     this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline');
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
+    this.rsChooseSolidButton = document.querySelector('button.rs-choose-solid');
+    this.rsSolidOptions = [document.querySelector('button.rs-option-solid') ];
     this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
+    
+    this.rsSolidForm = document.querySelector('.rs-solid-form');
+    this.rsProviderInput = this.rsSolidForm.querySelector('input[name=rs-provider-address]');
+    this.rsSolidConnectButton = document.querySelector('.rs-solid-connect');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
@@ -226,6 +233,38 @@ class Widget {
 
     if (! this.rs.apiKeys.hasOwnProperty('dropbox')) {
       this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
+    }
+
+    // check if solid provideres are configured to add, show or hide buttons
+    // only if needed
+    if (! this.rs.apiKeys.hasOwnProperty('solid')) {
+      this.rsChooseSolidButton.parentNode.removeChild(this.rsChooseSolidButton);
+    }
+    else {
+      const providers = this.rs.apiKeys.solid.providers ? this.rs.apiKeys.solid.providers : [];
+
+      if (providers.length > 0 || this.rs.apiKeys.solid.allowAnyProvider) {
+        if (providers.length > 0) {
+          this.rsSolidOptions[0].lastElementChild.innerHTML = providers[0].name;
+
+          for (let i = 1; i < providers.length; i++) {
+            const previousButton = this.rsSolidOptions[i - 1];
+            const nextButton = previousButton.cloneNode(true);
+            nextButton.lastElementChild.innerHTML = providers[i].name;
+            previousButton.after(nextButton);
+          }
+        }
+        else {
+          this.rsSolidOptions[0].parentNode.removeChild(this.rsSolidOptions[0]);  
+        }
+    
+        if (! this.rs.apiKeys.solid.allowAnyProvider) {
+          this.rsSolidForm.parentNode.removeChild(this.rsSolidForm);
+        }
+      }
+      else {
+        this.rsChooseSolidButton.parentNode.removeChild(this.rsChooseSolidButton);
+      }
     }
 
     this.rsSignInForm = document.querySelector('.rs-sign-in-form');
@@ -332,6 +371,19 @@ class Widget {
 
     // Choose Google Drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
+
+    // Choose Solid button
+    this.rsChooseSolidButton.addEventListener('click', () => {
+      this.setState('solid');
+      this.rsProviderInput.focus();
+    });
+
+    for (let i = 0; i < this.rsSolidOptions.length; i++) {
+      this.rsSolidOptions[i].addEventListener('click', () => {
+        // TODO set provider
+        this.rs["solid"].connect()
+      });
+    }
 
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
@@ -491,6 +543,7 @@ class Widget {
     this.rsWidget.classList.remove('rs-backend-remotestorage');
     this.rsWidget.classList.remove('rs-backend-dropbox');
     this.rsWidget.classList.remove('rs-backend-googledrive');
+    this.rsWidget.classList.remove('rs-backend-solid');
 
     if (backend) {
       this.rsWidget.classList.add(`rs-backend-${backend}`);
