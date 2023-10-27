@@ -208,12 +208,18 @@ polygon.rs-logo-shape,
 
 
 .rs-state-choose .rs-main-logo,
-.rs-state-sign-in .rs-main-logo {
+.rs-state-sign-in .rs-main-logo,
+.rs-state-solid .rs-main-logo {
   margin-left: 45%;
   float: none;
 }
 
-.rs-sign-in-form input[type=text] {
+.rs-solid-form h3.rs-small-headline {
+  margin-top: 10px;
+}
+
+.rs-sign-in-form input[type=text],
+.rs-solid-form input[type=text] {
   padding: 15px 10px;
   display: block;
   width: 100%;
@@ -223,7 +229,8 @@ polygon.rs-logo-shape,
   border-radius: 0;
   box-shadow: none;
 }
-.rs-sign-in-form button.rs-connect {
+.rs-sign-in-form button.rs-connect,
+.rs-solid-form button.rs-solid-connect {
   padding: 15px 10px;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -237,22 +244,27 @@ polygon.rs-logo-shape,
   transition: box-shadow 200ms, background-color 200ms;
 }
 
-.rs-sign-in-form button.rs-connect:hover {
+.rs-sign-in-form button.rs-connect:hover,
+.rs-solid-form button.rs-solid-connect:hover {
   cursor: pointer;
   background-color: #4BCB5D;
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 
-.rs-sign-in-form button.rs-connect:active {
+.rs-sign-in-form button.rs-connect:active,
+.rs-solid-form button.rs-solid-connect:active {
   background-color: #3fb34f;
 }
 
 .rs-sign-in-form button.rs-connect:disabled,
-.rs-sign-in-form button.rs-connect:disabled:hover {
+.rs-sign-in-form button.rs-connect:disabled:hover,
+.rs-solid-form button.rs-solid-connect:disabled,
+.rs-solid-form button.rs-solid-connect:disabled:hover {
   background-color: #aaa;
 }
 
-.rs-sign-in-form button.rs-connecting svg {
+.rs-sign-in-form button.rs-connecting svg,
+.rs-solid-form button.rs-solid-connecting svg {
   height: 1em;
   width: auto;
   vertical-align: middle;
@@ -367,7 +379,8 @@ polygon.rs-logo-shape,
     max-width: 56px;
   }
   .rs-state-choose,
-  .rs-state-sign-in {
+  .rs-state-sign-in,
+  .rs-state-solid {
     position: fixed;
     top: 0;
     left: 0;
