@@ -39,7 +39,7 @@
 
 .rs-box.rs-selected:not([aria-hidden=true]) {
   opacity: 1;
-  max-height: 420px;
+  max-height: 460px;
 }
 
 /* Main logo */
