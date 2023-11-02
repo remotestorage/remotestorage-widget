@@ -41,6 +41,26 @@ Example:
 const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
 ```
 
+## Including Solid
+
+In order to show Solid as an storage option you can use the `solidProviders` option.
+`solidProviders` is an object that contains `providers` as the array of provider options and
+`allowAnyProvider` as a boolean that allows the user to type in the address of any solid
+identity provider. Each provider has a `name` to be displayed and an `authURL`.
+`Widget.SOLID_COMMUNITY` and `widget.INRUPT` are predefined providers that you can use.
+
+Example:
+
+```js
+const widget = new Widget(remoteStorage, { solidProviders: {
+    providers: [
+        Widget.SOLID_COMMUNITY,
+        Widget.INRUPT
+    ],
+    allowAnyProvider: true
+} });
+```
+
 ## Available Functions
 
 `attach(elementID)` - Attach the widget to the DOM and display it. You can

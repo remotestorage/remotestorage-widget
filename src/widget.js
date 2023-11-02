@@ -8,6 +8,7 @@ import circleOpenSvg from './assets/circle-open.svg';
  *
  * @param {object}  remoteStorage          - remoteStorage instance
  * @param {object}  options                - Widget options
+ * @param {object}  options.solidProviders - Specify valid Solid providers for the Solid backend
  * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks outside of it (default: false)
  * @param {number}  options.autoCloseAfter - Time after which the widget closes  automatically in ms (default: 1500)
  * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
@@ -18,6 +19,7 @@ class Widget {
   constructor (remoteStorage, options={}) {
     this.rs = remoteStorage;
 
+    this.solidProviders = options.solidProviders ? options.solidProviders : {};
     this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
     this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
     this.skipInitial    = options.skipInitial ? options.skipInitial : false;
@@ -237,13 +239,13 @@ class Widget {
 
     // check if solid provideres are configured to add, show or hide buttons
     // only if needed
-    if (! this.rs.apiKeys.hasOwnProperty('solid')) {
+    if (! this.solidProviders) {
       this.rsChooseSolidButton.parentNode.removeChild(this.rsChooseSolidButton);
     }
     else {
-      const providers = this.rs.apiKeys.solid.providers ? this.rs.apiKeys.solid.providers : [];
+      const providers = this.solidProviders.providers ? this.solidProviders.providers : [];
 
-      if (providers.length > 0 || this.rs.apiKeys.solid.allowAnyProvider) {
+      if (providers.length > 0 || this.solidProviders.allowAnyProvider) {
         if (providers.length > 0) {
           this.rsSolidOptions[0].lastElementChild.innerHTML = providers[0].name;
 
@@ -258,7 +260,7 @@ class Widget {
           this.rsSolidOptions[0].parentNode.removeChild(this.rsSolidOptions[0]);  
         }
     
-        if (! this.rs.apiKeys.solid.allowAnyProvider) {
+        if (! this.solidProviders.allowAnyProvider) {
           this.rsSolidForm.parentNode.removeChild(this.rsSolidForm);
         }
       }
@@ -334,6 +336,14 @@ class Widget {
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
+
+    this.rsSolidForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let authURL = document.querySelector('input[name=rs-provider-address]').value;
+      this.disableSolidConnectButton();
+      this.rs.setSolidAuthURL(authURL);
+      this.rs["solid"].connect()
+    });
   }
 
   /**
@@ -380,7 +390,7 @@ class Widget {
 
     for (let i = 0; i < this.rsSolidOptions.length; i++) {
       this.rsSolidOptions[i].addEventListener('click', () => {
-        // TODO set provider
+        this.rs.setSolidAuthURL(this.solidProviders.providers[i].authURL);
         this.rs["solid"].connect()
       });
     }
@@ -491,6 +501,18 @@ class Widget {
   }
 
   /**
+   * Disable the Solid connect button and indicate connect activity
+   *
+   * @private
+   */
+  disableSolidConnectButton () {
+    this.rsSolidConnectButton.disabled = true;
+    this.rsSolidConnectButton.classList.add('rs-connecting');
+    const circleSpinner = circleOpenSvg;
+    this.rsSolidConnectButton.innerHTML = `Connecting ${circleSpinner}`;
+  }
+
+  /**
    * (Re)enable the connect button and reset to original state
    *
    * @private
@@ -499,6 +521,17 @@ class Widget {
     this.rsConnectButton.disabled = false;
     this.rsConnectButton.textContent = 'Connect';
     this.rsConnectButton.classList.remove('rs-connecting');
+  }
+
+  /**
+   * (Re)enable the Solid connect button and reset to original state
+   *
+   * @private
+   */
+  enableSolidConnectButton () { // TODO
+    this.rsSolidConnectButton.disabled = false;
+    this.rsSolidConnectButton.textContent = 'Connect';
+    this.rsSolidConnectButton.classList.remove('rs-connecting');
   }
 
   /**
@@ -596,5 +629,15 @@ class Widget {
     return window.innerWidth < 421;
   }
 }
+
+Widget.SOLID_COMMUNITY = {
+  name: 'Solid Community',
+  authURL: 'https://solidcommunity.net'
+};
+
+Widget.INRUPT = {
+  name: 'Inrupt',
+  authURL: 'https://login.inrupt.com'
+};
 
 export default Widget;
