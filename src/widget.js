@@ -359,7 +359,8 @@ class Widget {
       this.rsBackdrop.classList.add('visible');
     }
     // choose backend only if some providers are declared
-    if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
+    if ((this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) ||
+    (this.solidProviders && Object.keys(this.solidProviders).length > 0)) {
       this.setState('choose');
     } else {
       this.setState('sign-in');

@@ -83,7 +83,7 @@ polygon.rs-logo-shape {
 
 polygon.rs-logo-shape,
 #rs-main-logo-dropbox path,
-#rs-main-logo-googledrive path {
+#rs-main-logo-googledrive path  {
   transition-property: fill;
   transition-duration: 0.5s;
 }
