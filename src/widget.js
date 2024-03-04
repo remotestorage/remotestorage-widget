@@ -60,6 +60,21 @@ class Widget {
       case 'ready':
         this.setState(this.state);
         break;
+      case 'pod-not-selected':
+        let podURLs = this.rs.solid.getPodURLs();
+
+        if (podURLs.length == 0) {
+          // TODO Edge case! Show error. No pods for identity.
+        }
+        // else if (podURLs.length == 1) {
+          // TODO Disabled for testing purpose
+          //this.rs.solid.setPodURL(podURLs[0]);
+        // }
+        else {
+          this.populatePodOptions();
+          this.setState('choose-pod');
+        }
+        break;
       case 'sync-req-done':
         this.syncInProgress = true;
         this.rsSyncButton.classList.add("rs-rotate");
@@ -220,7 +235,8 @@ class Widget {
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
     this.rsChooseSolidButton = document.querySelector('button.rs-choose-solid');
-    this.rsSolidOptions = [document.querySelector('button.rs-option-solid') ];
+    this.rsSolidOptions = [ document.querySelector('button.rs-option-solid') ];
+    this.rsSolidPodOptions = [ document.querySelector('button.rs-choose-pod') ];
     this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
     
     this.rsSolidForm = document.querySelector('.rs-solid-form');
@@ -289,6 +305,7 @@ class Widget {
    * @private
    */
   setupHandlers () {
+    this.rs.on('pod-not-selected', () => this.eventHandler('pod-not-selected'));
     this.rs.on('connected', () => this.eventHandler('connected'));
     this.rs.on('ready', () => this.eventHandler('ready'));
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
@@ -344,6 +361,34 @@ class Widget {
       this.rs.setSolidAuthURL(authURL);
       this.rs["solid"].connect()
     });
+  }
+
+  /**
+   * Read solid pod URLs from the remote storage instance and fill the pod options.
+   *
+   * @private
+   */
+  populatePodOptions() {
+    let podURLs = this.rs.solid.getPodURLs();
+    let optionsParent = this.rsSolidPodOptions[0].parentElement;
+
+    while (podURLs.length > optionsParent.childElementCount) {
+      optionsParent.removeChild(optionsParent.children[optionsParent.childElementCount - 1]);
+      this.rsSolidPodOptions.pop();
+    }
+
+    while (optionsParent.childElementCount < podURLs.length) {
+      this.rsSolidPodOptions.concat(this.rsSolidPodOptions[0].cloneNode(true));
+    }
+
+    let rs = this.rs;
+
+    for (let i = 0; i < podURLs.length; i++) {
+      this.rsSolidPodOptions[i].children[1].textContent = podURLs[i];
+      this.rsSolidPodOptions[i].addEventListener('click', function() {
+        rs.solid.setPodURL(this.children[1].textContent);
+      });
+    }
   }
 
   /**

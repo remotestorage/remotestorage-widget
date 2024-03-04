@@ -201,6 +201,14 @@ polygon.rs-logo-shape,
 .rs-button-big:last-child {
   margin-bottom: 0;
 }
+.rs-button-pod div {
+  display: flex;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  font-size: 12px;
+  height: 40px;
+  align-items: center;
+}
 
 .rs-content {
   padding: 0 10px 10px 10px;
@@ -313,7 +321,7 @@ polygon.rs-logo-shape,
 .rs-box-connected {
   display: flex;
   flex-direction: row;
-  height: 40px;
+  height: 41px;
   transition: height 0s;
 }
 .rs-connected-text {
