@@ -63,13 +63,12 @@ class Widget {
       case 'pod-not-selected':
         let podURLs = this.rs.solid.getPodURLs();
 
-        if (podURLs.length == 0) {
-          // TODO Edge case! Show error. No pods for identity.
+        if (podURLs.length === 0) {
+          this.handleNoPod();
         }
-        // else if (podURLs.length == 1) {
-          // TODO Disabled for testing purpose
-          //this.rs.solid.setPodURL(podURLs[0]);
-        // }
+        else if (podURLs.length === 1) {
+          this.rs.solid.setPodURL(podURLs[0]);
+        }
         else {
           this.populatePodOptions();
           this.setState('choose-pod');
@@ -358,7 +357,7 @@ class Widget {
       e.preventDefault();
       let authURL = document.querySelector('input[name=rs-provider-address]').value;
       this.disableSolidConnectButton();
-      this.rs.setSolidAuthURL(authURL);
+      this.rs["solid"].setAuthURL(authURL);
       this.rs["solid"].connect()
     });
   }
@@ -436,7 +435,7 @@ class Widget {
 
     for (let i = 0; i < this.rsSolidOptions.length; i++) {
       this.rsSolidOptions[i].addEventListener('click', () => {
-        this.rs.setSolidAuthURL(this.solidProviders.providers[i].authURL);
+        this.rs["solid"].setAuthURL(this.solidProviders.providers[i].authURL);
         this.rs["solid"].connect()
       });
     }
@@ -570,17 +569,6 @@ class Widget {
   }
 
   /**
-   * (Re)enable the Solid connect button and reset to original state
-   *
-   * @private
-   */
-  enableSolidConnectButton () { // TODO
-    this.rsSolidConnectButton.disabled = false;
-    this.rsSolidConnectButton.textContent = 'Connect';
-    this.rsSolidConnectButton.classList.remove('rs-connecting');
-  }
-
-  /**
    * Mark the widget as offline.
    *
    * This will not do anything when no account is connected.
@@ -661,6 +649,13 @@ class Widget {
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
       this.rsErrorReconnectLink.classList.remove('rs-hidden');
     }
+  }
+
+  handleNoPod () {
+    this.open();
+    this.showErrorBox('This account has no pods.');
+    this.rsErrorBox.appendChild(this.rsErrorDisconnectButton);
+    this.rsErrorDisconnectButton.classList.remove('rs-hidden');
   }
 
   updateLastSyncedOutput () {
