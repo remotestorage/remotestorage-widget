@@ -34,31 +34,12 @@ The widget has some configuration options to customize the behavior:
 | `skipInitial` | Don't show the initial connect hint, but show sign-in screen directly instead | Boolean | `false` |
 | `logging` | Enable logging for debugging purposes | Boolean | `false` |
 | `modalBackdrop` | Show a dark, transparent backdrop when opening the widget for connecting an account. `true` shows backdrop everywhere, `false` turns it off everywhere. Default is to only show it on small screens. | Boolean, String | `"onlySmallScreens"` |
+| `solidProviders` | Enables the Solid option. You can either provide a list of auth URLs under the `providers` key with `name` and `authURL` keys or set `allowAnyProvider` to `true` in order to allow the user to type in any identity provider URL. `Widget.SOLID_COMMUNITY` and `Widget.INRUPT` are predefined for convenience. | Object | undefined |
 
 Example:
 
 ```js
 const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
-```
-
-## Including Solid
-
-In order to show Solid as an storage option you can use the `solidProviders` option.
-`solidProviders` is an object that contains `providers` as the array of provider options and
-`allowAnyProvider` as a boolean that allows the user to type in the address of any solid
-identity provider. Each provider has a `name` to be displayed and an `authURL`.
-`Widget.SOLID_COMMUNITY` and `widget.INRUPT` are predefined providers that you can use.
-
-Example:
-
-```js
-const widget = new Widget(remoteStorage, { solidProviders: {
-    providers: [
-        Widget.SOLID_COMMUNITY,
-        Widget.INRUPT
-    ],
-    allowAnyProvider: true
-} });
 ```
 
 ## Available Functions
