@@ -8,6 +8,7 @@ import circleOpenSvg from './assets/circle-open.svg';
  *
  * @param {object}  remoteStorage          - remoteStorage instance
  * @param {object}  options                - Widget options
+ * @param {object}  options.solidProviders - Specify valid Solid providers for the Solid backend
  * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks outside of it (default: false)
  * @param {number}  options.autoCloseAfter - Time after which the widget closes  automatically in ms (default: 1500)
  * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
@@ -18,6 +19,7 @@ class Widget {
   constructor (remoteStorage, options={}) {
     this.rs = remoteStorage;
 
+    this.solidProviders = options.solidProviders ? options.solidProviders : {};
     this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
     this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
     this.skipInitial    = options.skipInitial ? options.skipInitial : false;
@@ -57,6 +59,20 @@ class Widget {
     switch (event) {
       case 'ready':
         this.setState(this.state);
+        break;
+      case 'pod-not-selected':
+        let podURLs = this.rs.solid.getPodURLs();
+
+        if (podURLs.length === 0) {
+          this.handleNoPod();
+        }
+        else if (podURLs.length === 1) {
+          this.rs.solid.setPodURL(podURLs[0]);
+        }
+        else {
+          this.populatePodOptions();
+          this.setState('choose-pod');
+        }
         break;
       case 'sync-req-done':
         this.syncInProgress = true;
@@ -211,12 +227,20 @@ class Widget {
     this.rsChoose = document.querySelector('.rs-box-choose');
     this.rsConnected = document.querySelector('.rs-box-connected');
     this.rsSignIn = document.querySelector('.rs-box-sign-in');
+    this.rsSolid = document.querySelector('.rs-box-solid');
 
     this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline');
     this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
     this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
+    this.rsChooseSolidButton = document.querySelector('button.rs-choose-solid');
+    this.rsSolidOptions = [ document.querySelector('button.rs-option-solid') ];
+    this.rsSolidPodOptions = [ document.querySelector('button.rs-choose-pod') ];
     this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
+    
+    this.rsSolidForm = document.querySelector('.rs-solid-form');
+    this.rsProviderInput = this.rsSolidForm.querySelector('input[name=rs-provider-address]');
+    this.rsSolidConnectButton = document.querySelector('.rs-solid-connect');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
@@ -226,6 +250,38 @@ class Widget {
 
     if (! this.rs.apiKeys.hasOwnProperty('dropbox')) {
       this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
+    }
+
+    // check if solid provideres are configured to add, show or hide buttons
+    // only if needed
+    if (! this.solidProviders) {
+      this.rsChooseSolidButton.parentNode.removeChild(this.rsChooseSolidButton);
+    }
+    else {
+      const providers = this.solidProviders.providers ? this.solidProviders.providers : [];
+
+      if (providers.length > 0 || this.solidProviders.allowAnyProvider) {
+        if (providers.length > 0) {
+          this.rsSolidOptions[0].lastElementChild.innerHTML = providers[0].name;
+
+          for (let i = 1; i < providers.length; i++) {
+            const previousButton = this.rsSolidOptions[i - 1];
+            const nextButton = previousButton.cloneNode(true);
+            nextButton.lastElementChild.innerHTML = providers[i].name;
+            previousButton.after(nextButton);
+          }
+        }
+        else {
+          this.rsSolidOptions[0].parentNode.removeChild(this.rsSolidOptions[0]);  
+        }
+    
+        if (! this.solidProviders.allowAnyProvider) {
+          this.rsSolidForm.parentNode.removeChild(this.rsSolidForm);
+        }
+      }
+      else {
+        this.rsChooseSolidButton.parentNode.removeChild(this.rsChooseSolidButton);
+      }
     }
 
     this.rsSignInForm = document.querySelector('.rs-sign-in-form');
@@ -248,6 +304,7 @@ class Widget {
    * @private
    */
   setupHandlers () {
+    this.rs.on('pod-not-selected', () => this.eventHandler('pod-not-selected'));
     this.rs.on('connected', () => this.eventHandler('connected'));
     this.rs.on('ready', () => this.eventHandler('ready'));
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
@@ -295,6 +352,42 @@ class Widget {
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
+
+    this.rsSolidForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let authURL = document.querySelector('input[name=rs-provider-address]').value;
+      this.disableSolidConnectButton();
+      this.rs["solid"].setAuthURL(authURL);
+      this.rs["solid"].connect()
+    });
+  }
+
+  /**
+   * Read solid pod URLs from the remote storage instance and fill the pod options.
+   *
+   * @private
+   */
+  populatePodOptions() {
+    let podURLs = this.rs.solid.getPodURLs();
+    let optionsParent = this.rsSolidPodOptions[0].parentElement;
+
+    while (podURLs.length > optionsParent.childElementCount) {
+      optionsParent.removeChild(optionsParent.children[optionsParent.childElementCount - 1]);
+      this.rsSolidPodOptions.pop();
+    }
+
+    while (optionsParent.childElementCount < podURLs.length) {
+      this.rsSolidPodOptions.concat(this.rsSolidPodOptions[0].cloneNode(true));
+    }
+
+    let rs = this.rs;
+
+    for (let i = 0; i < podURLs.length; i++) {
+      this.rsSolidPodOptions[i].children[1].textContent = podURLs[i];
+      this.rsSolidPodOptions[i].addEventListener('click', function() {
+        rs.solid.setPodURL(this.children[1].textContent);
+      });
+    }
   }
 
   /**
@@ -310,7 +403,8 @@ class Widget {
       this.rsBackdrop.classList.add('visible');
     }
     // choose backend only if some providers are declared
-    if (this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) {
+    if ((this.rs.apiKeys && Object.keys(this.rs.apiKeys).length > 0) ||
+    (this.solidProviders && Object.keys(this.solidProviders).length > 0)) {
       this.setState('choose');
     } else {
       this.setState('sign-in');
@@ -332,6 +426,19 @@ class Widget {
 
     // Choose Google Drive button
     this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
+
+    // Choose Solid button
+    this.rsChooseSolidButton.addEventListener('click', () => {
+      this.setState('solid');
+      this.rsProviderInput.focus();
+    });
+
+    for (let i = 0; i < this.rsSolidOptions.length; i++) {
+      this.rsSolidOptions[i].addEventListener('click', () => {
+        this.rs["solid"].setAuthURL(this.solidProviders.providers[i].authURL);
+        this.rs["solid"].connect()
+      });
+    }
 
     // Disconnect button
     this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
@@ -439,6 +546,18 @@ class Widget {
   }
 
   /**
+   * Disable the Solid connect button and indicate connect activity
+   *
+   * @private
+   */
+  disableSolidConnectButton () {
+    this.rsSolidConnectButton.disabled = true;
+    this.rsSolidConnectButton.classList.add('rs-connecting');
+    const circleSpinner = circleOpenSvg;
+    this.rsSolidConnectButton.innerHTML = `Connecting ${circleSpinner}`;
+  }
+
+  /**
    * (Re)enable the connect button and reset to original state
    *
    * @private
@@ -491,6 +610,7 @@ class Widget {
     this.rsWidget.classList.remove('rs-backend-remotestorage');
     this.rsWidget.classList.remove('rs-backend-dropbox');
     this.rsWidget.classList.remove('rs-backend-googledrive');
+    this.rsWidget.classList.remove('rs-backend-solid');
 
     if (backend) {
       this.rsWidget.classList.add(`rs-backend-${backend}`);
@@ -531,6 +651,13 @@ class Widget {
     }
   }
 
+  handleNoPod () {
+    this.open();
+    this.showErrorBox('This account has no pods.');
+    this.rsErrorBox.appendChild(this.rsErrorDisconnectButton);
+    this.rsErrorDisconnectButton.classList.remove('rs-hidden');
+  }
+
   updateLastSyncedOutput () {
     if (!this.lastSynced) { return; } // don't do anything when we've never synced yet
     let now = new Date();
@@ -543,5 +670,15 @@ class Widget {
     return window.innerWidth < 421;
   }
 }
+
+Widget.SOLID_COMMUNITY = {
+  name: 'Solid Community',
+  authURL: 'https://solidcommunity.net'
+};
+
+Widget.INRUPT = {
+  name: 'Inrupt',
+  authURL: 'https://login.inrupt.com'
+};
 
 export default Widget;

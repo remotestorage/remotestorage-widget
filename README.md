@@ -34,6 +34,7 @@ The widget has some configuration options to customize the behavior:
 | `skipInitial` | Don't show the initial connect hint, but show sign-in screen directly instead | Boolean | `false` |
 | `logging` | Enable logging for debugging purposes | Boolean | `false` |
 | `modalBackdrop` | Show a dark, transparent backdrop when opening the widget for connecting an account. `true` shows backdrop everywhere, `false` turns it off everywhere. Default is to only show it on small screens. | Boolean, String | `"onlySmallScreens"` |
+| `solidProviders` | Enables the Solid option. You can either provide a list of auth URLs under the `providers` key with `name` and `authURL` keys or set `allowAnyProvider` to `true` in order to allow the user to type in any identity provider URL. `Widget.SOLID_COMMUNITY` and `Widget.INRUPT` are predefined for convenience. | Object | undefined |
 
 Example:
 
