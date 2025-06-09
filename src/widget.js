@@ -58,13 +58,12 @@ class Widget {
       case 'ready':
         this.setState(this.state);
         break;
+      case 'sync-started':
+        this.handleSyncStarted();
+        break;
+      // For backward compatibility with rs.js <= 2.0.0-beta.6
       case 'sync-req-done':
-        this.syncInProgress = true;
-        this.rsSyncButton.classList.add("rs-rotate");
-        setTimeout(() => {
-          if (!this.syncInProgress) return;
-          this.rsConnectedLabel.textContent = 'Synchronizing';
-        }, 1000);
+        this.handleSyncStarted();
         break;
       case 'sync-done':
         if (this.online && !msg.completed) return;
@@ -498,6 +497,15 @@ class Widget {
   hideErrorBox () {
     this.rsErrorBox.innerHTML = '';
     this.close();
+  }
+
+  handleSyncStarted () {
+    this.syncInProgress = true;
+    this.rsSyncButton.classList.add("rs-rotate");
+    setTimeout(() => {
+      if (!this.syncInProgress) return;
+      this.rsConnectedLabel.textContent = 'Synchronizing';
+    }, 1000);
   }
 
   handleDiscoveryError (error) {
