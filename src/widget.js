@@ -509,7 +509,6 @@ class Widget {
   }
 
   handleSyncError (error) {
-    console.debug(`Encountered SyncError: "${error.message}"`);
     this.setOffline();
   }
 
