@@ -527,17 +527,12 @@ class Widget {
     const now = new Date();
     if (this.online) {
       this.lastSynced = now;
-      this.rsConnectedLabel.textContent = 'Synced just now';
-      return;
-    }
-    if (!this.lastSynced) {
+      this.rsConnectedLabel.textContent = 'Synced';
+    } else {
       if (!this.rsWidget.classList.contains('rs-state-unauthorized')) {
         this.rsConnectedLabel.textContent = 'Offline';
       }
-      return;
     }
-    const secondsSinceLastSync = Math.round((now.getTime() - this.lastSynced.getTime())/1000);
-    this.rsConnectedLabel.textContent = `Synced ${secondsSinceLastSync} seconds ago`;
   }
 
   isSmallScreen () {
