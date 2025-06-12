@@ -10,8 +10,7 @@
     "build": "NODE_ENV=production webpack",
     "dev": "webpack serve",
     "open": "opener http://localhost:8008",
-    "version": "npm run build && git add build/",
-    "update-bower-version": "./scripts/update-bower-version.sh"
+    "version": "npm run build && git add build/"
   },
   "repository": {
     "type": "git",
