@@ -275,7 +275,7 @@ class Widget {
       this.parentContainerEl = element;
     } else if (typeof element === "string") {
       this.parentContainerEl = document.getElementById(element);
-      if (!parent) {
+      if (!this.parentContainerEl) {
         throw new Error("Failed to find target DOM element with id=\"" + element + "\"");
       }
     } else if (element) {
