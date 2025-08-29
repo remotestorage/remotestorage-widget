@@ -260,10 +260,12 @@ class Widget {
   /**
    * Append widget to the DOM.
    *
-   * If an elementId is specified, it will be appended to that element,
-   * otherwise it will be appended to the document's body.
+   * If a parentElement is specified, the widget will be appended to that
+   * element, otherwise it will be appended to the document's body. The parent
+   * element can be given either as a simple element ID or as a valid HTML
+   * element.
    *
-   * @param  {String,HTMLElement} [element] - Widget's parent
+   * @param  {String,HTMLElement} [parentElement] - Parent element
    * @throws {Error} If the element is not found or is of an unknown type.
    */
   attach (element) {
