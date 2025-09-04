@@ -13,6 +13,9 @@
   </style>
 </head>
 <body>
+  <header>
+    <div id="rs-wrapper" class="rs-wrapper"></div>
+  </header>
   <script type="text/javascript" src="remotestorage.js"></script>
   <script type="text/javascript" src="widget.js"></script>
   <script>
@@ -33,6 +36,10 @@
       //modalBackdrop: true,
       logging: true,
     });
+
     widget.attach();
+    // widget.attach('rs-wrapper');
+    // widget.attach(document.querySelector('header .rs-wrapper'));
+    // widget.attach('foo'); // throws an error
   </script>
 </body>

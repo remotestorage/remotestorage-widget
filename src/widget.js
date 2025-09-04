@@ -18,10 +18,11 @@ class Widget {
   constructor (remoteStorage, options={}) {
     this.rs = remoteStorage;
 
-    this.leaveOpen      = options.leaveOpen ? options.leaveOpen : false;
-    this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
-    this.skipInitial    = options.skipInitial ? options.skipInitial : false;
-    this.logging        = options.logging ? options.logging : false;
+    this.leaveOpen         = options.leaveOpen ? options.leaveOpen : false;
+    this.autoCloseAfter    = options.autoCloseAfter ? options.autoCloseAfter : 1500;
+    this.skipInitial       = options.skipInitial ? options.skipInitial : false;
+    this.logging           = options.logging ? options.logging : false;
+    this.parentContainerEl = null;
 
     if (options.hasOwnProperty('modalBackdrop')) {
       if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
@@ -124,13 +125,13 @@ class Widget {
     if (!state) return;
     this.log('Setting state ', state);
 
-    let lastSelected = document.querySelector('.rs-box.rs-selected');
+    let lastSelected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
     if (lastSelected) {
       lastSelected.classList.remove('rs-selected');
       lastSelected.setAttribute('aria-hidden', 'true');
     }
 
-    let toSelect = document.querySelector('.rs-box.rs-box-'+state);
+    let toSelect = this.parentContainerEl.querySelector('.rs-box.rs-box-'+state);
     if (toSelect) {
       toSelect.classList.add('rs-selected');
       toSelect.setAttribute('aria-hidden', 'false');
@@ -194,21 +195,26 @@ class Widget {
   /**
    * Save all interactive DOM elements as variables for later access.
    *
+   * @throws {Error} If parent container element not found
    * @private
    */
   setupElements () {
-    this.rsWidget = document.querySelector('.rs-widget');
-    this.rsBackdrop = document.querySelector('.remotestorage-widget-modal-backdrop');
-    this.rsInitial = document.querySelector('.rs-box-initial');
-    this.rsChoose = document.querySelector('.rs-box-choose');
-    this.rsConnected = document.querySelector('.rs-box-connected');
-    this.rsSignIn = document.querySelector('.rs-box-sign-in');
+    if (!this.parentContainerEl) {
+      throw new Error("Parent container element not found");
+    }
 
-    this.rsConnectedLabel = document.querySelector('.rs-box-connected .rs-sub-headline');
-    this.rsChooseRemoteStorageButton = document.querySelector('button.rs-choose-rs');
-    this.rsChooseDropboxButton = document.querySelector('button.rs-choose-dropbox');
-    this.rsChooseGoogleDriveButton = document.querySelector('button.rs-choose-googledrive');
-    this.rsErrorBox = document.querySelector('.rs-box-error .rs-error-message');
+    this.rsWidget = this.parentContainerEl.querySelector('.rs-widget');
+    this.rsBackdrop = this.parentContainerEl.querySelector('.remotestorage-widget-modal-backdrop');
+    this.rsInitial = this.parentContainerEl.querySelector('.rs-box-initial');
+    this.rsChoose = this.parentContainerEl.querySelector('.rs-box-choose');
+    this.rsConnected = this.parentContainerEl.querySelector('.rs-box-connected');
+    this.rsSignIn = this.parentContainerEl.querySelector('.rs-box-sign-in');
+
+    this.rsConnectedLabel = this.parentContainerEl.querySelector('.rs-box-connected .rs-sub-headline');
+    this.rsChooseRemoteStorageButton = this.parentContainerEl.querySelector('button.rs-choose-rs');
+    this.rsChooseDropboxButton = this.parentContainerEl.querySelector('button.rs-choose-dropbox');
+    this.rsChooseGoogleDriveButton = this.parentContainerEl.querySelector('button.rs-choose-googledrive');
+    this.rsErrorBox = this.parentContainerEl.querySelector('.rs-box-error .rs-error-message');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
@@ -220,18 +226,18 @@ class Widget {
       this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
     }
 
-    this.rsSignInForm = document.querySelector('.rs-sign-in-form');
+    this.rsSignInForm = this.parentContainerEl.querySelector('.rs-sign-in-form');
     this.rsAddressInput = this.rsSignInForm.querySelector('input[name=rs-user-address]');
-    this.rsConnectButton = document.querySelector('.rs-connect');
+    this.rsConnectButton = this.parentContainerEl.querySelector('.rs-connect');
 
-    this.rsDisconnectButton = document.querySelector('.rs-disconnect');
-    this.rsSyncButton = document.querySelector('.rs-sync');
-    this.rsLogo = document.querySelector('.rs-widget-icon');
+    this.rsDisconnectButton = this.parentContainerEl.querySelector('.rs-disconnect');
+    this.rsSyncButton = this.parentContainerEl.querySelector('.rs-sync');
+    this.rsLogo = this.parentContainerEl.querySelector('.rs-widget-icon');
 
-    this.rsErrorReconnectLink = document.querySelector('.rs-box-error a.rs-reconnect');
-    this.rsErrorDisconnectButton = document.querySelector('.rs-box-error button.rs-disconnect');
+    this.rsErrorReconnectLink = this.parentContainerEl.querySelector('.rs-box-error a.rs-reconnect');
+    this.rsErrorDisconnectButton = this.parentContainerEl.querySelector('.rs-box-error button.rs-disconnect');
 
-    this.rsConnectedUser = document.querySelector('.rs-connected-text h1.rs-user');
+    this.rsConnectedUser = this.parentContainerEl.querySelector('.rs-connected-text h1.rs-user');
   }
 
   /**
@@ -254,25 +260,32 @@ class Widget {
   /**
    * Append widget to the DOM.
    *
-   * If an elementId is specified, it will be appended to that element,
-   * otherwise it will be appended to the document's body.
+   * If a parentElement is specified, the widget will be appended to that
+   * element, otherwise it will be appended to the document's body. The parent
+   * element can be given either as a simple element ID or as a valid HTML
+   * element.
    *
-   * @param  {String} [elementId] - Widget's parent
+   * @param  {String,HTMLElement} [parentElement] - Parent element
+   * @throws {Error} If the element is not found or is of an unknown type.
    */
-  attach (elementId) {
-    const domElement = this.createHtmlTemplate();
+  attach (element) {
+    const domElement = this.createHtmlTemplate(element);
 
-    let parentContainerEl;
+    this.parentContainerEl;
 
-    if (elementId) {
-      parentContainerEl = document.getElementById(elementId);
-      if (!parent) {
-        throw "Failed to find target DOM element with id=\"" + elementId + "\"";
+    if (element instanceof HTMLElement) {
+      this.parentContainerEl = element;
+    } else if (typeof element === "string") {
+      this.parentContainerEl = document.getElementById(element);
+      if (!this.parentContainerEl) {
+        throw new Error("Failed to find target DOM element with id=\"" + element + "\"");
       }
+    } else if (element) {
+      throw new Error("Unknown element type. Expected instance of HTMLElement or type of string.");
     } else {
-      parentContainerEl = document.body;
+      this.parentContainerEl = document.body;
     }
-    parentContainerEl.appendChild(domElement);
+    this.parentContainerEl.appendChild(domElement);
 
     this.setupElements();
     this.setupHandlers();
@@ -283,7 +296,7 @@ class Widget {
   setEventListeners () {
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      let userAddress = document.querySelector('input[name=rs-user-address]').value;
+      let userAddress = this.parentContainerEl.querySelector('input[name=rs-user-address]').value;
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
@@ -381,7 +394,7 @@ class Widget {
     this.rsWidget.classList.remove('rs-closed');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
 
-    let selected = document.querySelector('.rs-box.rs-selected');
+    let selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
     if (selected) {
       selected.setAttribute('aria-hidden', 'false');
     }
@@ -400,7 +413,7 @@ class Widget {
     if (!this.leaveOpen && this.active) {
       this.closed = true;
       this.rsWidget.classList.add('rs-closed');
-      let selected = document.querySelector('.rs-box.rs-selected');
+      let selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
       if (selected) {
         selected.setAttribute('aria-hidden', 'true');
       }
@@ -509,7 +522,7 @@ class Widget {
   }
 
   handleDiscoveryError (error) {
-    let msgContainer = document.querySelector('.rs-sign-in-error');
+    let msgContainer = this.parentContainerEl.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
