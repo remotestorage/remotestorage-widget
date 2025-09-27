@@ -3,10 +3,15 @@ import widgetCss from './assets/styles.css';
 import circleOpenSvg from './assets/circle-open.svg';
 
 interface WidgetOptions {
+  /** Keep the widget open when user clicks outside of it */
   leaveOpen?: boolean;
+  /** Timeout after which the widget closes automatically (in milliseconds). The widget only closes when a storage is connected. */
   autoCloseAfter?: number;
+  /** Don't show the initial connect hint, but show sign-in screen directly instead */
   skipInitial?: boolean;
+  /** Enable logging for debugging purposes */
   logging?: boolean;
+  /** Show a dark, transparent backdrop when opening the widget for connecting an account. `true` shows backdrop everywhere, `false` turns it off everywhere. Default is to only show it on small screens. */
   modalBackdrop?: boolean | 'onlySmallScreens';
 }
 
@@ -44,14 +49,6 @@ interface ErrorMessage {
 /**
  * RemoteStorage connect widget
  * @constructor
- *
- * @param {object}  remoteStorage          - remoteStorage instance
- * @param {object}  options                - Widget options
- * @param {boolean} options.leaveOpen      - Do not minimize widget when user clicks outside of it (default: false)
- * @param {number}  options.autoCloseAfter - Time after which the widget closes  automatically in ms (default: 1500)
- * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
- * @param {boolean} options.logging        - Enable logging (default: false)
- * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
 class Widget {
   rs: RemoteStorage;
@@ -337,7 +334,7 @@ class Widget {
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
     this.rs.on('network-online', () => this.eventHandler('network-online'));
     this.rs.on('network-offline', () => this.eventHandler('network-offline'));
-    this.rs.on('error', error => this.eventHandler('error', error));
+    this.rs.on('error', (error) => this.eventHandler('error', error));
 
     this.setEventListeners();
     this.setClickHandlers();
