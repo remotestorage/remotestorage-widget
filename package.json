@@ -10,7 +10,10 @@
     "build": "NODE_ENV=production webpack",
     "dev": "webpack serve",
     "open": "opener http://localhost:8008",
-    "version": "npm run build && git add build/"
+    "version": "npm run build && git add build/",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "format": "biome format --write src/"
   },
   "repository": {
     "type": "git",
@@ -36,6 +39,7 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-typescript": "^7.26.0",
     "@types/node": "^22.10.1",
+    "@biomejs/biome": "^1.9.4",
     "babel-loader": "^9.2.1",
     "file-loader": "^6.2.0",
     "html-loader": "^5.1.0",

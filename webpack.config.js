@@ -1,6 +1,6 @@
 /* global __dirname */
 const isProd = (process.env.NODE_ENV === 'production');
-const path = require('path');
+const path = require('node:path');
 
 module.exports = {
   entry: ["./src/widget.ts"],
