@@ -1,1 +1,0 @@
-../node_modules/remotestoragejs/release/remotestorage.js

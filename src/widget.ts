@@ -2,6 +2,45 @@ import widgetHtml from './assets/widget.html';
 import widgetCss from './assets/styles.css';
 import circleOpenSvg from './assets/circle-open.svg';
 
+interface WidgetOptions {
+  leaveOpen?: boolean;
+  autoCloseAfter?: number;
+  skipInitial?: boolean;
+  logging?: boolean;
+  modalBackdrop?: boolean | 'onlySmallScreens';
+}
+
+interface RemoteStorage {
+  apiKeys: Record<string, any>;
+  backend: string;
+  remote: {
+    userAddress: string;
+  };
+  on(event: string, handler: (...args: any[]) => void): void;
+  connect(userAddress: string): void;
+  disconnect(): void;
+  reconnect(): void;
+  startSync(): void;
+  stopSync(): void;
+  hasFeature(feature: string): boolean;
+  dropbox?: {
+    connect(): void;
+  };
+  googledrive?: {
+    connect(): void;
+  };
+}
+
+interface SyncMessage {
+  completed?: boolean;
+}
+
+interface ErrorMessage {
+  name: string;
+  message: string;
+  code?: string;
+}
+
 /**
  * RemoteStorage connect widget
  * @constructor
@@ -15,22 +54,62 @@ import circleOpenSvg from './assets/circle-open.svg';
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
 class Widget {
-  constructor (remoteStorage, options={}) {
+  private rs: RemoteStorage;
+  private leaveOpen: boolean;
+  private autoCloseAfter: number;
+  private skipInitial: boolean;
+  private logging: boolean;
+  private modalBackdrop: boolean | 'onlySmallScreens';
+  private parentContainerEl: HTMLElement | null;
+  private active: boolean;
+  private online: boolean;
+  private closed: boolean;
+  private lastSynced: Date | null;
+  private lastSyncedUpdateLoop: any;
+  private state: string;
+  private shouldCloseWhenSyncDone: boolean;
+  private syncInProgress: boolean;
+
+  private rsWidget: HTMLElement;
+  private rsBackdrop: HTMLElement;
+  private rsInitial: HTMLElement;
+  private rsChoose: HTMLElement;
+  private rsConnected: HTMLElement;
+  private rsSignIn: HTMLElement;
+  private rsConnectedLabel: HTMLElement;
+  private rsChooseRemoteStorageButton: HTMLButtonElement;
+  private rsChooseDropboxButton: HTMLButtonElement;
+  private rsChooseGoogleDriveButton: HTMLButtonElement;
+  private rsErrorBox: HTMLElement;
+  private rsSignInForm: HTMLFormElement;
+  private rsAddressInput: HTMLInputElement;
+  private rsConnectButton: HTMLButtonElement;
+  private rsDisconnectButton: HTMLButtonElement;
+  private rsSyncButton: HTMLButtonElement;
+  private rsLogo: HTMLElement;
+  private rsErrorReconnectLink: HTMLAnchorElement;
+  private rsErrorDisconnectButton: HTMLButtonElement;
+  private rsConnectedUser: HTMLElement;
+
+  constructor(remoteStorage: RemoteStorage, options: WidgetOptions = {}) {
     this.rs = remoteStorage;
 
-    this.leaveOpen         = options.leaveOpen ? options.leaveOpen : false;
-    this.autoCloseAfter    = options.autoCloseAfter ? options.autoCloseAfter : 1500;
-    this.skipInitial       = options.skipInitial ? options.skipInitial : false;
-    this.logging           = options.logging ? options.logging : false;
+    this.leaveOpen = options.leaveOpen ? options.leaveOpen : false;
+    this.autoCloseAfter = options.autoCloseAfter ? options.autoCloseAfter : 1500;
+    this.skipInitial = options.skipInitial ? options.skipInitial : false;
+    this.logging = options.logging ? options.logging : false;
     this.parentContainerEl = null;
 
     if (options.hasOwnProperty('modalBackdrop')) {
-      if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
-        throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
+      if (
+        typeof options.modalBackdrop !== 'boolean' &&
+        options.modalBackdrop !== 'onlySmallScreens'
+      ) {
+        throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"';
       }
-      this.modalBackdrop  = options.modalBackdrop;
+      this.modalBackdrop = options.modalBackdrop;
     } else {
-      this.modalBackdrop  = 'onlySmallScreens';
+      this.modalBackdrop = 'onlySmallScreens';
     }
 
     // true if we have remoteStorage connection's info
@@ -46,14 +125,14 @@ class Widget {
     this.lastSyncedUpdateLoop = null;
   }
 
-  log (...msg) {
+  log(...msg: any[]): void {
     if (this.logging) {
       console.debug('[RS-WIDGET] ', ...msg);
     }
   }
 
   // handle events !
-  eventHandler (event, msg) {
+  eventHandler(event: string, msg?: SyncMessage | ErrorMessage): void {
     this.log('EVENT: ', event);
     switch (event) {
       case 'ready':
@@ -69,7 +148,7 @@ class Widget {
       case 'sync-done':
         if (this.online && !msg.completed) return;
         this.syncInProgress = false;
-        this.rsSyncButton.classList.remove("rs-rotate");
+        this.rsSyncButton.classList.remove('rs-rotate');
         this.updateLastSyncedStatus();
         if (!this.closed && this.shouldCloseWhenSyncDone) {
           setTimeout(this.close.bind(this), this.autoCloseAfter);
@@ -78,7 +157,7 @@ class Widget {
       case 'disconnected':
         this.active = false;
         this.setOnline();
-        this.setBackendClass(); // removes all backend CSS classes
+        this.setBackendClass(undefined); // removes all backend CSS classes
         this.open();
         this.setInitialState();
         break;
@@ -93,7 +172,7 @@ class Widget {
           this.rsSyncButton.classList.add('rs-hidden');
           setTimeout(this.close.bind(this), this.autoCloseAfter);
         }
-        let connectedUser = this.rs.remote.userAddress;
+        const connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
         this.setBackendClass(this.rs.backend);
         this.rsConnectedLabel.textContent = 'Connected';
@@ -121,23 +200,23 @@ class Widget {
     }
   }
 
-  setState (state) {
+  setState(state: string): void {
     if (!state) return;
     this.log('Setting state ', state);
 
-    let lastSelected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
+    const lastSelected = this.parentContainerEl!.querySelector('.rs-box.rs-selected');
     if (lastSelected) {
       lastSelected.classList.remove('rs-selected');
       lastSelected.setAttribute('aria-hidden', 'true');
     }
 
-    let toSelect = this.parentContainerEl.querySelector('.rs-box.rs-box-'+state);
+    const toSelect = this.parentContainerEl!.querySelector(`.rs-box.rs-box-${state}`);
     if (toSelect) {
       toSelect.classList.add('rs-selected');
       toSelect.setAttribute('aria-hidden', 'false');
     }
 
-    let currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)[0];
+    const currentStateClass = this.rsWidget.className.match(/rs-state-\S+/g)![0];
     this.rsWidget.classList.remove(currentStateClass);
     this.rsWidget.classList.add(`rs-state-${state || this.state}`);
 
@@ -149,7 +228,7 @@ class Widget {
    *
    * @private
    */
-  setInitialState () {
+  setInitialState(): void {
     if (this.skipInitial) {
       this.showChooseOrSignIn();
     } else {
@@ -164,9 +243,9 @@ class Widget {
    *
    * @private
    */
-  createHtmlTemplate () {
+  createHtmlTemplate(): HTMLElement {
     const element = document.createElement('div');
-    element.id = "remotestorage-widget";
+    element.id = 'remotestorage-widget';
     element.innerHTML = widgetHtml;
 
     const style = document.createElement('style');
@@ -182,10 +261,9 @@ class Widget {
    *
    * @private
    */
-  setModalClass () {
+  setModalClass(): void {
     if (this.modalBackdrop) {
-      if (this.modalBackdrop === 'onlySmallScreens'
-          && !this.isSmallScreen()) {
+      if (this.modalBackdrop === 'onlySmallScreens' && !this.isSmallScreen()) {
         return;
       }
       this.rsWidget.classList.add('rs-modal');
@@ -198,9 +276,9 @@ class Widget {
    * @throws {Error} If parent container element not found
    * @private
    */
-  setupElements () {
+  setupElements(): void {
     if (!this.parentContainerEl) {
-      throw new Error("Parent container element not found");
+      throw new Error('Parent container element not found');
     }
 
     this.rsWidget = this.parentContainerEl.querySelector('.rs-widget');
@@ -210,19 +288,23 @@ class Widget {
     this.rsConnected = this.parentContainerEl.querySelector('.rs-box-connected');
     this.rsSignIn = this.parentContainerEl.querySelector('.rs-box-sign-in');
 
-    this.rsConnectedLabel = this.parentContainerEl.querySelector('.rs-box-connected .rs-sub-headline');
+    this.rsConnectedLabel = this.parentContainerEl.querySelector(
+      '.rs-box-connected .rs-sub-headline'
+    );
     this.rsChooseRemoteStorageButton = this.parentContainerEl.querySelector('button.rs-choose-rs');
     this.rsChooseDropboxButton = this.parentContainerEl.querySelector('button.rs-choose-dropbox');
-    this.rsChooseGoogleDriveButton = this.parentContainerEl.querySelector('button.rs-choose-googledrive');
+    this.rsChooseGoogleDriveButton = this.parentContainerEl.querySelector(
+      'button.rs-choose-googledrive'
+    );
     this.rsErrorBox = this.parentContainerEl.querySelector('.rs-box-error .rs-error-message');
 
     // check if apiKeys is set for Dropbox or Google [googledrive, dropbox]
     // to show/hide relative buttons only if needed
-    if (! this.rs.apiKeys.hasOwnProperty('googledrive')) {
+    if (!this.rs.apiKeys.hasOwnProperty('googledrive')) {
       this.rsChooseGoogleDriveButton.parentNode.removeChild(this.rsChooseGoogleDriveButton);
     }
 
-    if (! this.rs.apiKeys.hasOwnProperty('dropbox')) {
+    if (!this.rs.apiKeys.hasOwnProperty('dropbox')) {
       this.rsChooseDropboxButton.parentNode.removeChild(this.rsChooseDropboxButton);
     }
 
@@ -234,8 +316,12 @@ class Widget {
     this.rsSyncButton = this.parentContainerEl.querySelector('.rs-sync');
     this.rsLogo = this.parentContainerEl.querySelector('.rs-widget-icon');
 
-    this.rsErrorReconnectLink = this.parentContainerEl.querySelector('.rs-box-error a.rs-reconnect');
-    this.rsErrorDisconnectButton = this.parentContainerEl.querySelector('.rs-box-error button.rs-disconnect');
+    this.rsErrorReconnectLink = this.parentContainerEl.querySelector(
+      '.rs-box-error a.rs-reconnect'
+    );
+    this.rsErrorDisconnectButton = this.parentContainerEl.querySelector(
+      '.rs-box-error button.rs-disconnect'
+    );
 
     this.rsConnectedUser = this.parentContainerEl.querySelector('.rs-connected-text h1.rs-user');
   }
@@ -245,13 +331,13 @@ class Widget {
    *
    * @private
    */
-  setupHandlers () {
+  setupHandlers(): void {
     this.rs.on('connected', () => this.eventHandler('connected'));
     this.rs.on('ready', () => this.eventHandler('ready'));
     this.rs.on('disconnected', () => this.eventHandler('disconnected'));
     this.rs.on('network-online', () => this.eventHandler('network-online'));
     this.rs.on('network-offline', () => this.eventHandler('network-offline'));
-    this.rs.on('error', (error) => this.eventHandler('error', error));
+    this.rs.on('error', error => this.eventHandler('error', error));
 
     this.setEventListeners();
     this.setClickHandlers();
@@ -268,20 +354,22 @@ class Widget {
    * @param  {String,HTMLElement} [parentElement] - Parent element
    * @throws {Error} If the element is not found or is of an unknown type.
    */
-  attach (element) {
-    const domElement = this.createHtmlTemplate(element);
-
-    this.parentContainerEl;
+  attach(element?: string | HTMLElement): void {
+    const domElement = this.createHtmlTemplate();
 
     if (element instanceof HTMLElement) {
       this.parentContainerEl = element;
-    } else if (typeof element === "string") {
+    } else if (typeof element === 'string') {
       this.parentContainerEl = document.getElementById(element);
       if (!this.parentContainerEl) {
+<<<<<<< Updated upstream:src/widget.js
         throw new Error("Failed to find target DOM element with id=\"" + element + "\"");
+=======
+        throw new Error(`Failed to find target DOM element with id="${element}"`);
+>>>>>>> Stashed changes:src/widget.ts
       }
     } else if (element) {
-      throw new Error("Unknown element type. Expected instance of HTMLElement or type of string.");
+      throw new Error('Unknown element type. Expected instance of HTMLElement or type of string.');
     } else {
       this.parentContainerEl = document.body;
     }
@@ -293,10 +381,10 @@ class Widget {
     this.setModalClass();
   }
 
-  setEventListeners () {
-    this.rsSignInForm.addEventListener('submit', (e) => {
+  setEventListeners(): void {
+    this.rsSignInForm.addEventListener('submit', e => {
       e.preventDefault();
-      let userAddress = this.parentContainerEl.querySelector('input[name=rs-user-address]').value;
+      const userAddress = this.parentContainerEl.querySelector('input[name=rs-user-address]').value;
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
@@ -309,7 +397,7 @@ class Widget {
    *
    * @private
    */
-  showChooseOrSignIn () {
+  showChooseOrSignIn(): void {
     if (this.rsWidget.classList.contains('rs-modal')) {
       this.rsBackdrop.style.display = 'block';
       this.rsBackdrop.classList.add('visible');
@@ -322,9 +410,9 @@ class Widget {
     }
   }
 
-  setClickHandlers () {
+  setClickHandlers(): void {
     // Initial button
-    this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn() );
+    this.rsInitial.addEventListener('click', () => this.showChooseOrSignIn());
 
     // Choose RS button
     this.rsChooseRemoteStorageButton.addEventListener('click', () => {
@@ -333,39 +421,41 @@ class Widget {
     });
 
     // Choose Dropbox button
-    this.rsChooseDropboxButton.addEventListener('click', () => this.rs["dropbox"].connect() );
+    this.rsChooseDropboxButton.addEventListener('click', () => this.rs['dropbox'].connect());
 
     // Choose Google Drive button
-    this.rsChooseGoogleDriveButton.addEventListener('click', () => this.rs["googledrive"].connect() );
+    this.rsChooseGoogleDriveButton.addEventListener('click', () =>
+      this.rs['googledrive'].connect()
+    );
 
     // Disconnect button
-    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+    this.rsDisconnectButton.addEventListener('click', () => this.rs.disconnect());
 
-    this.rsErrorReconnectLink.addEventListener('click', () => this.rs.reconnect() );
-    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect() );
+    this.rsErrorReconnectLink.addEventListener('click', () => this.rs.reconnect());
+    this.rsErrorDisconnectButton.addEventListener('click', () => this.rs.disconnect());
 
     // Sync button
     if (this.rs.hasFeature('Sync')) {
       this.rsSyncButton.addEventListener('click', () => {
         if (this.rsSyncButton.classList.contains('rs-rotate')) {
           this.rs.stopSync();
-          this.rsSyncButton.classList.remove("rs-rotate");
+          this.rsSyncButton.classList.remove('rs-rotate');
         } else {
           this.rsConnectedLabel.textContent = 'Synchronizing';
           this.rs.startSync();
-          this.rsSyncButton.classList.add("rs-rotate");
+          this.rsSyncButton.classList.add('rs-rotate');
         }
       });
     }
 
     // Reduce to icon only if connected and clicked outside of widget
-    document.addEventListener('click', () => this.close() );
+    document.addEventListener('click', () => this.close());
 
     // Clicks on the widget stop the above event
-    this.rsWidget.addEventListener('click', e => e.stopPropagation() );
+    this.rsWidget.addEventListener('click', e => e.stopPropagation());
 
     // Click on the logo to toggle the widget's open/close state
-    this.rsLogo.addEventListener('click', () => this.toggle() );
+    this.rsLogo.addEventListener('click', () => this.toggle());
   }
 
   /**
@@ -374,7 +464,7 @@ class Widget {
    * When then widget is open and in initial state, it will show the backend
    * chooser screen.
    */
-  toggle () {
+  toggle(): void {
     if (this.closed) {
       this.open();
     } else {
@@ -389,12 +479,12 @@ class Widget {
   /**
    * Open the widget.
    */
-  open () {
+  open(): void {
     this.closed = false;
     this.rsWidget.classList.remove('rs-closed');
     this.shouldCloseWhenSyncDone = false; // prevent auto-closing when user opened the widget
 
-    let selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
+    const selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
     if (selected) {
       selected.setAttribute('aria-hidden', 'false');
     }
@@ -406,14 +496,16 @@ class Widget {
    * If the ``leaveOpen`` config is true or there is no storage connected,
    * the widget will not close.
    */
-  close () {
+  close(): void {
     // don't do anything when we have an error
-    if (this.state === 'error') { return; }
+    if (this.state === 'error') {
+      return;
+    }
 
     if (!this.leaveOpen && this.active) {
       this.closed = true;
       this.rsWidget.classList.add('rs-closed');
-      let selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
+      const selected = this.parentContainerEl.querySelector('.rs-box.rs-selected');
       if (selected) {
         selected.setAttribute('aria-hidden', 'true');
       }
@@ -436,7 +528,7 @@ class Widget {
    *
    * @private
    */
-  disableConnectButton () {
+  disableConnectButton() {
     this.rsConnectButton.disabled = true;
     this.rsConnectButton.classList.add('rs-connecting');
     const circleSpinner = circleOpenSvg;
@@ -448,7 +540,7 @@ class Widget {
    *
    * @private
    */
-  enableConnectButton () {
+  enableConnectButton() {
     this.rsConnectButton.disabled = false;
     this.rsConnectButton.textContent = 'Connect';
     this.rsConnectButton.classList.remove('rs-connecting');
@@ -461,7 +553,7 @@ class Widget {
    *
    * @private
    */
-  setOffline () {
+  setOffline() {
     if (this.online) {
       this.rsWidget.classList.add('rs-offline');
       this.rsConnectedLabel.textContent = 'Offline';
@@ -474,7 +566,7 @@ class Widget {
    *
    * @private
    */
-  setOnline () {
+  setOnline() {
     if (!this.online) {
       this.rsWidget.classList.remove('rs-offline');
       if (this.active) {
@@ -492,7 +584,7 @@ class Widget {
    *
    * @private
    */
-  setBackendClass (backend) {
+  setBackendClass(backend) {
     this.rsWidget.classList.remove('rs-backend-remotestorage');
     this.rsWidget.classList.remove('rs-backend-dropbox');
     this.rsWidget.classList.remove('rs-backend-googledrive');
@@ -502,49 +594,49 @@ class Widget {
     }
   }
 
-  showErrorBox (errorMsg) {
+  showErrorBox(errorMsg: string) {
     this.rsErrorBox.innerHTML = errorMsg;
     this.setState('error');
   }
 
-  hideErrorBox () {
+  hideErrorBox() {
     this.rsErrorBox.innerHTML = '';
     this.close();
   }
 
-  handleSyncStarted () {
+  handleSyncStarted() {
     this.syncInProgress = true;
-    this.rsSyncButton.classList.add("rs-rotate");
+    this.rsSyncButton.classList.add('rs-rotate');
     setTimeout(() => {
       if (!this.syncInProgress) return;
       this.rsConnectedLabel.textContent = 'Synchronizing';
     }, 1000);
   }
 
-  handleDiscoveryError (error) {
-    let msgContainer = this.parentContainerEl.querySelector('.rs-sign-in-error');
+  handleDiscoveryError(error) {
+    const msgContainer = this.parentContainerEl.querySelector('.rs-sign-in-error');
     msgContainer.innerHTML = error.message;
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
     this.enableConnectButton();
   }
 
-  handleSyncError (error) {
+  handleSyncError(error) {
     this.setOffline();
   }
 
-  handleUnauthorized (error) {
+  handleUnauthorized(error) {
     if (error.code && error.code === 'access_denied') {
       this.rs.disconnect();
     } else {
       this.open();
-      this.showErrorBox(error.message + " ");
+      this.showErrorBox(`${error.message} `);
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
       this.rsErrorReconnectLink.classList.remove('rs-hidden');
     }
   }
 
-  updateLastSyncedStatus () {
+  updateLastSyncedStatus() {
     const now = new Date();
     if (this.online) {
       this.lastSynced = now;
@@ -556,7 +648,7 @@ class Widget {
     }
   }
 
-  isSmallScreen () {
+  isSmallScreen() {
     return window.innerWidth < 421;
   }
 }

@@ -3,7 +3,7 @@ const isProd = (process.env.NODE_ENV === 'production');
 const path = require('path');
 
 module.exports = {
-  entry: ["./src/widget.js"],
+  entry: ["./src/widget.ts"],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'widget.js',
@@ -25,17 +25,20 @@ module.exports = {
       amd: "remotestoragejs" // define(['remotestoragejs'], ...)
     }
   },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+          },
+        },
       },
       {
         test: /\.html$/,
