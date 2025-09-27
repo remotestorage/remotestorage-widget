@@ -54,42 +54,42 @@ interface ErrorMessage {
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
  */
 class Widget {
-  private rs: RemoteStorage;
-  private leaveOpen: boolean;
-  private autoCloseAfter: number;
-  private skipInitial: boolean;
-  private logging: boolean;
-  private modalBackdrop: boolean | 'onlySmallScreens';
-  private parentContainerEl: HTMLElement | null;
-  private active: boolean;
-  private online: boolean;
-  private closed: boolean;
-  private lastSynced: Date | null;
-  private lastSyncedUpdateLoop: any;
-  private state: string;
-  private shouldCloseWhenSyncDone: boolean;
-  private syncInProgress: boolean;
+  rs: RemoteStorage;
+  leaveOpen: boolean;
+  autoCloseAfter: number;
+  skipInitial: boolean;
+  logging: boolean;
+  modalBackdrop: boolean | 'onlySmallScreens';
+  parentContainerEl: HTMLElement | null;
+  active: boolean;
+  online: boolean;
+  closed: boolean;
+  lastSynced: Date | null;
+  lastSyncedUpdateLoop: any;
+  state: string;
+  shouldCloseWhenSyncDone: boolean;
+  syncInProgress: boolean;
 
-  private rsWidget: HTMLElement;
-  private rsBackdrop: HTMLElement;
-  private rsInitial: HTMLElement;
-  private rsChoose: HTMLElement;
-  private rsConnected: HTMLElement;
-  private rsSignIn: HTMLElement;
-  private rsConnectedLabel: HTMLElement;
-  private rsChooseRemoteStorageButton: HTMLButtonElement;
-  private rsChooseDropboxButton: HTMLButtonElement;
-  private rsChooseGoogleDriveButton: HTMLButtonElement;
-  private rsErrorBox: HTMLElement;
-  private rsSignInForm: HTMLFormElement;
-  private rsAddressInput: HTMLInputElement;
-  private rsConnectButton: HTMLButtonElement;
-  private rsDisconnectButton: HTMLButtonElement;
-  private rsSyncButton: HTMLButtonElement;
-  private rsLogo: HTMLElement;
-  private rsErrorReconnectLink: HTMLAnchorElement;
-  private rsErrorDisconnectButton: HTMLButtonElement;
-  private rsConnectedUser: HTMLElement;
+  rsWidget: HTMLElement;
+  rsBackdrop: HTMLElement;
+  rsInitial: HTMLElement;
+  rsChoose: HTMLElement;
+  rsConnected: HTMLElement;
+  rsSignIn: HTMLElement;
+  rsConnectedLabel: HTMLElement;
+  rsChooseRemoteStorageButton: HTMLButtonElement;
+  rsChooseDropboxButton: HTMLButtonElement;
+  rsChooseGoogleDriveButton: HTMLButtonElement;
+  rsErrorBox: HTMLElement;
+  rsSignInForm: HTMLFormElement;
+  rsAddressInput: HTMLInputElement;
+  rsConnectButton: HTMLButtonElement;
+  rsDisconnectButton: HTMLButtonElement;
+  rsSyncButton: HTMLButtonElement;
+  rsLogo: HTMLElement;
+  rsErrorReconnectLink: HTMLAnchorElement;
+  rsErrorDisconnectButton: HTMLButtonElement;
+  rsConnectedUser: HTMLElement;
 
   constructor(remoteStorage: RemoteStorage, options: WidgetOptions = {}) {
     this.rs = remoteStorage;
