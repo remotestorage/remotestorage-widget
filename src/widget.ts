@@ -362,11 +362,7 @@ class Widget {
     } else if (typeof element === 'string') {
       this.parentContainerEl = document.getElementById(element);
       if (!this.parentContainerEl) {
-<<<<<<< Updated upstream:src/widget.js
         throw new Error("Failed to find target DOM element with id=\"" + element + "\"");
-=======
-        throw new Error(`Failed to find target DOM element with id="${element}"`);
->>>>>>> Stashed changes:src/widget.ts
       }
     } else if (element) {
       throw new Error('Unknown element type. Expected instance of HTMLElement or type of string.');
