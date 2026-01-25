@@ -296,7 +296,7 @@ class Widget {
   setEventListeners () {
     this.rsSignInForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      let userAddress = this.parentContainerEl.querySelector('input[name=rs-user-address]').value;
+      let userAddress = this.parentContainerEl.querySelector('input[name=rs-user-address]').value.trim();
       this.disableConnectButton();
       this.rs.connect(userAddress);
     });
