@@ -36,7 +36,10 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+            presets: [
+              ['@babel/preset-env', { targets: 'last 3 versions, not dead, supports custom-elementsv1' }],
+              '@babel/preset-typescript',
+            ],
           },
         },
       },

@@ -1,4 +1,3 @@
-/* CSS Reset for shadow DOM isolation */
 :host {
   all: initial;
   display: block;
@@ -11,10 +10,21 @@
   --color-warning: #FFBB0C;
   --color-sub-headline: light-dark(#666, #999);
   --color-text: light-dark(black, white);
-  --margin: 10px;
-  --padding: 10px;
-  --border-radius: 8px;
-  color: var(--color-headline);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  box-sizing: border-box;
+  overflow: hidden;
+  max-width: 350px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: var(--color-background);
+  border: 1px solid var(--border-color);
+  /* box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2); */
+  font-size: 16px;
+  color: var(--color-text);
+  will-change: max-height, height, width, opacity, max-width, background, box-shadow;
+  transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
+  transition-duration: 300ms;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,25 +37,7 @@
   z-index: var(--z-index);
 }
 
-.rs-widget {
-  box-sizing: border-box;
-  overflow: hidden;
-  max-width: 350px;
-  padding: var(--padding);
-  margin: var(--margin);
-  border-radius: var(--border-radius);
-  background-color: var(--color-background);
-  border: 1px solid var(--border-color);
-  /* box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2); */
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 16px;
-  color: var(--color-text);
-  will-change: max-height, height, width, opacity, max-width, background, box-shadow;
-  transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
-  transition-duration: 300ms;
-}
-
-.rs-widget * {
+* {
   box-sizing: border-box;
 }
 
@@ -80,22 +72,17 @@
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
   position: relative;
 }
-.rs-widget .rs-backend-remotestorage svg#rs-main-logo-remotestorage {
+
+.rs-widget.rs-backend-dropbox svg#rs-main-logo-dropbox,
+.rs-widget.rs-backend-googledrive svg#rs-main-logo-googledrive,
+.rs-widget .rs-backend-remotestorage svg#rs-main-logo-remotestorage
+{
   display: block;
 }
+
+.rs-widget:not(.rs-backend-dropbox) svg#rs-main-logo-dropbox,
+.rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive,
 .rs-widget[class*="rs-backend-"]:not(.rs-backend-remotestorage) svg#rs-main-logo-remotestorage {
-  display: none;
-}
-.rs-widget.rs-backend-dropbox svg#rs-main-logo-dropbox {
-  display: block;
-}
-.rs-widget:not(.rs-backend-dropbox) svg#rs-main-logo-dropbox {
-  display: none;
-}
-.rs-widget.rs-backend-googledrive svg#rs-main-logo-googledrive {
-  display: block;
-}
-.rs-widget:not(.rs-backend-googledrive) svg#rs-main-logo-googledrive {
   display: none;
 }
 

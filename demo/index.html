@@ -3,10 +3,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RS Widget Test</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
     body {
       background-color: light-dark(white, black)
     }
@@ -26,7 +22,7 @@
   <script type="text/javascript" src="widget.js"></script>
   <remotestorage-widget></remotestorage-widget>
   <script>
-    var remoteStorage = new RemoteStorage();
+    const remoteStorage = new RemoteStorage();
 
     remoteStorage.setApiKeys({
       dropbox: '6sa61p53d6qa88q',
