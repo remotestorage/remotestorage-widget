@@ -1,5 +1,26 @@
+/* CSS Reset for shadow DOM isolation */
+:host {
+  all: initial;
+  display: block;
+  --z-index: 21000000;
+  --max-width: 350px;
+  --border-color: light-dark(#dcdcdc, #333);
+  --color-background: light-dark(white, black);
+  --color-danger: #FF2D2D;
+  --color-warning: #FFBB0C;
+  --color-sub-headline: light-dark(#666, #999);
+  --color-text: light-dark(black, white);
+  color: var(--color-headline);
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    color-scheme: dark;
+  }
+}
+
 #remotestorage-widget {
-  z-index: 21000000;
+  z-index: var(--z-index);
 }
 
 .rs-widget {
@@ -9,11 +30,13 @@
   padding: 10px;
   margin: 10px;
   border-radius: 3px;
-  background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
-  font-family: arial, sans-serif;
+  background-color: var(--color-background);
+  border: 1px solid var(--border-color);
+  /* box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2); */
+  border-radius: 8px;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 16px;
-  color: #333;
+  color: var(--color-text);
   will-change: max-height, height, width, opacity, max-width, background, box-shadow;
   transition-property: width, height, opacity, max-width, max-height, background, box-shadow;
   transition-duration: 300ms;
@@ -30,9 +53,9 @@
 .rs-box {
   overflow: hidden;
   will-change: height;
-  transition-property: height, width, max-height;
+  transition-property: height, width, max-height, opacity;
   transition-duration: 300ms;
-  transition-timing-function: ease-in;
+  transition-timing-function: ease-in-out;
   opacity: 0;
   max-height: 0px;
 }
@@ -50,7 +73,7 @@
   margin-top: 1px;
   margin-right: 0.625em;
   transition: margin-left 300ms ease-out, transform 300ms ease-out;
-  cursor: pointer;
+  position: relative;
 }
 .rs-widget .rs-backend-remotestorage svg#rs-main-logo-remotestorage {
   display: block;
@@ -109,6 +132,11 @@ polygon.rs-logo-shape,
   transition-duration: 0ms;
 }
 
+.rs-box-initial.rs-selected {
+  transition-duration: 300ms;
+  transition-delay: 300ms;
+}
+
 .rs-box-initial:hover {
   cursor: pointer;
 }
@@ -120,7 +148,7 @@ polygon.rs-logo-shape,
 /* HEADLINE */
 .rs-small-headline {
   font-size: 1em;
-  font-weight: bold;
+  font-weight: 600;
   margin: 0;
   margin-bottom: 2px;
   height: 1.2em;
@@ -132,7 +160,7 @@ polygon.rs-logo-shape,
 .rs-sub-headline {
   word-break: break-all;
   overflow: hidden;
-  color: #666;
+  color: var(--color-sub-headline);
   font-size: 0.92em;
   height: 1.2em;
 }
@@ -149,14 +177,14 @@ polygon.rs-logo-shape,
   font: inherit;
   color: inherit;
   background-color: transparent;
-  border: 1px solid #dcdcdc;
-  border-radius: 3px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
   cursor: pointer;
 }
 .rs-button-small {
   padding: 0.6em 0.7em;
   margin-left: 0.2em;
-  transition: border-color 300ms ease-out;
+  transition: border-color 200ms ease-out, color 200ms ease-out;
 }
 .rs-button-small svg {
   vertical-align: top;
@@ -205,6 +233,7 @@ polygon.rs-logo-shape,
 .rs-state-sign-in .rs-main-logo {
   margin-left: 45%;
   float: none;
+  display: block;
 }
 
 .rs-sign-in-form input[type=text] {
@@ -213,8 +242,8 @@ polygon.rs-logo-shape,
   width: 100%;
   font: inherit;
   height: 52px;
-  border: 1px solid #aaa;
-  border-radius: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
   box-shadow: none;
 }
 .rs-sign-in-form button.rs-connect {
@@ -224,7 +253,7 @@ polygon.rs-logo-shape,
   display: block;
   width: 100%;
   border: none;
-  border-radius: 3px;
+  border-radius: 5px;
   background-color: #3fb34f;
   font: inherit;
   color: #fff;
@@ -283,6 +312,9 @@ polygon.rs-logo-shape,
 .rs-box-choose {
   text-align: center;
   overflow: hidden;
+  width: 100%;
+  clear: both;
+  position: relative;
 }
 
 .rs-box-choose p {
@@ -303,7 +335,7 @@ polygon.rs-logo-shape,
   min-width: 0;
 }
 .rs-box-connected .rs-user {
-  font-weight: bold;
+  font-weight: 600;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: keep-all;
@@ -312,22 +344,17 @@ polygon.rs-logo-shape,
   flex: none;
 }
 .rs-disconnect:hover {
-  border-color: #FF2D2D;
-}
-.rs-disconnect:hover .rs-icon{
-  fill: #FF2D2D;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 .rs-sync:hover {
-  border-color: #FFBB0C;
-}
-.rs-sync:hover .rs-icon {
-  fill: #FFBB0C;
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 .rs-sync.rs-rotate {
   border-color: #FFBB0C;
 }
 .rs-sync.rs-rotate .rs-icon {
-  fill: #FFBB0C;
   animation: rs-spin 1s linear infinite;
 }
 
@@ -370,22 +397,10 @@ polygon.rs-logo-shape,
   }
 }
 
-/* remove dotted outline border on Firefox */
-.rs-widget a:focus,
-.rs-widget a:active,
-.rs-widget button:focus,
-.rs-widget input:focus {
-  outline:none;
-}
-.rs-widget button::-moz-focus-inner,
-.rs-widget input[type="button"]::-moz-focus-inner {
-  border:0;
-}
-
 /* prevent rounded buttons on mobile Safari */
 .rs-widget button,
 .rs-widget input[type="button"] {
-  -webkit-appearance: none;
+  appearance: none;
 }
 
 .remotestorage-widget-modal-backdrop {
