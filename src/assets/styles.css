@@ -6,10 +6,14 @@
   --max-width: 350px;
   --border-color: light-dark(#dcdcdc, #333);
   --color-background: light-dark(white, black);
+  --color-background-2: light-dark(#999999, #222);
   --color-danger: #FF2D2D;
   --color-warning: #FFBB0C;
   --color-sub-headline: light-dark(#666, #999);
   --color-text: light-dark(black, white);
+  --margin: 10px;
+  --padding: 10px;
+  --border-radius: 8px;
   color: var(--color-headline);
 }
 
@@ -27,13 +31,12 @@
   box-sizing: border-box;
   overflow: hidden;
   max-width: 350px;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 3px;
+  padding: var(--padding);
+  margin: var(--margin);
+  border-radius: var(--border-radius);
   background-color: var(--color-background);
   border: 1px solid var(--border-color);
   /* box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2); */
-  border-radius: 8px;
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 16px;
   color: var(--color-text);
@@ -57,12 +60,14 @@
   transition-duration: 300ms;
   transition-timing-function: ease-in-out;
   opacity: 0;
-  max-height: 0px;
+  max-height: 0;
+  pointer-events: none;
 }
 
 .rs-box.rs-selected:not([aria-hidden=true]) {
   opacity: 1;
   max-height: 420px;
+  pointer-events: auto;
 }
 
 /* Main logo */
@@ -94,18 +99,18 @@
   display: none;
 }
 
-polygon.rs-logo-shape {
+#rs-main-logo-remotestorage {
   fill: #FF4B03;
 }
 
-polygon.rs-logo-shape,
+#rs-main-logo-remotestorage,
 #rs-main-logo-dropbox path,
 #rs-main-logo-googledrive path {
   transition-property: fill;
   transition-duration: 0.5s;
 }
 
-.rs-offline polygon.rs-logo-shape,
+.rs-offline #rs-main-logo-remotestorage,
 .rs-offline #rs-main-logo-dropbox path,
 .rs-offline #rs-main-logo-googledrive path {
   fill: #888;
@@ -217,7 +222,7 @@ polygon.rs-logo-shape,
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 .rs-button-big:active {
-  background-color: #eee;
+  background-color: var(--color-background-2);
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1), 0 3px 8px 0 rgba(0,0,0,0.2);
 }
 .rs-button-big:last-child {
@@ -245,6 +250,7 @@ polygon.rs-logo-shape,
   border: 1px solid var(--border-color);
   border-radius: 5px;
   box-shadow: none;
+  background: var(--color-background-2);
 }
 .rs-sign-in-form button.rs-connect {
   padding: 15px 10px;
@@ -256,7 +262,7 @@ polygon.rs-logo-shape,
   border-radius: 5px;
   background-color: #3fb34f;
   font: inherit;
-  color: #fff;
+  color: #000;
   transition: box-shadow 200ms, background-color 200ms;
 }
 
@@ -367,7 +373,6 @@ polygon.rs-logo-shape,
 
 @keyframes rs-spin {
   100% {
-    transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
