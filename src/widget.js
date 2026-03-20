@@ -67,7 +67,7 @@ class Widget {
         this.handleSyncStarted();
         break;
       case 'sync-done':
-        if (this.online && !msg.completed) return;
+        if (this.online && !msg?.completed) return;
         this.syncInProgress = false;
         this.rsSyncButton.classList.remove("rs-rotate");
         this.updateLastSyncedStatus();
@@ -108,11 +108,11 @@ class Widget {
       case 'error':
         this.setBackendClass(this.rs.backend);
 
-        if (msg.name === 'DiscoveryError') {
+        if (msg?.name === 'DiscoveryError') {
           this.handleDiscoveryError(msg);
-        } else if (msg.name === 'SyncError') {
+        } else if (msg?.name === 'SyncError') {
           this.handleSyncError(msg);
-        } else if (msg.name === 'Unauthorized') {
+        } else if (msg?.name === 'Unauthorized') {
           this.handleUnauthorized(msg);
         } else {
           console.debug(`Encountered unhandled error: "${msg}"`);
