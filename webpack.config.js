@@ -43,7 +43,7 @@ module.exports = {
       },
       {
         test: /\.(css|svg)/,
-        use: 'raw-loader',
+        type: 'asset/source',
       },
     ]
   },
