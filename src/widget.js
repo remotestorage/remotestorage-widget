@@ -1,6 +1,8 @@
 import widgetHtml from './assets/widget.html';
 import widgetCss from './assets/styles.css';
 import circleOpenSvg from './assets/circle-open.svg';
+import locales from './locales/index.js';
+import { resolveLanguage, createTranslator, translateDom } from './i18n.js';
 
 /**
  * RemoteStorage connect widget
@@ -13,6 +15,8 @@ import circleOpenSvg from './assets/circle-open.svg';
  * @param {boolean} options.skipInitial    - Don't show the initial connect hint, but show sign-in screen directly instead (default: false)
  * @param {boolean} options.logging        - Enable logging (default: false)
  * @param {boolean,string} options.modalBackdrop - Show a dark, transparent backdrop when opening the widget for connecting an account. (default 'onlySmallScreens')
+ * @param {string}  options.language       - Language tag for the widget's UI, e.g. 'es' (default: browser's preferred language, if supported, otherwise 'en')
+ * @param {function} options.t             - Translation function `(key, language) => string` for using your app's i18n library. Missing translations fall back to the built-in ones. (optional)
  */
 class Widget {
   constructor (remoteStorage, options={}) {
@@ -23,6 +27,13 @@ class Widget {
     this.skipInitial       = options.skipInitial ? options.skipInitial : false;
     this.logging           = options.logging ? options.logging : false;
     this.parentContainerEl = null;
+
+    this.language = resolveLanguage(
+      options.language,
+      typeof navigator !== 'undefined' ? navigator.languages : [],
+      Object.keys(locales)
+    );
+    this.t = createTranslator({ language: this.language, locales, t: options.t });
 
     if (options.hasOwnProperty('modalBackdrop')) {
       if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
@@ -96,7 +107,7 @@ class Widget {
         let connectedUser = this.rs.remote.userAddress;
         this.rsConnectedUser.innerHTML = connectedUser;
         this.setBackendClass(this.rs.backend);
-        this.rsConnectedLabel.textContent = 'Connected';
+        this.rsConnectedLabel.textContent = this.t('status.connected');
         this.setState('connected');
         break;
       case 'network-offline':
@@ -167,7 +178,9 @@ class Widget {
   createHtmlTemplate () {
     const element = document.createElement('div');
     element.id = "remotestorage-widget";
+    element.setAttribute('lang', this.language);
     element.innerHTML = widgetHtml;
+    translateDom(element, this.t);
 
     const style = document.createElement('style');
     style.innerHTML = widgetCss;
@@ -351,7 +364,7 @@ class Widget {
           this.rs.stopSync();
           this.rsSyncButton.classList.remove("rs-rotate");
         } else {
-          this.rsConnectedLabel.textContent = 'Synchronizing';
+          this.rsConnectedLabel.textContent = this.t('status.synchronizing');
           this.rs.startSync();
           this.rsSyncButton.classList.add("rs-rotate");
         }
@@ -439,8 +452,8 @@ class Widget {
   disableConnectButton () {
     this.rsConnectButton.disabled = true;
     this.rsConnectButton.classList.add('rs-connecting');
-    const circleSpinner = circleOpenSvg;
-    this.rsConnectButton.innerHTML = `Connecting ${circleSpinner}`;
+    this.rsConnectButton.textContent = `${this.t('signIn.connecting')} `;
+    this.rsConnectButton.insertAdjacentHTML('beforeend', circleOpenSvg);
   }
 
   /**
@@ -450,7 +463,7 @@ class Widget {
    */
   enableConnectButton () {
     this.rsConnectButton.disabled = false;
-    this.rsConnectButton.textContent = 'Connect';
+    this.rsConnectButton.textContent = this.t('signIn.connect');
     this.rsConnectButton.classList.remove('rs-connecting');
   }
 
@@ -464,7 +477,7 @@ class Widget {
   setOffline () {
     if (this.online) {
       this.rsWidget.classList.add('rs-offline');
-      this.rsConnectedLabel.textContent = 'Offline';
+      this.rsConnectedLabel.textContent = this.t('status.offline');
       this.online = false;
     }
   }
@@ -478,7 +491,7 @@ class Widget {
     if (!this.online) {
       this.rsWidget.classList.remove('rs-offline');
       if (this.active) {
-        this.rsConnectedLabel.textContent = 'Connected';
+        this.rsConnectedLabel.textContent = this.t('status.connected');
       }
     }
     this.online = true;
@@ -503,12 +516,12 @@ class Widget {
   }
 
   showErrorBox (errorMsg) {
-    this.rsErrorBox.innerHTML = errorMsg;
+    this.rsErrorBox.textContent = errorMsg;
     this.setState('error');
   }
 
   hideErrorBox () {
-    this.rsErrorBox.innerHTML = '';
+    this.rsErrorBox.textContent = '';
     this.close();
   }
 
@@ -517,16 +530,31 @@ class Widget {
     this.rsSyncButton.classList.add("rs-rotate");
     setTimeout(() => {
       if (!this.syncInProgress) return;
-      this.rsConnectedLabel.textContent = 'Synchronizing';
+      this.rsConnectedLabel.textContent = this.t('status.synchronizing');
     }, 1000);
   }
 
   handleDiscoveryError (error) {
     let msgContainer = this.parentContainerEl.querySelector('.rs-sign-in-error');
-    msgContainer.innerHTML = error.message;
+    msgContainer.textContent = this.errorMessage(error);
     msgContainer.classList.remove('rs-hidden');
     msgContainer.classList.add('rs-visible');
     this.enableConnectButton();
+  }
+
+  /**
+   * Translate an error by its code (key `error.<code>`), falling back to
+   * the error's own message.
+   *
+   * @private
+   */
+  errorMessage (error) {
+    if (error.code) {
+      const key = `error.${error.code}`;
+      const translated = this.t(key);
+      if (translated !== key) return translated;
+    }
+    return error.message;
   }
 
   handleSyncError (error) {
@@ -538,7 +566,7 @@ class Widget {
       this.rs.disconnect();
     } else {
       this.open();
-      this.showErrorBox(error.message + " ");
+      this.showErrorBox(this.errorMessage(error) + " ");
       this.rsErrorBox.appendChild(this.rsErrorReconnectLink);
       this.rsErrorReconnectLink.classList.remove('rs-hidden');
     }
@@ -548,10 +576,10 @@ class Widget {
     const now = new Date();
     if (this.online) {
       this.lastSynced = now;
-      this.rsConnectedLabel.textContent = 'Synced';
+      this.rsConnectedLabel.textContent = this.t('status.synced');
     } else {
       if (!this.rsWidget.classList.contains('rs-state-unauthorized')) {
-        this.rsConnectedLabel.textContent = 'Offline';
+        this.rsConnectedLabel.textContent = this.t('status.offline');
       }
     }
   }
