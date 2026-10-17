@@ -42,23 +42,53 @@ describe('Widget i18n', () => {
     document.body.innerHTML = '';
   });
 
+  // Override navigator's language properties on the instance for one test
+  function withBrowserLanguages (props, fn) {
+    Object.entries(props).forEach(([name, value]) => {
+      Object.defineProperty(navigator, name, { value, configurable: true });
+    });
+    try {
+      return fn();
+    } finally {
+      Object.keys(props).forEach(name => delete navigator[name]);
+    }
+  }
+
   it('renders English by default for English browsers', () => {
-    const { root } = attach({ language: 'en' });
-    expect(root.getAttribute('lang')).toBe('en');
-    expect(renderedStrings(root)).toContain('Connect your storage');
+    withBrowserLanguages({ languages: ['en-US', 'en'] }, () => {
+      const { root } = attach();
+      expect(root.getAttribute('lang')).toBe('en-US');
+      expect(renderedStrings(root)).toContain('Connect your storage');
+    });
   });
 
   it('uses the browser language when none is given', () => {
-    const original = Object.getOwnPropertyDescriptor(Navigator.prototype, 'languages');
-    Object.defineProperty(navigator, 'languages', { value: ['es-MX', 'en'], configurable: true });
-    try {
+    withBrowserLanguages({ languages: ['es-MX', 'en'] }, () => {
       const { root } = attach();
       expect(root.getAttribute('lang')).toBe('es-MX');
       expect(renderedStrings(root)).toContain(locales.es['connect.headline']);
-    } finally {
-      delete navigator.languages;
-      if (original) Object.defineProperty(Navigator.prototype, 'languages', original);
-    }
+    });
+  });
+
+  it('falls back to navigator.language when navigator.languages is missing', () => {
+    withBrowserLanguages({ languages: undefined, language: 'es' }, () => {
+      const { root } = attach();
+      expect(root.getAttribute('lang')).toBe('es');
+    });
+  });
+
+  it('rejects invalid language and t options', () => {
+    expect(() => new Widget(fakeRemoteStorage(), { language: 42 })).toThrow(/options.language/);
+    expect(() => new Widget(fakeRemoteStorage(), { t: 'nope' })).toThrow(/options.t/);
+  });
+
+  it('shows the connected address as text, not HTML', () => {
+    const { rs, root } = attach({ language: 'en' });
+    rs.remote.userAddress = '<b>user</b>@example.com';
+    rs.emit('connected');
+    const user = root.querySelector('.rs-user');
+    expect(user.textContent).toBe('<b>user</b>@example.com');
+    expect(user.children.length).toBe(0);
   });
 
   it('renders no English strings when set to Spanish', () => {
@@ -111,6 +141,8 @@ describe('Widget i18n', () => {
     expect(renderedStrings(root)).toContain(locales.en['connect.headline']);
   });
 
+  // rs.js doesn't set codes on displayed errors yet; this covers the mechanism
+  // for when it does (see README "Translations")
   it('translates errors by code and falls back to the message', () => {
     const t = key => key === 'error.no_storage_info' ? 'Kein Speicher gefunden' : undefined;
     const { rs, root } = attach({ language: 'de', t });

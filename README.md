@@ -48,7 +48,8 @@ const widget = new Widget(remoteStorage, { autoCloseAfter: 2000 });
 The widget ships with these languages: English (`en`) and Spanish (`es`).
 
 By default it uses the first of the browser's preferred languages
-(`navigator.languages`) it has a translation for, falling back to English.
+(`navigator.languages`, then `navigator.language`) it has a translation for,
+falling back to English.
 Regional variants fall back to their base language (`es-MX` uses `es`).
 Apps with their own language setting should pass it explicitly:
 
@@ -69,11 +70,13 @@ const widget = new Widget(remoteStorage, {
 });
 ```
 
-Placeholders like `{link}` mark where a link goes within a sentence and must
-be kept in the translation.
+Placeholders like `{link}` mark where a link goes within a sentence. If a
+translation leaves one out, the link is appended at the end of the sentence.
 
-Errors from remoteStorage.js that have a `code` are looked up as
-`error.<code>`; otherwise the error's own (English) message is shown.
+Errors reported by remoteStorage.js are shown with their own (English)
+message. An error that carries a `code` is first looked up as
+`error.<code>`, but current remoteStorage.js releases don't set codes on the
+errors the widget displays, so there are no such keys in the locales yet.
 
 ### Contributing a translation
 

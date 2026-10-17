@@ -5,6 +5,16 @@ import locales from './locales/index.js';
 import { resolveLanguage, createTranslator, translateDom } from './i18n.js';
 
 /**
+ * The browser's preferred languages, most preferred first.
+ *
+ * @private
+ */
+function browserLanguages () {
+  if (typeof navigator === 'undefined') return [];
+  return [...(navigator.languages || []), navigator.language].filter(Boolean);
+}
+
+/**
  * RemoteStorage connect widget
  * @constructor
  *
@@ -28,13 +38,6 @@ class Widget {
     this.logging           = options.logging ? options.logging : false;
     this.parentContainerEl = null;
 
-    this.language = resolveLanguage(
-      options.language,
-      typeof navigator !== 'undefined' ? navigator.languages : [],
-      Object.keys(locales)
-    );
-    this.t = createTranslator({ language: this.language, locales, t: options.t });
-
     if (options.hasOwnProperty('modalBackdrop')) {
       if (typeof options.modalBackdrop !== 'boolean' && options.modalBackdrop !== 'onlySmallScreens') {
         throw 'options.modalBackdrop has to be true/false or "onlySmallScreens"'
@@ -43,6 +46,15 @@ class Widget {
     } else {
       this.modalBackdrop  = 'onlySmallScreens';
     }
+
+    if (options.hasOwnProperty('language') && typeof options.language !== 'string') {
+      throw 'options.language has to be a language tag string like "es" or "es-MX"'
+    }
+    if (options.hasOwnProperty('t') && typeof options.t !== 'function') {
+      throw 'options.t has to be a function'
+    }
+    this.language = resolveLanguage(options.language, browserLanguages(), Object.keys(locales));
+    this.t = createTranslator({ language: this.language, locales, t: options.t });
 
     // true if we have remoteStorage connection's info
     this.active = false;
@@ -105,7 +117,7 @@ class Widget {
           setTimeout(this.close.bind(this), this.autoCloseAfter);
         }
         let connectedUser = this.rs.remote.userAddress;
-        this.rsConnectedUser.innerHTML = connectedUser;
+        this.rsConnectedUser.textContent = connectedUser;
         this.setBackendClass(this.rs.backend);
         this.rsConnectedLabel.textContent = this.t('status.connected');
         this.setState('connected');

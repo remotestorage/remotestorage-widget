@@ -1,19 +1,20 @@
 const DEFAULT_LANGUAGE = 'en';
 
-const baseTag = tag => tag.toLowerCase().split('-')[0];
+// Lowercase and accept gettext-style underscores: "es_MX" -> "es-mx"
+const normalizeTag = tag => tag.toLowerCase().replace('_', '-');
+const baseTag = tag => normalizeTag(tag).split('-')[0];
 
 /**
- * Find the dictionary for a language tag, trying the exact tag first and then
- * its base language (e.g. "es-MX" -> "es").
+ * Find the entry in `available` matching a language tag, trying the exact tag
+ * first and then its base language (e.g. "es-MX" -> "es").
  *
  * @private
  */
-function findLocale (language, locales) {
-  if (!language) return undefined;
-  const tag = language.toLowerCase();
-  const match = Object.keys(locales).find(l => l.toLowerCase() === tag)
-             || Object.keys(locales).find(l => l.toLowerCase() === baseTag(tag));
-  return match ? locales[match] : undefined;
+function matchTag (tag, available) {
+  const wanted = normalizeTag(tag);
+  const base = baseTag(tag);
+  return available.find(l => normalizeTag(l) === wanted)
+      || available.find(l => normalizeTag(l) === base);
 }
 
 /**
@@ -25,16 +26,13 @@ function findLocale (language, locales) {
  * used, falling back to English.
  *
  * @param {string}   [requested] - Language requested via widget options
- * @param {string[]} [preferred] - Browser languages, e.g. navigator.languages
+ * @param {string[]} [preferred] - Browser languages, most preferred first
  * @param {string[]} available   - Languages with a built-in dictionary
  * @returns {string} BCP 47 language tag
  */
-export function resolveLanguage (requested, preferred = [], available) {
+export function resolveLanguage (requested, preferred, available) {
   if (requested) return requested;
-  const supported = available.map(l => l.toLowerCase());
-  return (preferred || []).find(tag => {
-    return supported.includes(tag.toLowerCase()) || supported.includes(baseTag(tag));
-  }) || DEFAULT_LANGUAGE;
+  return (preferred || []).find(tag => matchTag(tag, available)) || DEFAULT_LANGUAGE;
 }
 
 /**
@@ -52,7 +50,8 @@ export function resolveLanguage (requested, preferred = [], available) {
  * @returns {function} (key) => string
  */
 export function createTranslator ({ language, locales, t }) {
-  const dictionary = findLocale(language, locales) || {};
+  const match = language && matchTag(language, Object.keys(locales));
+  const dictionary = match ? locales[match] : {};
   const fallback = locales[DEFAULT_LANGUAGE] || {};
 
   return (key) => {
@@ -71,7 +70,9 @@ export function createTranslator ({ language, locales, t }) {
  *
  * Placeholders like `{link}` are replaced by the element's child marked with
  * `data-i18n-slot="link"`, so translations can freely position markup within
- * a sentence. Text is always inserted as text, never parsed as HTML.
+ * a sentence. A slot whose placeholder is missing from the text is appended
+ * at the end, so a translation can never drop a link. Text is always inserted
+ * as text, never parsed as HTML.
  *
  * @param {HTMLElement} element
  * @param {string}      text
@@ -84,12 +85,18 @@ export function translateElement (element, text) {
 
   element.textContent = '';
   text.split(/(\{\w+\})/).forEach(part => {
-    const slot = part.match(/^\{(\w+)\}$/) && slots[part.slice(1, -1)];
-    if (slot) {
-      element.appendChild(slot);
+    const name = part.match(/^\{(\w+)\}$/)?.[1];
+    if (name && slots[name]) {
+      element.appendChild(slots[name]);
+      delete slots[name];
     } else if (part) {
       element.appendChild(document.createTextNode(part));
     }
+  });
+
+  Object.values(slots).forEach(slot => {
+    if (element.textContent !== '') element.appendChild(document.createTextNode(' '));
+    element.appendChild(slot);
   });
 }
 
@@ -104,8 +111,7 @@ export function translateElement (element, text) {
  * @param {function}    t    - Translation function from createTranslator
  */
 export function translateDom (root, t) {
-  // Translate slot children before their parents re-arrange them
-  [...root.querySelectorAll('[data-i18n]')].reverse().forEach(el => {
+  root.querySelectorAll('[data-i18n]').forEach(el => {
     translateElement(el, t(el.getAttribute('data-i18n')));
   });
   ['title', 'placeholder'].forEach(attr => {

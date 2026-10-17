@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveLanguage, createTranslator, translateElement } from '../src/i18n.js';
+import { resolveLanguage, createTranslator, translateElement, translateDom } from '../src/i18n.js';
 
 const locales = {
   en: { 'a': 'A en', 'b': 'B en' },
@@ -24,6 +24,11 @@ describe('resolveLanguage', () => {
 
   it('matches browser languages case-insensitively by base tag', () => {
     expect(resolveLanguage(undefined, ['ES-ar'], available)).toBe('ES-ar');
+  });
+
+  it('accepts gettext-style underscores', () => {
+    expect(resolveLanguage(undefined, ['es_MX'], available)).toBe('es_MX');
+    expect(createTranslator({ language: 'es_MX', locales })('a')).toBe('A es');
   });
 
   it('falls back to English', () => {
@@ -92,9 +97,31 @@ describe('translateElement', () => {
     expect(el.firstChild.getAttribute('href')).toBe('https://example.com');
   });
 
+  it('appends a slot whose placeholder the translation dropped', () => {
+    const el = document.createElement('p');
+    el.innerHTML = 'Before <a data-i18n-slot="link" href="https://example.com">link</a> after';
+    translateElement(el, 'Sin enlace.');
+    expect(el.querySelectorAll('a').length).toBe(1);
+    expect(el.textContent).toBe('Sin enlace. link');
+    expect(el.lastChild.tagName).toBe('A');
+  });
+
   it('keeps unknown placeholders as text', () => {
     const el = document.createElement('p');
     translateElement(el, 'Hola {nobody}');
     expect(el.textContent).toBe('Hola {nobody}');
+  });
+});
+
+describe('translateDom', () => {
+  it('translates content, title and placeholder attributes', () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<span data-i18n="a">x</span>' +
+      '<button data-i18n-title="b" title="x"></button>' +
+      '<input data-i18n-placeholder="a" placeholder="x">';
+    translateDom(root, createTranslator({ language: 'es', locales }));
+    expect(root.querySelector('span').textContent).toBe('A es');
+    expect(root.querySelector('button').getAttribute('title')).toBe('B en');
+    expect(root.querySelector('input').getAttribute('placeholder')).toBe('A es');
   });
 });
