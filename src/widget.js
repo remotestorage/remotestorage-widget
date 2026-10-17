@@ -190,7 +190,8 @@ class Widget {
   createHtmlTemplate () {
     const element = document.createElement('div');
     element.id = "remotestorage-widget";
-    element.setAttribute('lang', this.language);
+    // HTML needs BCP 47 tags; gettext-style "es_MX" becomes "es-MX"
+    element.setAttribute('lang', this.language.replace(/_/g, '-'));
     element.innerHTML = widgetHtml;
     translateDom(element, this.t);
 

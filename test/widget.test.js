@@ -133,6 +133,14 @@ describe('Widget i18n', () => {
     expect(button.querySelector('svg')).not.toBeNull();
   });
 
+  it('writes a valid lang attribute for underscore tags', () => {
+    let seen;
+    const { root } = attach({ language: 'es_MX', t: (key, lang) => { seen = lang; } });
+    expect(root.getAttribute('lang')).toBe('es-MX');
+    expect(seen).toBe('es_MX');
+    expect(renderedStrings(root)).toContain(locales.es['connect.headline']);
+  });
+
   it('prefers an injected t and falls back to built-ins', () => {
     const t = key => key === 'signIn.connect' ? 'Verbinden' : key;
     const { root } = attach({ language: 'de', t });

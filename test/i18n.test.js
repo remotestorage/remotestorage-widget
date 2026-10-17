@@ -106,6 +106,12 @@ describe('translateElement', () => {
     expect(el.lastChild.tagName).toBe('A');
   });
 
+  it('does not treat inherited object properties as slots', () => {
+    const el = document.createElement('p');
+    translateElement(el, 'Hola {constructor} {toString}');
+    expect(el.textContent).toBe('Hola {constructor} {toString}');
+  });
+
   it('keeps unknown placeholders as text', () => {
     const el = document.createElement('p');
     translateElement(el, 'Hola {nobody}');

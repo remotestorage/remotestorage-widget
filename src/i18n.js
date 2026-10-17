@@ -78,23 +78,23 @@ export function createTranslator ({ language, locales, t }) {
  * @param {string}      text
  */
 export function translateElement (element, text) {
-  const slots = {};
+  const slots = new Map();
   element.querySelectorAll('[data-i18n-slot]').forEach(el => {
-    slots[el.getAttribute('data-i18n-slot')] = el;
+    slots.set(el.getAttribute('data-i18n-slot'), el);
   });
 
   element.textContent = '';
   text.split(/(\{\w+\})/).forEach(part => {
     const name = part.match(/^\{(\w+)\}$/)?.[1];
-    if (name && slots[name]) {
-      element.appendChild(slots[name]);
-      delete slots[name];
+    if (name && slots.has(name)) {
+      element.appendChild(slots.get(name));
+      slots.delete(name);
     } else if (part) {
       element.appendChild(document.createTextNode(part));
     }
   });
 
-  Object.values(slots).forEach(slot => {
+  slots.forEach(slot => {
     if (element.textContent !== '') element.appendChild(document.createTextNode(' '));
     element.appendChild(slot);
   });
