@@ -11,7 +11,8 @@ import { resolveLanguage, createTranslator, translateDom } from './i18n.js';
  */
 function browserLanguages () {
   if (typeof navigator === 'undefined') return [];
-  return [...(navigator.languages || []), navigator.language].filter(Boolean);
+  if (navigator.languages?.length) return [...navigator.languages];
+  return navigator.language ? [navigator.language] : [];
 }
 
 /**
