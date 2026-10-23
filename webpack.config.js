@@ -1,6 +1,7 @@
 /* global __dirname */
 const isProd = (process.env.NODE_ENV === 'production');
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: ["./src/widget.js"],
@@ -45,6 +46,13 @@ module.exports = {
         test: /\.(css|svg)/,
         type: 'asset/source',
       },
+    ]
+  },
+  optimization: {
+    minimizer: [
+      // Escape non-ASCII (e.g. Spanish "¿") so translations render correctly
+      // even on pages that aren't served as UTF-8
+      new TerserPlugin({ terserOptions: { format: { ascii_only: true } } })
     ]
   },
   devServer: {

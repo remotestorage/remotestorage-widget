@@ -1,0 +1,17 @@
+{
+  "connect.headline": "Connect your storage",
+  "initial.subheadline": "To sync data with your account",
+  "choose.description": "This app allows you to sync data with a {link}.",
+  "choose.descriptionLink": "storage provider of your choice",
+  "signIn.placeholder": "user@provider.com",
+  "signIn.connect": "Connect",
+  "signIn.connecting": "Connecting",
+  "signIn.help": "Need help?",
+  "status.connected": "Connected",
+  "status.synchronizing": "Synchronizing",
+  "status.synced": "Synced",
+  "status.offline": "Offline",
+  "connected.sync": "Sync now",
+  "connected.disconnect": "Disconnect",
+  "error.renew": "Renew"
+}

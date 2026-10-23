@@ -1,0 +1,17 @@
+{
+  "connect.headline": "Conectar almacenamiento",
+  "initial.subheadline": "Para sincronizar datos con tu cuenta",
+  "choose.description": "Esta app te permite sincronizar datos con el {link}.",
+  "choose.descriptionLink": "proveedor de almacenamiento que elijas",
+  "signIn.placeholder": "usuario@proveedor.com",
+  "signIn.connect": "Conectar",
+  "signIn.connecting": "Conectando",
+  "signIn.help": "¿Necesitas ayuda?",
+  "status.connected": "Conectado",
+  "status.synchronizing": "Sincronizando",
+  "status.synced": "Sincronizado",
+  "status.offline": "Sin conexión",
+  "connected.sync": "Sincronizar ahora",
+  "connected.disconnect": "Desconectar",
+  "error.renew": "Renovar"
+}

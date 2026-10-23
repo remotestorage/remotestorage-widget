@@ -39,7 +39,8 @@
 
 .rs-box.rs-selected:not([aria-hidden=true]) {
   opacity: 1;
-  max-height: 420px;
+  /* Only a cap for the open/close transition, so leave room for long translations */
+  max-height: 600px;
 }
 
 /* Main logo */
