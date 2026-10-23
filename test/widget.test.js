@@ -141,6 +141,12 @@ describe('Widget i18n', () => {
     expect(renderedStrings(root)).toContain(locales.es['connect.headline']);
   });
 
+  it('declares English for a language it can only show in English', () => {
+    const { root } = attach({ language: 'de' });
+    expect(root.getAttribute('lang')).toBe('en');
+    expect(renderedStrings(root)).toContain(locales.en['connect.headline']);
+  });
+
   it('prefers an injected t and falls back to built-ins', () => {
     const t = key => key === 'signIn.connect' ? 'Verbinden' : key;
     const { root } = attach({ language: 'de', t });

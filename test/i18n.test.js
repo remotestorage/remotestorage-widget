@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveLanguage, createTranslator, translateElement, translateDom } from '../src/i18n.js';
+import { resolveLanguage, resolveHtmlLang, createTranslator, translateElement, translateDom } from '../src/i18n.js';
 
 const locales = {
   en: { 'a': 'A en', 'b': 'B en' },
@@ -35,6 +35,24 @@ describe('resolveLanguage', () => {
     expect(resolveLanguage(undefined, ['fr', 'de'], available)).toBe('en');
     expect(resolveLanguage(undefined, [], available)).toBe('en');
     expect(resolveLanguage(undefined, undefined, available)).toBe('en');
+  });
+});
+
+describe('resolveHtmlLang', () => {
+  it('keeps a language with a built-in dictionary', () => {
+    expect(resolveHtmlLang('es-MX', locales, false)).toBe('es-MX');
+  });
+
+  it('keeps any language when the app translates via its own t', () => {
+    expect(resolveHtmlLang('de', locales, true)).toBe('de');
+  });
+
+  it('declares English when nothing can translate the language', () => {
+    expect(resolveHtmlLang('de', locales, false)).toBe('en');
+  });
+
+  it('turns gettext-style underscores into a valid BCP 47 tag', () => {
+    expect(resolveHtmlLang('es_MX', locales, false)).toBe('es-MX');
   });
 });
 

@@ -36,6 +36,24 @@ export function resolveLanguage (requested, preferred, available) {
 }
 
 /**
+ * Decide the widget's HTML `lang` attribute.
+ *
+ * Without a built-in dictionary or an app `t`, every string falls back to
+ * English, so declare English. With an app `t`, trust the language: whether
+ * it translates a given key is only known at runtime.
+ *
+ * @param {string}  language - Resolved language tag
+ * @param {object}  locales  - Built-in dictionaries by language
+ * @param {boolean} hasT     - Whether the app provided its own `t`
+ * @returns {string} BCP 47 language tag
+ */
+export function resolveHtmlLang (language, locales, hasT) {
+  const translatable = hasT || matchTag(language, Object.keys(locales));
+  // HTML needs BCP 47 tags; gettext-style "es_MX" becomes "es-MX"
+  return translatable ? language.replace(/_/g, '-') : DEFAULT_LANGUAGE;
+}
+
+/**
  * Create a translation function.
  *
  * Lookup order: the app's own `t(key, language)` (if given), the built-in

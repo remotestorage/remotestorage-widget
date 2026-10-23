@@ -2,7 +2,7 @@ import widgetHtml from './assets/widget.html';
 import widgetCss from './assets/styles.css';
 import circleOpenSvg from './assets/circle-open.svg';
 import locales from './locales/index.js';
-import { resolveLanguage, createTranslator, translateDom } from './i18n.js';
+import { resolveLanguage, resolveHtmlLang, createTranslator, translateDom } from './i18n.js';
 
 /**
  * The browser's preferred languages, most preferred first.
@@ -56,6 +56,7 @@ class Widget {
     }
     this.language = resolveLanguage(options.language, browserLanguages(), Object.keys(locales));
     this.t = createTranslator({ language: this.language, locales, t: options.t });
+    this.htmlLanguage = resolveHtmlLang(this.language, locales, typeof options.t === 'function');
 
     // true if we have remoteStorage connection's info
     this.active = false;
@@ -191,8 +192,7 @@ class Widget {
   createHtmlTemplate () {
     const element = document.createElement('div');
     element.id = "remotestorage-widget";
-    // HTML needs BCP 47 tags; gettext-style "es_MX" becomes "es-MX"
-    element.setAttribute('lang', this.language.replace(/_/g, '-'));
+    element.setAttribute('lang', this.htmlLanguage);
     element.innerHTML = widgetHtml;
     translateDom(element, this.t);
 
